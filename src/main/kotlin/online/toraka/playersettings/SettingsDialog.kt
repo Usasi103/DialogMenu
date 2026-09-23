@@ -114,10 +114,7 @@ object SettingsDialog {
             show(player, view)
             return
         }
-        if (
-            definition.plugin.isNotEmpty() &&
-                !Bukkit.getPluginManager().isPluginEnabled(definition.plugin)
-        ) {
+        if (definition.plugin.isNotEmpty() && EffectPlugins.provider(definition.plugin) == null) {
             player.sendMessage(message(player, "setting.failed"))
             show(player, view)
             return
@@ -288,7 +285,7 @@ object SettingsDialog {
             "language" -> MenuPreferences.read(player.persistentDataContainer).language.id
             "theme" -> MenuPreferences.read(player.persistentDataContainer).theme.id
             "pickup" ->
-                if (Bukkit.getPluginManager().isPluginEnabled("PickupNotifier"))
+                if (EffectPlugins.provider("PickupNotifier") != null)
                     (!player.persistentDataContainer.has(
                             NamespacedKey("pickupnotifier", "disabled"),
                             PersistentDataType.BYTE,
@@ -323,7 +320,7 @@ object SettingsDialog {
             .joinToString("")
 
     private fun lootState(player: Player, getter: String): Boolean? = runCatching {
-        val plugin = Bukkit.getPluginManager().getPlugin("LootBeam") ?: return null
+        val plugin = EffectPlugins.provider("LootBeam") ?: return null
         if (!plugin.isEnabled) return null
         val cache = plugin.javaClass.classLoader.loadClass("online.toraka.lootbeam.data.PrefsCache")
         val prefs =

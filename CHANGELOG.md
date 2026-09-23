@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.10
+
+- Resolve LootBeam and PickupNotifier settings through Ambience 1.5.0 when their standalone plugins are absent. Existing menu files, commands, permissions and PDC settings remain valid.
+- Retain standalone-plugin compatibility and verify the required module class before enabling a control on older Ambience versions.
+
 ## 0.1.9
 
 - Added simple per-page configuration: `config.yml` chooses navigation order and defaults; `menus/*.yml` uses Title / Layout / Icons with automatic placement. Pages accept direct text and inline Chinese/English maps without translation-key lookups.
