@@ -27,19 +27,29 @@ public class BuildSkin {
         Files.createDirectories(root.resolve("textures/ui"));
         Files.createDirectories(root.resolve("font"));
         skin("panel_top", 336, 81, false, true, 0xE000);
-        skin("panel_bottom", 336, 108, false, true, 0xE020);
+        skin("panel_bottom", 336, 126, false, true, 0xE020);
         skin("nav", 102, 18, false, false, 0xE040);
         skin("nav_selected", 102, 18, true, false, 0xE050);
         skin("control", 114, 18, false, false, 0xE060);
         skin("control_selected", 114, 18, true, false, 0xE070);
         skin("search", 102, 18, false, false, 0xE080);
         skin("panel_top_light", 336, 81, false, true, 0xE100);
-        skin("panel_bottom_light", 336, 108, false, true, 0xE120);
+        skin("panel_bottom_light", 336, 126, false, true, 0xE120);
         skin("nav_light", 102, 18, false, false, 0xE140);
         skin("nav_selected_light", 102, 18, true, false, 0xE150);
         skin("control_light", 114, 18, false, false, 0xE160);
         skin("control_selected_light", 114, 18, true, false, 0xE170);
         skin("search_light", 102, 18, false, false, 0xE180);
+        for (boolean light : new boolean[] {false, true}) {
+            for (int selected = 0; selected <= 4; selected++) {
+                slider(selected, light);
+            }
+            for (int direction = 0; direction < 2; direction++) {
+                BufferedImage arrow = ImageIO.read(source.resolve(direction == 0 ? "menu_left.png" : "menu_right.png").toFile());
+                sliderArrow(arrow, direction, false, light);
+                sliderArrow(arrow, direction, true, light);
+            }
+        }
         BufferedImage icons = ImageIO.read(source.resolve("dialog_icons.png").toFile());
         int[] cells = {8, 26, 3, 9, 6, 11, 2, 8, 17, 16};
         for (int i = 0; i < cells.length; i++) {
@@ -182,6 +192,68 @@ public class BuildSkin {
         ImageIO.write(im, "png", root.resolve("textures/ui/" + name + ".png").toFile());
         // Glyph atlases are 256px wide: large panels use two columns, never rows.
         register(name, im, height, glyph, width > 256 ? 2 : 1);
+    }
+
+    /** Rebuild the reference Dialog's ticked rail and light beveled thumb. */
+    private static void slider(int selected, boolean light) throws Exception {
+        BufferedImage image = new BufferedImage(120, 18, BufferedImage.TYPE_INT_ARGB);
+        bevel(image, 0, 0, 120, 18, false);
+        int tick = tiles.getRGB(2, 2 * 9 + 4);
+        for (int center = 15; center <= 105; center += 15) {
+            for (int y = 5; y < 12; y++) {
+                for (int x = center - 1; x <= center; x++) {
+                    image.setRGB(x, y, tick);
+                }
+            }
+        }
+        if (selected < 4) {
+            int left = selected * 30 + 6;
+            bevel(image, left, 0, 18, 18, true);
+            for (int y = 5; y < 12; y++) {
+                for (int x = left + 8; x < left + 10; x++) {
+                    image.setRGB(x, y, tick);
+                }
+            }
+        }
+        String name = "density_slider_" + selected + (light ? "_light" : "");
+        ImageIO.write(image, "png", root.resolve("textures/ui/" + name + ".png").toFile());
+        // Independent adjacent columns keep each click target attached to its
+        // painted glyph. Both palettes retain the reference's dark track.
+        register(name, image, 18, (light ? 0xE300 : 0xE200) + selected * 4, 4);
+    }
+
+    private static void sliderArrow(BufferedImage arrow, int direction, boolean disabled, boolean light) throws Exception {
+        BufferedImage image = new BufferedImage(18, 18, BufferedImage.TYPE_INT_ARGB);
+        bevel(image, 0, 0, 18, 18, true);
+        for (int y = 0; y < arrow.getHeight(); y++) {
+            for (int x = 0; x < arrow.getWidth(); x++) {
+                int pixel = arrow.getRGB(x, y);
+                if ((pixel >>> 24) == 0) {
+                    continue;
+                }
+                if (disabled) {
+                    int gray = (((pixel >>> 16) & 255) + ((pixel >>> 8) & 255) + (pixel & 255)) / 3;
+                    pixel = (pixel & 0xFF000000) | (gray << 16) | (gray << 8) | gray;
+                }
+                image.setRGB(x + (18 - arrow.getWidth()) / 2, y + (18 - arrow.getHeight()) / 2, pixel);
+            }
+        }
+        String name = "density_arrow_" + direction + (disabled ? "_disabled" : "") + (light ? "_light" : "");
+        ImageIO.write(image, "png", root.resolve("textures/ui/" + name + ".png").toFile());
+        register(name, image, 18, (light ? 0xE320 : 0xE220) + direction + (disabled ? 2 : 0), 1);
+    }
+
+    private static void bevel(BufferedImage image, int left, int top, int width, int height, boolean raised) {
+        int fill = tiles.getRGB(raised ? 17 : 2, 4);
+        int bright = raised ? 0xFFFFFFFF : tiles.getRGB(2, 2 * 9 + 4);
+        int shade = tiles.getRGB(2, (raised ? 2 : 7) * 9 + 4);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int pixel = x == 0 || y == 0 || x == width - 1 || y == height - 1 ? 0xFF000000
+                        : x == 1 || y == 1 ? bright : x == width - 2 || y == height - 2 ? shade : fill;
+                image.setRGB(left + x, top + y, pixel);
+            }
+        }
     }
 
     private static void register(String name, BufferedImage image, int height, int glyph, int columns) {

@@ -1,5 +1,16 @@
 # Validation Record
 
+## 0.1.7
+
+- Native TabooLib build and all nine JUnit tests passed. JAR SHA-256: `4ec847e596d09e9ebc950bfcb3a85d182cf8f516c22f32298cfcaacd8a72c565`.
+- Exhaustive rail hit regions and arrow endpoints passed for both languages, both themes, four selected tiers and an unavailable state. Bitmap advances and CJK baselines pass; the actual Minecraft 26.2 FocusableTextWidget remains 474 x 269 with 29 aligned lines.
+- A separate Minecraft 26.2 OpenGL client loaded the actual optimized hosted assets and final JAR. Real Ambience 1.4.3 and PlaceholderAPI (not a simulated density provider) confirmed off, low, medium and high writes; the medium preference survived a server/client restart. Left/right stepping, rail selection and disabled endpoints were exercised.
+- Fixed the deployment's existing unquoted Ambience `off` YAML key, which the runtime parsed as `false` and rejected in the off command. Quoting preserves the intended zero multiplier. The external backup retains the original file. No Ambience plugin binary or other settings were changed.
+- All 88 settings assets match the hosted optimized pack by JSON structure, visible PNG pixels and alpha. Generated and hosted ZIPs are identical; hosted SHA-1: `35d8fdecffde416e2938bfc9aacc1a6f7c6849e6`.
+- Final Chinese light/dark and English light screenshots show aligned slider values and the help sentence inside the lower panel. Settings outer-focus edges have zero white pixels in 520 sampled positions per image. The unchanged geometry-based shader's previously documented renderer limits still apply.
+- test_server enabled 0.1.7 using the visible interactive launcher. Both console code pages are 65001; list input and Chinese input/output succeeded. Auxiliary tools, test server and backups remain outside test_server.
+- Publication uses the existing private repository, main history and prior v0.1.6 release. Remote branch/tag, Release notes and attachment hashes are verified by the release workflow; see PUBLICATION.md.
+
 ## 0.1.6
 
 - Native TabooLib build and all nine JUnit tests passed. Final JAR SHA-256: `4878b4d293cf2395ce47ec1f40fabd0a20d8e226344150d13cc9992c78eeb01d`.

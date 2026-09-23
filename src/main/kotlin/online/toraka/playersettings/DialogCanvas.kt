@@ -37,8 +37,15 @@ class DialogCanvas(
         if (action != null) hits += Hit(x, row, skin.width, skin.rows, action)
     }
 
-    fun text(x: Int, row: Int, text: String, color: Int = theme.text, action: String? = null) {
-        labels += Label(x, row, text, color, action)
+    fun text(
+        x: Int,
+        row: Int,
+        text: String,
+        color: Int = theme.text,
+        action: String? = null,
+        raised: Boolean = false,
+    ) {
+        labels += Label(x, row, text, color, action, raised)
     }
 
     fun button(x: Int, row: Int, skin: Skin, label: String, action: String) {
@@ -117,6 +124,35 @@ class DialogCanvas(
         return result.build().shadowColor(ShadowColor.none())
     }
 
+    fun densitySlider(x: Int, row: Int, selected: String, language: MenuLanguage) {
+        val ids = listOf("off", "low", "medium", "high")
+        val index = ids.indexOf(selected.lowercase()).takeIf { it >= 0 } ?: ids.size
+        val label = fit(SettingsDialog.densityLabel(selected, language), 52)
+        text(x - 8 - textWidth(label), row + 1, label, raised = true)
+        val previous = ids.getOrNull(index - 1).takeIf { index in 1..3 }
+        val next = ids.getOrNull(index + 1)
+        sprite(
+            x,
+            row,
+            Skin(if (previous == null) 0xE222 else 0xE220, 18, 2),
+            previous?.let { "density_$it" },
+        )
+        sprite(
+            x + 146,
+            row,
+            Skin(if (next == null) 0xE223 else 0xE221, 18, 2),
+            next?.let { "density_$it" },
+        )
+        ids.forEachIndexed { position, id ->
+            sprite(
+                x + 22 + position * 30,
+                row,
+                Skin(0xE200 + index * 4 + position, 30, 2),
+                "density_$id",
+            )
+        }
+    }
+
     companion object {
         const val WIDTH = 450
         const val ROWS = 29
@@ -145,7 +181,7 @@ class DialogCanvas(
         fun glyphWidth(glyph: Int): Int = metrics.getProperty("glyph.$glyph").toInt()
 
         val PANEL_TOP = Skin(0xE000, 336, 9)
-        val PANEL_BOTTOM = Skin(0xE020, 336, 12)
+        val PANEL_BOTTOM = Skin(0xE020, 336, 14)
         val NAV = Skin(0xE040, 102, 2)
         val SELECTED_NAV = Skin(0xE050, 102, 2)
         val CONTROL = Skin(0xE060, 114, 2)

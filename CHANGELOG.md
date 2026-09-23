@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.7
+
+- Replaced the particle density dropdown with the supplied Background Opacity reference style: blue left/right arrows, a dark ticked rail, a light beveled thumb, and the current localized value.
+- Track clicks select off / low / medium / high directly; arrows move one step and disable at the ends. Native Dialog text click events do not support continuous dragging. Existing Ambience commands and saved preferences remain in use.
+- Compiled the supplied menu arrow sprites and Dialog tile palette into both themes. Retained the 29-line body geometry, Chinese baseline and scoped focus-outline suppression; the lower card has extra room around the slider.
+- Added exhaustive track-boundary, arrow-boundary, bilingual and dual-theme layout checks. Deployment quotes the Ambience density key `off` to prevent YAML from interpreting it as boolean `false`.
+
 ## 0.1.6
 
 - Added an Appearance page with Simplified Chinese / English menu language and Dark / Light theme choices. Changes redraw immediately and are stored separately in each player's persistent data.

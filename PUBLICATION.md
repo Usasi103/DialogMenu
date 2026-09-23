@@ -1,27 +1,7 @@
-# PlayerSettings 0.1.6 publication
+# PlayerSettings publication
 
-This repository publishes the cumulative PlayerSettings implementation through 0.1.6.
-The release is at https://github.com/Usasi103/PlayerSettings/releases/tag/v0.1.6.
+The cumulative 0.1.7 release is published at https://github.com/Usasi103/PlayerSettings/releases/tag/v0.1.7 after remote verification. Previous releases and private repository visibility are preserved.
 
-The JAR, resource pack and source archive are the exact files validated and deployed
-before GitHub credentials became available. Their SHA-256 values are recorded in
-`release/SHA256SUMS.txt`. Older release notes and validation entries mentioning
-pending GitHub publication describe the state at packaging time; this publication
-completes that pending step. The source archive retains those historical notes
-unchanged. Repository-only publication metadata does not change the plugin build.
+Release attachments are the actual built PlayerSettings-0.1.7.jar, matching resource pack, source archive and SHA256SUMS.txt. Repository checksums are in release/SHA256SUMS.txt. The source archive excludes local dependencies and release metadata; the Git checkout includes the existing compile-only PlaceholderAPI JAR.
 
-The release includes:
-
-- `PlayerSettings-0.1.6.jar`
-- `PlayerSettings-resourcepack-0.1.6.zip`
-- `PlayerSettings-source-0.1.6.zip`
-- `SHA256SUMS.txt`
-
-For a complete build checkout, use this repository. It includes the existing
-PlaceholderAPI compile-only dependency under `libs/`, which is omitted from the
-hand-prepared source archive. With JDK 25 installed, run `gradlew.bat test build`
-(or `./gradlew test build`). Gradle runs the source-format check as part of `build`.
-The artifact is exported to `dist/`; build intermediates remain outside the project.
-
-See `CHANGELOG.md` for cumulative changes and `VALIDATION.md` for the nine passing
-tests, client verification, persistence checks and resource-pack validation.
+With JDK 25 installed, use gradlew.bat test build. Build intermediates remain outside the project. See CHANGELOG.md, RELEASE-0.1.7.md and VALIDATION.md for behavior, limits and checks.

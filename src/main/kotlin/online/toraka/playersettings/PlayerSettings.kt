@@ -36,7 +36,7 @@ object SettingsDialog {
         HELP("tab.help"),
     }
 
-    data class View(val tab: Tab = Tab.PARTICLES, val densityOpen: Boolean = false)
+    data class View(val tab: Tab = Tab.PARTICLES)
 
     private data class Session(
         val token: String,
@@ -101,8 +101,6 @@ object SettingsDialog {
                 }
                 action.startsWith("tab_") ->
                     show(player, View(Tab.valueOf(action.removePrefix("tab_").uppercase())))
-                action == "density" ->
-                    show(player, session.view.copy(densityOpen = !session.view.densityOpen))
                 action.startsWith("language_") -> {
                     val prefs = MenuPreferences.read(player.persistentDataContainer)
                     prefs
@@ -127,7 +125,7 @@ object SettingsDialog {
                         Session(token, session.view, emptySet(), System.currentTimeMillis())
                     taboolib.common.platform.function.submit(delay = 1L) {
                         if (player.isOnline && sessions[player.uniqueId]?.token == token)
-                            show(player, session.view.copy(densityOpen = false))
+                            show(player, session.view)
                     }
                 }
             }
@@ -190,14 +188,6 @@ object SettingsDialog {
                 value,
                 action,
             )
-            if (action == "density") {
-                canvas.sprite(
-                    430,
-                    row,
-                    if (view.densityOpen) DialogCanvas.DROPDOWN_UP else DialogCanvas.DROPDOWN_DOWN,
-                    action,
-                )
-            }
         }
         fun state(id: String) = papi(player, "torakaambience_$id")
         fun isOn(value: String) =
@@ -240,30 +230,9 @@ object SettingsDialog {
                     "biome",
                     isOn(state("category_biome")),
                 )
-                control(
-                    19,
-                    t("particles.density"),
-                    densityLabel(state("density_id"), language),
-                    "density",
-                )
-                if (view.densityOpen) {
-                    listOf(
-                            "off" to t("off"),
-                            "low" to t("density.low"),
-                            "medium" to t("density.medium"),
-                            "high" to t("density.high"),
-                        )
-                        .forEachIndexed { i, (id, label) ->
-                            canvas.button(
-                                330,
-                                21 + i * 2,
-                                if (state("density_id") == id) DialogCanvas.SELECTED_CONTROL
-                                else DialogCanvas.CONTROL,
-                                label,
-                                "density_$id",
-                            )
-                        }
-                } else info(21, t("particles.disabled"))
+                canvas.text(123, 20, t("particles.density"), raised = true)
+                canvas.densitySlider(280, 19, state("density_id"), language)
+                info(22, t("particles.disabled"))
             }
             Tab.SOUND -> {
                 title(1, t("tab.sound"))

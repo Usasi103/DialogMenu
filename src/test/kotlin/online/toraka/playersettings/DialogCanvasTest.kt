@@ -28,7 +28,7 @@ class DialogCanvasTest {
         }
         canvas.text(123, 1, "环境粒子")
         canvas.text(123, 11, "粒子分类与密度")
-        listOf(4, 13, 15, 17, 19, 21, 23, 25, 27).forEach { row ->
+        listOf(4, 13, 15, 17).forEach { row ->
             canvas.button(
                 330,
                 row,
@@ -37,6 +37,7 @@ class DialogCanvasTest {
                 "control_$row",
             )
         }
+        canvas.densitySlider(280, 19, "medium", MenuLanguage.CHINESE)
         canvas.text(123, 5, "显示环境粒子")
         canvas.text(123, 7, "仅影响你自己看到的环境粒子。")
         val root = canvas.build()
@@ -134,12 +135,50 @@ class DialogCanvasTest {
     }
 
     @Test
-    fun `dropdown layers replace underlying click targets`() {
-        val canvas = DialogCanvas { ClickEvent.custom(Key.key("test", it)) }
-        canvas.button(330, 19, DialogCanvas.CONTROL, "密度", "density")
-        canvas.button(330, 20, DialogCanvas.SELECTED_CONTROL, "关", "density_off")
-        assertEquals("density_off", canvas.hits.last { 20 in it.row until it.row + it.rows }.action)
-        assertTrue(canvas.hits.all { it.x >= 0 && it.x + it.width <= DialogCanvas.WIDTH })
+    fun `slider track and bounded arrows select density without gaps or row wrapping`() {
+        val ids = listOf("off", "low", "medium", "high")
+        for (theme in MenuTheme.entries) for (language in MenuLanguage.entries) {
+            for (selected in ids + "unavailable") {
+                val canvas = DialogCanvas(theme) { ClickEvent.custom(Key.key("test", it)) }
+                canvas.densitySlider(280, 19, selected, language)
+                for (row in 19..20) for (x in 302 until 422) {
+                    val hit =
+                        canvas.hits.single {
+                            row in it.row until it.row + it.rows && x in it.x until it.x + it.width
+                        }
+                    assertEquals("density_${ids[(x - 302) / 30]}", hit.action)
+                }
+                val previous = canvas.hits.singleOrNull { it.x == 280 }
+                val next = canvas.hits.singleOrNull { it.x == 426 }
+                val index = ids.indexOf(selected)
+                assertEquals(
+                    if (index in 1..3) "density_${ids[index - 1]}" else null,
+                    previous?.action,
+                )
+                assertEquals(if (index in 0..2) "density_${ids[index + 1]}" else null, next?.action)
+                var width = 0
+                var row = 0
+                for (component in canvas.build().children()) {
+                    val part = component as TextComponent
+                    if (part.content() == "\n") {
+                        assertEquals(DialogCanvas.LINE_WIDTH, width)
+                        width = 0
+                        row++
+                    } else if (part.font() == DialogCanvas.FONT) {
+                        val code = part.content().single().code
+                        width +=
+                            if (code in 0xE800..0xEC00) code - 0xEA00
+                            else DialogCanvas.glyphWidth(code)
+                    } else width += DialogCanvas.textWidth(part.content())
+                    assertTrue(
+                        width in 0..DialogCanvas.LINE_WIDTH,
+                        "$theme $language $selected row=$row x=$width",
+                    )
+                }
+                assertEquals(DialogCanvas.LINE_WIDTH, width)
+                assertEquals(28, row)
+            }
+        }
     }
 
     @Test

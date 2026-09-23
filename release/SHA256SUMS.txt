@@ -1,3 +1,3 @@
-4878b4d293cf2395ce47ec1f40fabd0a20d8e226344150d13cc9992c78eeb01d  PlayerSettings-0.1.6.jar
-ca0bd29c54f428791e8988ab5ced8d34ccbfe39460cb06e71b4bf8ee391189b4  PlayerSettings-resourcepack-0.1.6.zip
-8f165bb3f004defd942f27d5aea8d92daf76da9d87b95e3f16c11256caea0a1b  PlayerSettings-source-0.1.6.zip
+4ec847e596d09e9ebc950bfcb3a85d182cf8f516c22f32298cfcaacd8a72c565  PlayerSettings-0.1.7.jar
+a8f4a2ecc2b9777a46f39f3d141b609fc291ff938aa4f2cd71dff4ef1ac0ea22  PlayerSettings-resourcepack-0.1.7.zip
+4a85a367063edeb731fe731b2346aa3fc74062fa9ac3ac3eadbb5b66ede0a4f5  PlayerSettings-source-0.1.7.zip

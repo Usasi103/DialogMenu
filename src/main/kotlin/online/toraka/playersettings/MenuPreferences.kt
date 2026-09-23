@@ -18,7 +18,8 @@ enum class MenuTheme(val id: String, val text: Int, val muted: Int, val heading:
     LIGHT("light", 0x252525, 0x444444, 0x111111);
 
     fun skin(skin: DialogCanvas.Skin): DialogCanvas.Skin =
-        if (this == LIGHT && skin.glyph in 0xE000..0xE080) skin.copy(glyph = skin.glyph + 0x100)
+        if (this == LIGHT && (skin.glyph in 0xE000..0xE080 || skin.glyph in 0xE200..0xE223))
+            skin.copy(glyph = skin.glyph + 0x100)
         else skin
 
     companion object {
