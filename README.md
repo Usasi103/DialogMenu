@@ -33,3 +33,9 @@ This is a geometry selector: a resource-pack shader cannot read `/settings` or a
 Button labels raise both ASCII and full-width CJK text by four pixels. `button_cjk` uses the matching vanilla GNU Unifont glyphs, with padded bitmap cells and a preserved nine-pixel advance. `design/minecraft-font` contains the input font and its license; the runtime pack also retains that license. Rebuild and deliver the matching font assets when changing these labels.
 
 The density slider follows the supplied Background Opacity reference: blue arrows, seven tick marks and a pale rectangular thumb. The current value appears before the left arrow. Click the rail to choose off / low / medium / high, or use the arrows to move one step; end arrows disable. This custom Dialog text canvas supports click steps, not continuous dragging. In Ambience YAML, quote the key `'off'` under `particles.density`; an unquoted key can be parsed as `false` and make the off command unavailable.
+
+## 0.1.12 — 物品源
+
+支持 `Display.Material: "source:CE:命名空间:物品ID"`（`CRAFTENGINE` 同义）和 `minecraft:diamond` 原版物品。CE 为软依赖，通过其公开 API 构造真实物品，保留模型和物品提示。中文配置与边界见 [ITEM-SOURCES.md](ITEM-SOURCES.md)，完整样例在 `src/main/resources/examples/items.yml`，插件会导出到 `examples/items.yml`。
+
+带 Material 的页面自动使用原生物品布局，名称/下方按钮处理操作；既有字体画布页面继续保留。原生页面不使用画布皮肤、主题和隐藏焦点功能，不支持自由坐标。使用 `/playersettings open <页面ID>` 打开指定已启用页面，`check` / `reload` 同时验证物品源；无有效物品时停用动作。

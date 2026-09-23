@@ -29,7 +29,11 @@ object MenuRuntime {
         val store = requireNotNull(repository) { "菜单尚未初始化" }
         val next =
             try {
-                store.readDefinition()
+                store.readDefinition().also { definition ->
+                    ItemSources.validate(definition).forEach {
+                        sender.sendMessage("PlayerSettings 警告：$it")
+                    }
+                }
             } catch (error: Exception) {
                 sender.sendMessage("PlayerSettings 配置错误，保留原菜单：${error.message}")
                 Bukkit.getLogger().warning("[PlayerSettings] 配置校验失败：${error.message}")

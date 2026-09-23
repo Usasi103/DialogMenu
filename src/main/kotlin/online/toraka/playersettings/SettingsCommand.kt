@@ -17,6 +17,14 @@ import taboolib.platform.util.sendLang
 )
 object SettingsCommand {
     @CommandBody
+    val open = subCommand {
+        dynamic("page") {
+            suggestion<CommandSender> { _, _ -> MenuRuntime.current.pages.keys.toList() }
+            execute<Player> { player, _, argument -> SettingsDialog.open(player, argument) }
+        }
+    }
+
+    @CommandBody
     val reload = subCommand {
         execute<CommandSender> { sender, _, _ -> MenuRuntime.reload(sender, false) }
     }

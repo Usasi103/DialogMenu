@@ -1,0 +1,31 @@
+# 物品源示例：复制为 menus/items.yml，并在 config.yml 的 Pages 末尾加入 items。
+# /playersettings check 检查；/playersettings reload 生效；/playersettings open items 打开。
+# 使用 Display.Material 后整页自动采用原生物品布局，也可显式写 Renderer: items。
+# 原生物品区显示真实模型和悬浮提示；点击名称或下方同名按钮执行 Actions。
+Title: {zh_cn: "物品源示例", en_us: "Item sources"}
+Renderer: items
+Keywords: [物品, CE, items]
+Layout: [彩虹鱼, 钻石, 说明]
+Icons:
+  彩虹鱼:
+    Type: button
+    Display:
+      # CE 是 CraftEngine 的别名；冒号后必须含完整命名空间。
+      Material: "source:CE:customfishing:rainbow_fish"
+      # CE 不存在/未加载时用屏障展示，并停用该按钮。删除此行则检查失败。
+      Fallback: BARRIER
+      # Name / Lore 是菜单旁的说明，不覆盖 CE 物品原本的名称与 Lore。
+      Name: {zh_cn: "彩虹鱼 · 玩家信息", en_us: "Rainbow fish · Profile"}
+      Lore:
+        - {zh_cn: "悬停鱼图标查看 CE 物品提示", en_us: "Hover the fish to inspect its CE tooltip"}
+      Amount: 1
+    Actions: ["page: profile"]
+  钻石:
+    Type: item # 只展示，不带 Actions
+    Display:
+      Material: "minecraft:diamond" # 也可以写 DIAMOND
+      Name: {zh_cn: "原版钻石", en_us: "Vanilla diamond"}
+      Amount: 3
+  说明:
+    Type: text
+    Name: {zh_cn: "菜单仅展示物品，不发放或扣除物品。", en_us: "Display only; no items are given or removed."}

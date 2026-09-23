@@ -75,6 +75,7 @@ object SimpleMenuParser {
                 )
             }
         val sequences = mutableMapOf<String, List<String>>()
+        val itemPages = mutableMapOf<String, List<ItemMenuEntry>>()
         var serial = 0
         fun next() = "simple-${serial++}"
         fun label(raw: Any?, path: String): String {
@@ -235,13 +236,36 @@ object SimpleMenuParser {
             val file = "menus/$id.yml"
             val page = MenuConfigParser.yaml(readPage(id), file)
             try {
-                keys(page, setOf("Title", "Icon", "Keywords", "Layout", "Icons"), file)
+                keys(page, setOf("Title", "Icon", "Keywords", "Layout", "Icons", "Renderer"), file)
                 val title = label(page.get("Title"), "$file.Title")
                 val layout = strings(page.get("Layout"), "$file.Layout")
                 require(layout.size in 1..30 && layout.distinct().size == layout.size) {
                     "$file.Layout: 需要 1–30 个不同的控件名称"
                 }
                 val icons = section(page, "Icons", file)
+                layout.forEach { name ->
+                    require(
+                        name.isNotBlank() && !name.contains('.') && name.none(Char::isISOControl)
+                    ) {
+                        "$file.Layout: 控件名不能含点或控制字符"
+                    }
+                }
+                if (ItemMenuPage.usesItems(page, layout, file)) {
+                    itemPages[id] = ItemMenuPage.parse(icons, layout, file, ::label, ::actions)
+                    compiled.set(
+                        "pages.$id",
+                        mapOf(
+                            "label" to title,
+                            "icon" to optionalString(page, "Icon", file),
+                            "keywords" to
+                                if (page.contains("Keywords"))
+                                    strings(page.get("Keywords"), "$file.Keywords")
+                                else emptyList<String>(),
+                            "widgets" to arrayListOf<Map<String, Any>>(),
+                        ),
+                    )
+                    return@forEach
+                }
                 val widgets =
                     mutableListOf<Map<String, Any>>(
                         mapOf("type" to "heading", "row" to 1, "text" to title)
@@ -446,12 +470,16 @@ object SimpleMenuParser {
                 languages.mapValues { it.value.saveToString() },
             )
         return parsed.copy(
+            pages =
+                parsed.pages.mapValues { (id, page) ->
+                    itemPages[id]?.let { page.copy(itemLayout = true, itemEntries = it) } ?: page
+                },
             actions =
                 parsed.actions.mapValues { (id, action) ->
                     sequences[id]?.let {
                         action.copy(type = "sequence", steps = it.map(parsed.actions::getValue))
                     } ?: action
-                }
+                },
         )
     }
 

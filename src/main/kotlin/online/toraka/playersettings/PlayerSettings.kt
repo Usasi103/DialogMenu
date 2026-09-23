@@ -22,6 +22,7 @@ object PlayerSettings : taboolib.common.platform.Plugin() {
                 )
         }
         MenuRuntime.initialize(getDataFolder())
+        taboolib.common.platform.function.submit(delay = 1L) { ItemSources.changed() }
     }
 
     override fun onDisable() {

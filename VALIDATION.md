@@ -95,3 +95,14 @@
 ## Client verification
 
 The server-side Dialog codec, click routing, resource-pack contents, and live redraw paths are validated. A final pixel comparison still requires an actual Minecraft client receiving the generated pack; GUI scale and the client font renderer can change the visual result.
+
+
+## 0.1.12 item sources (2026-09-24)
+
+- All 28 JUnit tests passed with the workspace formatter/build checks. Five added tests cover aliases/namespaced IDs, strict page parsing and action identity, invalid fields, isolated fresh display copies, and unavailable-source validation/rollback.
+- Actual Paper 26.2 build 123 and CraftEngine 26.9.1: rainbow-fish display retains CE ID, item metadata and model; mutation of a displayed copy does not affect subsequent items; vanilla amount and barrier fallback verified.
+- Vanilla 26.2 client: rainbow fish, source tooltip, three diamonds, disabled fallback button, successful button navigation to the original canvas, and eighth-page navigation visually checked.
+- CE configuration reload changed an already-open item's tooltip without reopening the menu. Invalid missing ID without fallback rejected reload, then restoring fallback produced a warning and a successful reload/check.
+- Started the final JAR without CE: optional event binding caused no class-load failure, vanilla items worked, CE fallback remained visible with no actionable route.
+- Test server/client/config/cache/logs stayed outside production. The temporary client uses a focused subset of the existing hosted pack: full pack exceeded its 2 GiB heap. CE fixture required its normal image/offset configuration before reload could complete; adding that fixture configuration resolved the test harness failure.
+- Limitations: models are native item bodies, actions use captions/buttons; canvas theme/focus suppression/free positioning do not apply. The pack still must be loaded before the public open command. Only CE and vanilla providers are implemented.

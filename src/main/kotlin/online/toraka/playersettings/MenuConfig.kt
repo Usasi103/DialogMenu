@@ -54,6 +54,8 @@ data class MenuPage(
     val icon: String,
     val keywords: List<String>,
     val widgets: List<MenuWidget>,
+    val itemLayout: Boolean = false,
+    val itemEntries: List<ItemMenuEntry> = emptyList(),
 )
 
 data class MenuDefinition(
@@ -614,7 +616,7 @@ class MenuRepository(private val directory: File) {
         }
         val extras =
             if (legacy && !simple) listOf("languages/zh_cn.yml", "languages/en_us.yml", "配置说明.md")
-            else listOf("配置说明.md")
+            else listOf("配置说明.md", "examples/items.yml")
         extras.forEach { name ->
             val file = File(directory, name)
             if (!file.exists()) {

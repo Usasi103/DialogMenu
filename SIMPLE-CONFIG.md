@@ -145,3 +145,9 @@ Title 是页面标题和导航名称；Icon、Keywords 可省略。Icon 沿用�
 存在 config.yml 时使用简化格式，仅加载 Pages 指定的页面，旧 menu.yml 和 languages 不参与。没有 config.yml 但存在 menu.yml 时继续使用 0.1.8 格式，不自动覆盖或转换已有内容。旧格式说明见源码仓库 LEGACY-CONFIG.md。
 
 Language、Theme 只影响没有有效已存偏好的玩家，不覆盖玩家选择。首次缺少配置时才导出新格式；主配置存在而页面缺失时会报错，不会悄悄恢复被删除的页面。
+
+## 0.1.12 — 物品源
+
+支持 `Display.Material: "source:CE:命名空间:物品ID"`（`CRAFTENGINE` 同义）和 `minecraft:diamond` 原版物品。CE 为软依赖，通过其公开 API 构造真实物品，保留模型和物品提示。中文配置与边界见 [ITEM-SOURCES.md](ITEM-SOURCES.md)，完整样例在 `src/main/resources/examples/items.yml`，插件会导出到 `examples/items.yml`。
+
+带 Material 的页面自动使用原生物品布局，名称/下方按钮处理操作；既有字体画布页面继续保留。原生页面不使用画布皮肤、主题和隐藏焦点功能，不支持自由坐标。使用 `/playersettings open <页面ID>` 打开指定已启用页面，`check` / `reload` 同时验证物品源；无有效物品时停用动作。

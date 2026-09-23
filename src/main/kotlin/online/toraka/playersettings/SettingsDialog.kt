@@ -31,6 +31,7 @@ object SettingsDialog {
         val view: View,
         val actions: Set<String>,
         val opened: Long,
+        val itemGuards: Map<String, ItemDisplay> = emptyMap(),
     )
 
     private val sessions = mutableMapOf<UUID, Session>()
@@ -50,8 +51,12 @@ object SettingsDialog {
         }
     }
 
-    fun open(player: Player) {
+    fun open(player: Player, page: String = MenuRuntime.current.defaultPage) {
         if (!player.hasPermission("playersettings.use")) return
+        if (page !in MenuRuntime.current.pages) {
+            player.sendMessage("PlayerSettings: 未启用的页面 $page")
+            return
+        }
         if (
             player.resourcePackStatus !=
                 org.bukkit.event.player.PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED
@@ -60,7 +65,7 @@ object SettingsDialog {
             return
         }
         player.closeInventory()
-        show(player, View(MenuRuntime.current.defaultPage))
+        show(player, View(page))
     }
 
     @taboolib.common.platform.event.SubscribeEvent
@@ -85,6 +90,12 @@ object SettingsDialog {
             val action = route.substringAfter('/')
             if (action !in session.actions) return@submit
             sessions.remove(player.uniqueId)
+            val guard = session.itemGuards[action]
+            if (guard != null && !ItemSources.registry.resolve(guard, player).available) {
+                player.sendMessage(message(player, "setting.failed"))
+                show(player, session.view.collapsed())
+                return@submit
+            }
             when {
                 action == "search_submit" -> {
                     val found = findTab(query.orEmpty())
@@ -187,6 +198,50 @@ object SettingsDialog {
         fun click(action: String): ClickEvent<*> {
             actions += action
             return ClickEvent.custom(Key.key("toraka_settings", "$token/$action"))
+        }
+        val page = menu.pages.getValue(view.page)
+        if (page.itemLayout) {
+            val rendered =
+                ItemMenuRenderer.render(
+                    menu,
+                    page,
+                    prefs.language,
+                    { expandText(player, it) },
+                    { ItemSources.registry.resolve(it, player) },
+                    ::click,
+                )
+            val close =
+                ActionButton.create(
+                    Component.text(expandText(player, menu.text(prefs.language, menu.footerLabel))),
+                    null,
+                    210,
+                    DialogAction.staticAction(click("action/${menu.footerAction}")),
+                )
+            sessions[player.uniqueId] =
+                Session(token, view, actions.toSet(), System.currentTimeMillis(), rendered.guards)
+            player.showDialog(
+                Dialog.create { factory ->
+                    factory
+                        .empty()
+                        .base(
+                            DialogBase.builder(
+                                    Component.text(
+                                        expandText(player, menu.text(prefs.language, page.label))
+                                    )
+                                )
+                                .canCloseWithEscape(true)
+                                .pause(false)
+                                .afterAction(DialogBase.DialogAfterAction.NONE)
+                                .body(rendered.bodies)
+                                .build()
+                        )
+                        .type(
+                            if (rendered.buttons.isEmpty()) DialogType.notice(close)
+                            else DialogType.multiAction(rendered.buttons, close, 2)
+                        )
+                }
+            )
+            return
         }
         val cache = mutableMapOf<String, String?>()
         val canvas =

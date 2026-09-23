@@ -17,6 +17,7 @@ taboolib {
             name("Ambience").optional(true)
             name("LootBeam").optional(true)
             name("PickupNotifier").optional(true)
+            name("CraftEngine").optional(true)
         }
     }
     env { install(Basic, Bukkit, BukkitUtil, I18n, MinecraftChat) }
@@ -37,6 +38,7 @@ dependencies {
     compileOnly(fileTree("libs"))
     testImplementation("io.papermc.paper:paper-api:26.2.build.123-stable")
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
+    testImplementation("org.mockito:mockito-core:5.19.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
