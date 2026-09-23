@@ -1,0 +1,4 @@
+player-only: '&7Open player settings in game.'
+pack-required: '&eLoad the server resource pack before opening settings.'
+search-empty: '&7No matching setting. Try particles, sound, profile, loot or pickup.'
+setting-unavailable: '&cThis setting is currently unavailable.'

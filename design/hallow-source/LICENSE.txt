@@ -1,0 +1,8 @@
+Copyright (c) Frostagon LLC. All Rights Reserved. 
+All assets in this resource pack are the exclusive intellectual property of the copyright holder.
+
+Use of this resource pack is permitted only while connected to the HallowPrison Minecraft server.
+No redistribution, modification, extraction, or external usage is permitted without explicit written permission.
+
+The resource pack is provided “as is,” without warranty, and the copyright holder
+is not liable for any damages, losses, or issues arising from its use.

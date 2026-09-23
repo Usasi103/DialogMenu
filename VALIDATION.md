@@ -1,0 +1,67 @@
+# Validation Record
+
+## 0.1.6
+
+- Native TabooLib build and all nine JUnit tests passed. Final JAR SHA-256: `4878b4d293cf2395ce47ec1f40fabd0a20d8e226344150d13cc9992c78eeb01d`.
+- New tests cover per-player preference isolation, preserving unrelated PDC values, invalid-value defaults, bilingual labels/search and identical 29-line geometry in both themes. Bitmap checks include all light-palette glyphs and the existing Chinese baseline.
+- A separate Minecraft 26.2 OpenGL client exercised all seven pages, both languages and both themes. Language switches update navigation, titles, values and the footer immediately. English search for `theme` returns Appearance; the search input keeps its focus border and caret. The light-theme density dropdown uses aligned, readable controls.
+- A real restart of the disposable Paper server and client preserved `en_us` / `light` in the same player's PDC. A second restart retained the choices again. Final profile layout places the world name inside the light panel.
+- CraftEngine's default workflow completed. The generated and hosted ZIPs match; all 70 settings assets were compared with source, including every visible PNG pixel and alpha value (fully transparent RGB may be optimized). Hosted SHA-1: `9b24f86fa2bd3b623508d0ad70c3cab05e983343`. Optimized font assets and GUI shaders were also loaded into the verification client.
+- Clicking blank settings content preserves the hidden outer focus frame in light and dark modes. The geometry selector and shaders are unchanged from 0.1.5; its documented scope and rendering-backend limits still apply.
+- `test_server` loaded and enabled PlayerSettings 0.1.6 through its visible, interactive `启动.bat` console. Console input/output use code page 65001. Only the target plugin and its CraftEngine resource namespace were updated; backups and all test tools remain outside the server.
+- GitHub remains incomplete: this source directory has no Git checkout, and the noninteractive credential check found no usable GitHub credential. No remote commit, tag, Release or attachment upload is claimed.
+
+## 0.1.5
+
+- Native TabooLib build and all six JUnit tests passed. JAR SHA-256: `2845c874816c555245172a6a69f0f5042099fa580d6557967fe18d6bed7b7ff5`.
+- The real Minecraft 26.2 text widget still produces a 269-pixel body with 29 lines at the opt-in width of 474 pixels. Bitmap metrics and the Chinese baseline validation passed.
+- Live OpenGL checks used the actual plugin and a Chinese PlaceholderAPI fixture. Clicking blank settings content left no visible outer white border; an ordinary 460-pixel dialog with the same content retained its border. The final PackSquash-processed shaders were reloaded into the client and retested: 0/520 white samples on the settings edge versus 520/520 on the ordinary edge.
+- The search input retained its white focus border and caret. Entering `掉落音效` and submitting selected `掉落光柱`. The former search-window pause exception was reproduced before the fix and did not recur afterward.
+- Resizing to a 1000x650 client window and scrolling validated the clipped border case. The same shader preserves normal rendering when the GUI is narrower than the reserved body width.
+- The selector uses geometry and position, not a command/dialog identity. Other matching white line segments can also match. Validation covers Minecraft 26.2 OpenGL; other backends/versions remain unverified.
+- CraftEngine's default workflow completed successfully, and the hosted ZIP matches the generated ZIP. GUI shader minification was accounted for by testing the hosted shader bytes.
+- GitHub source synchronization, tag and Release remain pending credentials.
+
+## 0.1.4
+
+- Native TabooLib build and four JUnit tests passed. JAR SHA-256: `d9fa3fe3264f4a5bcc737d8554fc69d11998e5ad6ec2d819bbe91e1008f6d24e`.
+- The canvas fixture now includes mixed labels (`开 / Toggle`, `高 / Medium`). Bitmap validation checks that 开、关、高、中、低 retain their nine-pixel advance and share the ASCII button font's -4 pixel offset.
+- The real Minecraft 26.2 text widget still reports 29 lines and a 269-pixel body; the original narrow body still reproduces the 530-pixel wrapping regression.
+- An isolated server loaded the actual plugin and PlaceholderAPI, with a local expansion supplying Chinese values. The actual client screenshot in `design/validation-0.1.4.png` confirms that the Chinese text aligns with English and is centered inside the controls.
+- CraftEngine's `default` workflow completed successfully. The generated and hosted ZIPs are identical. All 29 optimized CJK atlas images retain their source alpha data, including the invisible pixels that preserve full-width glyph advances. Hosted SHA-1: `146ccd1d9fc560fc7d2904d9bf3cb8f70654bc15`.
+- The font source is the locally installed Minecraft 26.2 GNU Unifont 17.0.01 distribution, with its license preserved. The supported full-width ranges are U+3001–U+9FFF and U+F900–U+FAFF.
+- GitHub source synchronization, tag and Release remain pending authorization.
+
+## 0.1.3
+
+- Native TabooLib build and all four JUnit tests passed. JAR SHA-256: `8c6cbadc782e5cc6b787ef6952f8cab60039b09c50a5ab80773a0c65dab1f3fb`.
+- The actual Minecraft 26.2 `FocusableTextWidget` reproduces the old wrapping error (530 pixels tall) and validates the new 460-pixel body (269 pixels tall, 29 lines). The probe uses dimensions emitted by the compiled canvas test, including the 452-pixel measured line.
+- The first live vanilla-client check confirmed that the emitted canvas renders with aligned complete panels and labels, without the erroneous scrollbar. An isolated loopback server and separate client directory were used; the user's client installation was not modified.
+- A second live check loaded the actual release JAR and invoked `SettingsDialog.show` for the isolated player. Real custom clicks opened the density dropdown (`density`) and switched to Help (`tab_help`). The resulting in-game screenshots show aligned panels, labels and controls with no unwanted wrapping. `design/validation-0.1.3.png` records the real plugin renderer. The isolated server omits Ambience/PAPI, so the screenshot's setting values intentionally display `N/A`.
+- The existing CraftEngine hosted pack's font JSON and bitmap alpha bounds match the source. The user's subsequent CraftEngine workflow completed successfully; this code-only fix preserves that pack.
+- GitHub source synchronization, tag and Release remain pending because credentials and the local Git history are unavailable.
+
+## 0.1.2
+
+- Built with the workspace `build_selfdev.py` workflow on JDK 25.0.4.1; native TabooLib dependency verification and all four JUnit tests passed.
+- JAR SHA-256: `0a7b52975e9c224a7077c81b83697c292f146b36e8ad98b4f221e3c7ec231fa1`.
+- The real Minecraft 26.2 `StringSplitter` processed the emitted component into exactly 29 rows, each 450 pixels wide, without automatic wrapping or horizontal drift.
+- `tools/validation/check_skin.py` independently checked bitmap alpha bounds against every compiled glyph advance, font ascent limits, and glyph atlas dimensions. It rendered an offline preview from the emitted component.
+- Test server logged `Enabling PlayerSettings v0.1.2` before the final icon selection; the final bitmap metrics and JAR were rebuilt and revalidated afterward. CraftEngine's generated and hosted ZIPs are checked separately in the workspace deployment report.
+- CraftEngine's default workflow failed in `updateCachedAssets` with a FastUtil `ArrayIndexOutOfBoundsException`. The settings namespace was patched into both existing ZIPs, preserving the contents of all 23,706 unrelated entries. The server was stopped cleanly. CraftEngine's self-host startup reads the stored ZIP and derives its SHA-1 and pack UUID from its bytes; no stale hash setting was retained. The unrelated cache-concurrency issue remains unresolved.
+- Before deployment, the generated ZIP had SHA-1 `abe5c3bce3dddea18349a3c45186cccd266c0610`; the hosted ZIP had SHA-1 `499abadcd7b015b5a0b072f32eafa6fa5f9522ae` and an older settings font. This explains why earlier resource changes were not consistently delivered.
+- GitHub publication is pending: this machine has neither the repository's `.git` history nor usable GitHub credentials. No remote commit, tag, or Release is claimed.
+
+## 0.1.1
+
+- Built with `tools/build_selfdev.py --projects PlayerSettings --jdk-home D:\\Java\\jdk-25.0.4.1`.
+- TabooLib native dependency verification passed.
+- Three `DialogCanvasTest` tests passed: click regions, dropdown overlap, and text clipping.
+- The DialogCanvas unit suite covers click regions, dropdown overlap, and text clipping; the previous independent Paper smoke probe also covered the six-page codec and redraw flow before the TabooLib lifecycle migration.
+- The deployed JAR SHA-256 is `8786da13d6d8148ab0afeef1b420beccf489fc3fc393b23ac5dd5f437d1c1f8a`.
+- CraftEngine workflow `default` completed successfully after the generated `.ce-packsquash` cache was cleared. The generated ZIP contains `assets/toraka_settings/font/ui.json` and all eight custom UI textures.
+- The final test server starts with `PlayerSettings v0.1.1` and `enable-rcon=false`.
+
+## Client verification
+
+The server-side Dialog codec, click routing, resource-pack contents, and live redraw paths are validated. A final pixel comparison still requires an actual Minecraft client receiving the generated pack; GUI scale and the client font renderer can change the visual result.

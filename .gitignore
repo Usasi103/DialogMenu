@@ -1,0 +1,9 @@
+/.gradle/
+/.kotlin/
+/build/
+/dist/
+/.idea/
+/.vscode/
+*.class
+*.log
+*.tmp

@@ -1,0 +1,53 @@
+import org.gradle.process.ExecOperations
+import javax.inject.Inject
+
+// Repository-local build tooling. It never patches a plugin or framework class.
+abstract class SourceFormatterRunner {
+    @Inject
+    abstract ExecOperations getExecOperations()
+}
+def runner = objects.newInstance(SourceFormatterRunner)
+def javaExecutable = new File(System.getProperty('java.home'),
+        System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows') ? 'bin/java.exe' : 'bin/java')
+def kotlinFormatter = configurations.create('kotlinSourceFormatter') {
+    canBeConsumed = false
+    canBeResolved = true
+    transitive = false
+}
+def javaFormatter = configurations.create('javaSourceFormatter') {
+    canBeConsumed = false
+    canBeResolved = true
+    transitive = false
+}
+dependencies.add(kotlinFormatter.name, 'com.facebook:ktfmt:0.64:with-dependencies')
+dependencies.add(javaFormatter.name, 'com.google.googlejavaformat:google-java-format:1.36.1:all-deps')
+def registerFormatter = { String name, String extension, configuration, List<String> flags, boolean write ->
+    def sources = files(fileTree('src/main') { include('**/*.' + extension) },
+            fileTree('src/test') { include('**/*.' + extension) })
+    tasks.register(name) {
+        group = write ? 'formatting' : 'verification'
+        inputs.files(sources)
+        onlyIf { !sources.isEmpty() }
+        doLast {
+            def command = [javaExecutable.absolutePath, '-jar', configuration.singleFile.absolutePath]
+            command.addAll(flags)
+            if (!write) command.addAll(['--dry-run', '--set-exit-if-changed'])
+            else if (extension == 'java') command.add('--replace')
+            command.addAll(sources.files.sort { it.path }.collect { it.absolutePath })
+            runner.execOperations.exec {
+                commandLine(command)
+                workingDir(rootProject.projectDir)
+            }.assertNormalExitValue()
+        }
+    }
+}
+def kotlinFlags = ['--kotlinlang-style', '--do-not-remove-unused-imports', '--quiet']
+def javaFlags = ['--aosp', '--skip-sorting-imports', '--skip-removing-unused-imports',
+        '--skip-reflowing-long-strings', '--skip-javadoc-formatting', '--skip-reordering-modifiers']
+def checkKotlin = registerFormatter('checkKotlinSourceFormat', 'kt', kotlinFormatter, kotlinFlags, false)
+def checkJava = registerFormatter('checkJavaSourceFormat', 'java', javaFormatter, javaFlags, false)
+def formatKotlin = registerFormatter('formatKotlinSources', 'kt', kotlinFormatter, kotlinFlags, true)
+def formatJava = registerFormatter('formatJavaSources', 'java', javaFormatter, javaFlags, true)
+def checkSource = tasks.register('sourceFormatCheck') { dependsOn(checkKotlin, checkJava) }
+tasks.register('formatSources') { dependsOn(formatKotlin, formatJava) }
+tasks.named('check') { dependsOn(checkSource) }
