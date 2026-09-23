@@ -1,5 +1,15 @@
 # Validation Record
 
+## 0.1.8
+
+- Native TabooLib build and all 17 JUnit tests passed. Final JAR SHA-256: `2f561062eca059650a1a3b541591d29f408dba96e77080081d3231ef53336977`.
+- Tests cover YAML rollback without overwriting user files, successful reload/restart preservation, duplicate keys, invalid types/references/commands/coordinates, permanent click collisions, custom pages, command permissions and nonrecursive placeholders. All 2–8-step slider choices, dropdown options, languages and themes retain 29 lines of 452 pixels. The actual Minecraft 26.2 FocusableTextWidget remains 474 x 269; bitmap metrics and CJK baseline checks pass.
+- An isolated Paper server with the actual plugin, Ambience 1.4.3 and PlaceholderAPI exercised check without apply, atomic reload to an eighth custom page, invalid-YAML preservation of the current page/token/file, non-OP reload denial, permissioned console reward, player command and three-step slider state readback. Successful reload invalidates previous click tokens and falls back when the current page is removed.
+- A separate real Minecraft client exercised both Chat Flag-style dropdowns, both languages and both themes, current-choice highlights, automatic collapse on selection, and replacing one open list with the other. The final JAR and optimized hosted assets were rechecked after restart; saved preferences persisted. Screenshots are in `design/validation-0.1.8-language.png` and `design/validation-0.1.8-theme.png`. Tests and backups remain outside test_server.
+- CraftEngine initially hit its existing FastUtil cache-update race when its startup cache task overlapped the workflow. A retry after startup completed successfully, including PackSquash and hosting. All 326 settings assets match the actual optimized hosted ZIP by JSON, visible PNG pixels and alpha; generated and hosted bytes are identical. Hosted SHA-1: `1f34749a5ae5aa47523022077273c33f5afaf6f2`.
+- Production deployment retains the visible interactive UTF-8 launcher and exports commented menu/language YAML plus the Chinese guide. The existing CJK font, shader geometry selector and its documented rendering-backend limits are unchanged.
+- Publication preserves the private repository and historical releases; release verification checks the final main/tag commit, notes and every attachment digest.
+
 ## 0.1.7
 
 - Native TabooLib build and all nine JUnit tests passed. JAR SHA-256: `4ec847e596d09e9ebc950bfcb3a85d182cf8f516c22f32298cfcaacd8a72c565`.

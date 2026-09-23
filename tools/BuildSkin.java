@@ -50,6 +50,12 @@ public class BuildSkin {
                 sliderArrow(arrow, direction, true, light);
             }
         }
+        int configurableGlyph = 0xE400;
+        for (int count = 2; count <= 8; count++) {
+            for (int selected = 0; selected <= count; selected++) {
+                configurableGlyph = configurableSlider(count, selected, configurableGlyph);
+            }
+        }
         BufferedImage icons = ImageIO.read(source.resolve("dialog_icons.png").toFile());
         int[] cells = {8, 26, 3, 9, 6, 11, 2, 8, 17, 16};
         for (int i = 0; i < cells.length; i++) {
@@ -222,6 +228,37 @@ public class BuildSkin {
         register(name, image, 18, (light ? 0xE300 : 0xE200) + selected * 4, 4);
     }
 
+    private static int configurableSlider(int count, int selected, int glyph) throws Exception {
+        BufferedImage rail = new BufferedImage(120, 18, BufferedImage.TYPE_INT_ARGB);
+        bevel(rail, 0, 0, 120, 18, false);
+        int tick = tiles.getRGB(2, 2 * 9 + 4);
+        for (int index = 1; index < count * 2; index++) {
+            int center = 120 * index / (count * 2);
+            for (int y = 5; y < 12; y++) {
+                for (int x = center - 1; x <= center; x++) {
+                    rail.setRGB(x, y, tick);
+                }
+            }
+        }
+        if (selected < count) {
+            int center = Math.max(9, Math.min(111, 120 * (selected * 2 + 1) / (count * 2)));
+            bevel(rail, center - 9, 0, 18, 18, true);
+            for (int y = 5; y < 12; y++) {
+                rail.setRGB(center - 1, y, tick);
+                rail.setRGB(center, y, tick);
+            }
+        }
+        for (int column = 0; column < count; column++) {
+            int start = 120 * column / count;
+            int end = 120 * (column + 1) / count;
+            BufferedImage cell = rail.getSubimage(start, 0, end - start, 18);
+            String name = "slider_" + count + "_" + selected + "_" + column;
+            ImageIO.write(cell, "png", root.resolve("textures/ui/" + name + ".png").toFile());
+            register(name, cell, 18, glyph++, 1);
+        }
+        return glyph;
+    }
+
     private static void sliderArrow(BufferedImage arrow, int direction, boolean disabled, boolean light) throws Exception {
         BufferedImage image = new BufferedImage(18, 18, BufferedImage.TYPE_INT_ARGB);
         bevel(image, 0, 0, 18, 18, true);
@@ -265,7 +302,7 @@ public class BuildSkin {
                     .append(advance(image.getSubimage(col * width, 0, width, image.getHeight()), height)).append('\n');
         }
         providers.add("{\"type\":\"bitmap\",\"file\":\"toraka_settings:ui/" + name
-                + ".png\",\"height\":" + height + ",\"ascent\":" + ((glyph & 0xFF) >= 0x90 ? 2 : 7)
+                + ".png\",\"height\":" + height + ",\"ascent\":" + (glyph >= 0xE090 && glyph <= 0xE099 ? 2 : 7)
                 + ",\"chars\":[\"" + chars + "\"]}");
     }
 

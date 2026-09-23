@@ -60,8 +60,8 @@ class MenuPreferencesTest {
         assertEquals(MenuText.keys(MenuLanguage.CHINESE), MenuText.keys(MenuLanguage.ENGLISH))
         for (language in MenuLanguage.entries) {
             assertTrue(DialogCanvas.textWidth(MenuText.get(language, "search.button")) <= 76)
-            for (tab in SettingsDialog.Tab.entries) {
-                val label = MenuText.get(language, tab.textKey)
+            for (tab in MenuRuntime.current.pages.values) {
+                val label = MenuRuntime.current.text(language, tab.label)
                 assertTrue(label.isNotBlank())
                 assertTrue(DialogCanvas.textWidth(label) <= 76, label)
             }
@@ -69,11 +69,11 @@ class MenuPreferencesTest {
         assertEquals("On", SettingsDialog.toggleLabel("开", MenuLanguage.ENGLISH))
         assertEquals("Medium", SettingsDialog.densityLabel("中", MenuLanguage.ENGLISH))
         assertEquals(
-            "Level: {1}  Ping: 30 ms",
+            "Level: %playerlevel_level%  Ping: {ping} ms",
             MenuText.get(MenuLanguage.ENGLISH, "profile.level", "{1}", 30),
         )
-        assertEquals(SettingsDialog.Tab.APPEARANCE, SettingsDialog.findTab("切换语言"))
-        assertEquals(SettingsDialog.Tab.APPEARANCE, SettingsDialog.findTab("Light theme"))
+        assertEquals("appearance", SettingsDialog.findTab("切换语言"))
+        assertEquals("appearance", SettingsDialog.findTab("Light theme"))
     }
 
     @Test
@@ -83,13 +83,13 @@ class MenuPreferencesTest {
             val canvas = DialogCanvas(theme) { ClickEvent.custom(Key.key("test", it)) }
             canvas.sprite(114, 0, DialogCanvas.PANEL_TOP)
             canvas.sprite(114, 10, DialogCanvas.PANEL_BOTTOM)
-            SettingsDialog.Tab.entries.forEachIndexed { index, tab ->
+            MenuRuntime.current.pages.values.forEachIndexed { index, tab ->
                 canvas.button(
                     0,
                     3 + index * 2,
                     DialogCanvas.NAV,
-                    MenuText.get(MenuLanguage.ENGLISH, tab.textKey),
-                    "tab_${tab.name.lowercase()}",
+                    MenuRuntime.current.text(MenuLanguage.ENGLISH, tab.label),
+                    "tab_${tab.id}",
                 )
             }
             canvas.button(330, 3, DialogCanvas.CONTROL, "简体中文", "language_zh_cn")

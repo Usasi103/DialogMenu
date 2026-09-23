@@ -48,7 +48,7 @@ class DialogCanvas(
         labels += Label(x, row, text, color, action, raised)
     }
 
-    fun button(x: Int, row: Int, skin: Skin, label: String, action: String) {
+    fun button(x: Int, row: Int, skin: Skin, label: String, action: String, rightInset: Int = 6) {
         // Keep the click event on the visual glyphs and label as well as on the
         // invisible hit grid.  Some clients resolve a Dialog body's hit style
         // from the painted glyph instead of the preceding spacing component.
@@ -59,11 +59,39 @@ class DialogCanvas(
             Label(
                 x + inset,
                 row + 1,
-                fit(label, skin.width - inset - 6),
+                fit(label, skin.width - inset - rightInset),
                 if (skin == SELECTED_NAV || skin == SELECTED_CONTROL) 0x122408 else theme.text,
                 action,
                 true,
             )
+    }
+
+    /** Clip covered text before painting a popup, including labels on the next text row. */
+    fun coverLabels(x: Int, row: Int, width: Int, rows: Int) {
+        val clipped = labels.flatMap { label ->
+            if (label.row !in row until row + rows) listOf(label)
+            else {
+                val parts = mutableListOf<Label>()
+                var cursor = label.x
+                var start = cursor
+                var run = ""
+                for (character in label.text) {
+                    val advance = textWidth(character.toString())
+                    if (cursor + advance <= x || cursor >= x + width) {
+                        if (run.isEmpty()) start = cursor
+                        run += character
+                    } else if (run.isNotEmpty()) {
+                        parts += label.copy(x = start, text = run)
+                        run = ""
+                    }
+                    cursor += advance
+                }
+                if (run.isNotEmpty()) parts += label.copy(x = start, text = run)
+                parts
+            }
+        }
+        labels.clear()
+        labels.addAll(clipped)
     }
 
     fun build(): Component {
@@ -126,34 +154,42 @@ class DialogCanvas(
 
     fun densitySlider(x: Int, row: Int, selected: String, language: MenuLanguage) {
         val ids = listOf("off", "low", "medium", "high")
-        val index = ids.indexOf(selected.lowercase()).takeIf { it >= 0 } ?: ids.size
-        val label = fit(SettingsDialog.densityLabel(selected, language), 52)
-        text(x - 8 - textWidth(label), row + 1, label, raised = true)
-        val previous = ids.getOrNull(index - 1).takeIf { index in 1..3 }
-        val next = ids.getOrNull(index + 1)
-        sprite(
+        slider(
             x,
             row,
-            Skin(if (previous == null) 0xE222 else 0xE220, 18, 2),
-            previous?.let { "density_$it" },
+            ids.indexOf(selected.lowercase()),
+            SettingsDialog.densityLabel(selected, language),
+            ids.map { "density_$it" },
         )
-        sprite(
-            x + 146,
-            row,
-            Skin(if (next == null) 0xE223 else 0xE221, 18, 2),
-            next?.let { "density_$it" },
-        )
-        ids.forEachIndexed { position, id ->
+    }
+
+    fun slider(x: Int, row: Int, selected: Int, valueLabel: String, actions: List<String>) {
+        require(actions.size in 2..8)
+        val label = fit(valueLabel, 52)
+        text(x - 8 - textWidth(label), row + 1, label, raised = true)
+        val previous = if (selected in 1 until actions.size) actions[selected - 1] else null
+        val next = if (selected in 0 until actions.lastIndex) actions[selected + 1] else null
+        sprite(x, row, Skin(if (previous == null) 0xE222 else 0xE220, 18, 2), previous)
+        sprite(x + 146, row, Skin(if (next == null) 0xE223 else 0xE221, 18, 2), next)
+        actions.forEachIndexed { index, action ->
+            val start = 120 * index / actions.size
+            val end = 120 * (index + 1) / actions.size
             sprite(
-                x + 22 + position * 30,
+                x + 22 + start,
                 row,
-                Skin(0xE200 + index * 4 + position, 30, 2),
-                "density_$id",
+                Skin(sliderGlyph(actions.size, selected, index), end - start, 2),
+                action,
             )
         }
     }
 
     companion object {
+        fun sliderGlyph(count: Int, selected: Int, column: Int): Int {
+            require(count in 2..8 && column in 0 until count)
+            val index = selected.takeIf { it in 0 until count } ?: count
+            return 0xE400 + (2 until count).sumOf { it * (it + 1) } + index * count + column
+        }
+
         const val WIDTH = 450
         const val ROWS = 29
         // PlainMessageHandler builds FocusableTextWidget with 4px padding on

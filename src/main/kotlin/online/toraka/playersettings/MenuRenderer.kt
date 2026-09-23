@@ -1,0 +1,162 @@
+package online.toraka.playersettings
+
+import net.kyori.adventure.text.event.ClickEvent
+
+object MenuRenderer {
+    fun render(
+        menu: MenuDefinition,
+        pageId: String,
+        language: MenuLanguage,
+        theme: MenuTheme,
+        state: (String) -> String?,
+        expand: (String) -> String,
+        click: (String) -> ClickEvent<*>,
+        dropdown: Int = -1,
+    ): DialogCanvas {
+        val canvas = DialogCanvas(theme, click)
+        fun text(value: String) =
+            expand(menu.text(language, value))
+                .map { if (it.isISOControl()) ' ' else it }
+                .joinToString("")
+        fun action(id: String) = id.takeIf { it.isNotEmpty() }?.let { "action/$it" }
+        fun color(value: String) =
+            when (value) {
+                "heading" -> theme.heading
+                "text" -> theme.text
+                "muted" -> theme.muted
+                else -> value.drop(1).toInt(16)
+            }
+        var widgetIndex = 0
+        var expanded: MenuWidget? = null
+        fun draw(widget: MenuWidget) {
+            val index = widgetIndex++
+            val current = widget.state.takeIf { it.isNotEmpty() }?.let(state)
+            if (widget.label.isNotEmpty()) {
+                val room =
+                    widget.x - widget.labelX - if (widget.kind == WidgetKind.SLIDER) 60 else 6
+                canvas.text(
+                    widget.labelX,
+                    widget.row + 1,
+                    DialogCanvas.fit(text(widget.label), room),
+                    theme.text,
+                    raised = widget.kind == WidgetKind.SLIDER,
+                )
+            }
+            when (widget.kind) {
+                WidgetKind.TEXT,
+                WidgetKind.HEADING ->
+                    canvas.text(
+                        widget.x,
+                        widget.row,
+                        DialogCanvas.fit(text(widget.text), widget.width),
+                        color(widget.color),
+                        action(widget.action),
+                    )
+                WidgetKind.SPRITE ->
+                    canvas.sprite(
+                        widget.x,
+                        widget.row,
+                        MenuConfigParser.skins.getValue(widget.skin),
+                        action(widget.action),
+                    )
+                WidgetKind.BUTTON -> {
+                    val base = MenuConfigParser.skins.getValue(widget.skin)
+                    val selected = widget.selected.isNotEmpty() && widget.selected == current
+                    val skin =
+                        if (!selected) base
+                        else if (base == DialogCanvas.NAV || base == DialogCanvas.SEARCH)
+                            DialogCanvas.SELECTED_NAV
+                        else DialogCanvas.SELECTED_CONTROL
+                    canvas.button(
+                        widget.x,
+                        widget.row,
+                        skin,
+                        text(widget.text),
+                        "action/${widget.action}",
+                    )
+                }
+                WidgetKind.TOGGLE -> {
+                    val on = SettingsDialog.booleanState(current)
+                    canvas.button(
+                        widget.x,
+                        widget.row,
+                        if (on == true) DialogCanvas.SELECTED_CONTROL else DialogCanvas.CONTROL,
+                        menu.text(
+                            language,
+                            "$" +
+                                when (on) {
+                                    true -> "on"
+                                    false -> "off"
+                                    null -> "unavailable"
+                                },
+                        ),
+                        "action/${widget.action}",
+                    )
+                }
+                WidgetKind.SLIDER -> {
+                    val index = widget.options.indexOfFirst { it.value.equals(current, true) }
+                    val label =
+                        widget.options.getOrNull(index)?.let { text(it.label) }
+                            ?: menu.text(language, "$" + "unavailable")
+                    canvas.slider(
+                        widget.x,
+                        widget.row,
+                        index,
+                        label,
+                        widget.options.map { "action/${it.action}" },
+                    )
+                }
+                WidgetKind.DROPDOWN -> {
+                    val opened = dropdown == index
+                    val route = "dropdown/$index"
+                    val label =
+                        widget.options
+                            .firstOrNull { it.value.equals(current, true) }
+                            ?.let { text(it.label) } ?: menu.text(language, "$" + "unavailable")
+                    canvas.button(widget.x, widget.row, DialogCanvas.CONTROL, label, route, 22)
+                    canvas.sprite(
+                        widget.x + 98,
+                        widget.row,
+                        if (opened) DialogCanvas.DROPDOWN_UP else DialogCanvas.DROPDOWN_DOWN,
+                        route,
+                    )
+                    if (opened) expanded = widget
+                }
+            }
+        }
+        menu.common.forEach(::draw)
+        menu.pages.values.forEachIndexed { index, page ->
+            val row = menu.navRow + index * menu.navStep
+            canvas.button(
+                menu.navX,
+                row,
+                if (page.id == pageId) DialogCanvas.SELECTED_NAV else DialogCanvas.NAV,
+                text(page.label),
+                "page/${page.id}",
+            )
+            if (page.icon.isNotEmpty())
+                canvas.sprite(
+                    menu.navX + 6,
+                    row,
+                    MenuConfigParser.skins.getValue(page.icon),
+                    "page/${page.id}",
+                )
+        }
+        menu.pages.getValue(pageId).widgets.forEach(::draw)
+        expanded?.let { widget ->
+            canvas.coverLabels(widget.x, widget.row + 2, 114, widget.options.size * 2)
+            val current = state(widget.state)
+            widget.options.forEachIndexed { index, option ->
+                canvas.button(
+                    widget.x,
+                    widget.row + 2 + index * 2,
+                    if (option.value.equals(current, true)) DialogCanvas.SELECTED_CONTROL
+                    else DialogCanvas.CONTROL,
+                    text(option.label),
+                    "action/${option.action}",
+                )
+            }
+        }
+        return canvas
+    }
+}

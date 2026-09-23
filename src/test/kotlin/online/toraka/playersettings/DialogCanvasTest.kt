@@ -89,15 +89,15 @@ class DialogCanvasTest {
 
     @Test
     fun `Chinese and legacy search terms resolve to the correct settings page`() {
-        assertEquals(SettingsDialog.Tab.PARTICLES, SettingsDialog.findTab("环境粒子"))
-        assertEquals(SettingsDialog.Tab.PARTICLES, SettingsDialog.findTab("萤火虫"))
-        assertEquals(SettingsDialog.Tab.SOUND, SettingsDialog.findTab("鸟鸣"))
-        assertEquals(SettingsDialog.Tab.NOTICES, SettingsDialog.findTab("拾取提示"))
-        assertEquals(SettingsDialog.Tab.LOOT, SettingsDialog.findTab("掉落光柱"))
-        assertEquals(SettingsDialog.Tab.LOOT, SettingsDialog.findTab("掉落音效"))
-        assertEquals(SettingsDialog.Tab.PROFILE, SettingsDialog.findTab("金币"))
-        assertEquals(SettingsDialog.Tab.HELP, SettingsDialog.findTab("资源包"))
-        assertEquals(SettingsDialog.Tab.PARTICLES, SettingsDialog.findTab("density"))
+        assertEquals("particles", SettingsDialog.findTab("环境粒子"))
+        assertEquals("particles", SettingsDialog.findTab("萤火虫"))
+        assertEquals("sound", SettingsDialog.findTab("鸟鸣"))
+        assertEquals("notices", SettingsDialog.findTab("拾取提示"))
+        assertEquals("loot", SettingsDialog.findTab("掉落光柱"))
+        assertEquals("loot", SettingsDialog.findTab("掉落音效"))
+        assertEquals("profile", SettingsDialog.findTab("金币"))
+        assertEquals("help", SettingsDialog.findTab("资源包"))
+        assertEquals("particles", SettingsDialog.findTab("density"))
         assertNull(SettingsDialog.findTab(""))
     }
 

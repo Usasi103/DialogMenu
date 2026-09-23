@@ -6,6 +6,7 @@ import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
 import taboolib.common.platform.command.mainCommand
+import taboolib.common.platform.command.subCommand
 import taboolib.platform.util.sendLang
 
 @CommandHeader(
@@ -15,6 +16,16 @@ import taboolib.platform.util.sendLang
     permissionDefault = PermissionDefault.TRUE,
 )
 object SettingsCommand {
+    @CommandBody
+    val reload = subCommand {
+        execute<CommandSender> { sender, _, _ -> MenuRuntime.reload(sender, false) }
+    }
+
+    @CommandBody
+    val check = subCommand {
+        execute<CommandSender> { sender, _, _ -> MenuRuntime.reload(sender, true) }
+    }
+
     @CommandBody
     val main = mainCommand {
         execute<CommandSender> { sender, _, _ ->

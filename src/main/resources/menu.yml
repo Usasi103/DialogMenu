@@ -1,0 +1,549 @@
+# PlayerSettings 玩家菜单配置（UTF-8）
+# 修改后执行 /playersettings reload；权限 playersettings.admin（默认 OP），控制台可直接执行。
+# 重载失败会保留上一份有效配置，并显示出错文件 / 字段；不会覆盖你修改的文件。
+# /playersettings check 只检查文件，不应用修改。
+#
+# 画布固定为 450 像素宽、29 行；row 每行 9 像素。整体尺寸与白框隐藏着色器配套。
+# x 从左向右计像素，row 从上向下计行。控件不得越界，两个点击区域不得重叠。
+# 页面顺序就是左侧导航顺序。新增页面时要预留导航位置，必要时移动 common 的按钮。
+# text / label 可以直接写单行中文，也可用 '$键名' 引用 languages 下的语言文件。
+# 所有 off / on / true / false 等用作文字或档位 ID 时必须加引号，避免 YAML 转成布尔值。
+#
+# 控件 type：heading 标题、text 说明、button 按钮、toggle 开关、slider 滑条、dropdown 下拉框、sprite 贴图。
+# 默认 x：heading=122、text=123、button/toggle=330、slider=280、sprite=114；row 必填。
+# text/heading 的 width 默认 316；超长显示文字会裁切，不能通过换行扩大画布。
+# button 可用 skin: control（114×18）、nav/search（102×18）；toggle 固定 114×18。
+# 左侧说明用 label、label-x（默认 123）；按钮 text 是按钮内文字。
+# slider 固定 164×18，支持 2–8 档；左侧 60 像素显示当前档位。点击或箭头切换，不支持连续拖拽。
+# dropdown 默认 x=330，宽 114；收起占 2 行，每个选项再占 2 行，展开不得超出 29 行。
+# 下拉框 state 指向当前值，options 配置 value / label / action。选中后执行动作并收起。
+# button 的 state + selected 可按状态高亮（例：界面与语言页）。
+# text/heading 的 color：text / muted / heading 或 '#RRGGBB'。
+# sprite 的可选贴图见 配置说明.md；贴图尺寸由资源包固定，不在 YAML 中缩放。
+#
+# states 值可以是完整的 '%PAPI变量%'，或 pickup / loot-beams / loot-sounds / language / theme。
+# actions 支持 builtin、page、player-command、console-command、toggle-command。
+# builtin 的 value：close / refresh / search / language:zh_cn / language:en_us / theme:dark / theme:light。
+# page 的 value 是目标页面 ID。命令不带 /，只允许 {player}、{uuid} 两种命令占位符。
+# requires-plugin 可阻止缺少联动插件时执行；permission 是可选的额外玩家权限。
+# console-command 会以控制台权限执行，管理指令请配置 permission；不会临时给玩家 OP。
+# close: true 表示先关闭界面再执行（例如打开另一个菜单）；默认 false 执行后刷新。
+# toggle-command 根据 state：开启时执行 when-true，关闭时执行 when-false；未知状态不执行。
+#
+# 示例：在 actions 增加 spawn: {type: player-command, command: spawn, close: true}
+# 再在某页 widgets 增加：{type: button, x: 330, row: 25, text: 回城, action: spawn}
+# 新增页面示例见配置说明；此文件中的默认配置可自由修改，不会在重启时重置。
+version: 1
+title: "$menu.title"
+default-page: "particles"
+defaults:
+  language: "zh_cn"
+  theme: "dark"
+hide-focus-outline: true
+navigation:
+  x: 0
+  row: 3
+  step: 2
+footer:
+  label: "$close"
+  action: "close"
+# 状态读取：左边是配置内部 ID，右边是数据来源。
+states:
+  particles: "%torakaambience_particles%"
+  sounds: "%torakaambience_sounds%"
+  leaves: "%torakaambience_category_leaves%"
+  firefly: "%torakaambience_category_firefly%"
+  biome: "%torakaambience_category_biome%"
+  density: "%torakaambience_density_id%"
+  pickup: "pickup"
+  beams: "loot-beams"
+  beam-sounds: "loot-sounds"
+  language: "language"
+  theme: "theme"
+# 动作定义：控件通过 action 引用左边的 ID。
+actions:
+  close:
+    type: "builtin"
+    value: "close"
+  refresh:
+    type: "builtin"
+    value: "refresh"
+  search:
+    type: "builtin"
+    value: "search"
+  main:
+    type: "player-command"
+    command: "menu"
+    close: true
+  particles:
+    type: "player-command"
+    command: "particles toggle"
+    requires-plugin: "Ambience"
+  sounds:
+    type: "player-command"
+    command: "particles sounds toggle"
+    requires-plugin: "Ambience"
+  leaves:
+    type: "player-command"
+    command: "particles category leaves toggle"
+    requires-plugin: "Ambience"
+  firefly:
+    type: "player-command"
+    command: "particles category firefly toggle"
+    requires-plugin: "Ambience"
+  biome:
+    type: "player-command"
+    command: "particles category biome toggle"
+    requires-plugin: "Ambience"
+  density_off:
+    type: "player-command"
+    command: "particles density off"
+    requires-plugin: "Ambience"
+  density_low:
+    type: "player-command"
+    command: "particles density low"
+    requires-plugin: "Ambience"
+  density_medium:
+    type: "player-command"
+    command: "particles density medium"
+    requires-plugin: "Ambience"
+  density_high:
+    type: "player-command"
+    command: "particles density high"
+    requires-plugin: "Ambience"
+  pickup:
+    type: "toggle-command"
+    state: "pickup"
+    when-true: "pn off"
+    when-false: "pn on"
+    requires-plugin: "PickupNotifier"
+  beam:
+    type: "toggle-command"
+    state: "beams"
+    when-true: "lootbeam off"
+    when-false: "lootbeam on"
+    requires-plugin: "LootBeam"
+  beam_sounds:
+    type: "player-command"
+    command: "lootbeam sounds"
+    requires-plugin: "LootBeam"
+  language_zh_cn:
+    type: "builtin"
+    value: "language:zh_cn"
+  language_en_us:
+    type: "builtin"
+    value: "language:en_us"
+  theme_dark:
+    type: "builtin"
+    value: "theme:dark"
+  theme_light:
+    type: "builtin"
+    value: "theme:light"
+# 所有页面共用的背景、搜索、返回主菜单、刷新按钮。
+common:
+  -
+    type: "sprite"
+    x: 114
+    row: 0
+    skin: "panel-top"
+  -
+    type: "sprite"
+    x: 114
+    row: 10
+    skin: "panel-bottom"
+  -
+    type: "button"
+    row: 0
+    text: "$search.button"
+    action: "search"
+    x: 0
+    skin: "search"
+  -
+    type: "sprite"
+    x: 6
+    row: 0
+    skin: "search-icon"
+  -
+    type: "sprite"
+    x: 433
+    row: 1
+    skin: "refresh-icon"
+    action: "refresh"
+  -
+    type: "sprite"
+    x: 433
+    row: 11
+    skin: "refresh-icon"
+    action: "refresh"
+  -
+    type: "button"
+    row: 19
+    text: "$main"
+    action: "main"
+    x: 0
+    skin: "nav"
+  -
+    type: "button"
+    row: 22
+    text: "$refresh"
+    action: "refresh"
+    x: 0
+    skin: "nav"
+# 页面定义：增删整个页面段即可增删页面，widgets 控制页面内元素。
+pages:
+  profile:
+    label: "$tab.profile"
+    icon: "profile-icon"
+    keywords:
+      - "玩家"
+      - "信息"
+      - "等级"
+      - "金币"
+      - "余额"
+      - "图鉴"
+      - "profile"
+      - "player"
+      - "info"
+      - "level"
+      - "coin"
+    widgets:
+      -
+        type: "heading"
+        row: 1
+        text: "$tab.profile"
+      -
+        type: "text"
+        row: 4
+        text: "$profile.player"
+      -
+        type: "text"
+        row: 6
+        text: "$profile.level"
+      -
+        type: "heading"
+        row: 11
+        text: "$profile.assets"
+      -
+        type: "text"
+        row: 13
+        text: "$profile.coins"
+      -
+        type: "text"
+        row: 15
+        text: "$profile.balance"
+      -
+        type: "text"
+        row: 17
+        text: "$profile.fishcoins"
+      -
+        type: "text"
+        row: 19
+        text: "$profile.collection"
+      -
+        type: "text"
+        row: 21
+        text: "$profile.world"
+  sound:
+    label: "$tab.sound"
+    icon: "sound-icon"
+    keywords:
+      - "声音"
+      - "音效"
+      - "鸟鸣"
+      - "风声"
+      - "sound"
+      - "ambience"
+      - "audio"
+    widgets:
+      -
+        type: "heading"
+        row: 1
+        text: "$tab.sound"
+      -
+        type: "toggle"
+        row: 4
+        label: "$sound.label"
+        state: "sounds"
+        action: "sounds"
+      -
+        type: "text"
+        row: 7
+        text: "$sound.scope"
+      -
+        type: "heading"
+        row: 11
+        text: "$sound.about"
+      -
+        type: "text"
+        row: 14
+        text: "$sound.saved"
+      -
+        type: "text"
+        row: 17
+        text: "$sound.others"
+      -
+        type: "text"
+        row: 20
+        text: "$sound.volume"
+  particles:
+    label: "$tab.particles"
+    icon: "particles-icon"
+    keywords:
+      - "粒子"
+      - "萤火虫"
+      - "落叶"
+      - "密度"
+      - "particle"
+      - "firefly"
+      - "leaves"
+      - "density"
+    widgets:
+      -
+        type: "heading"
+        row: 1
+        text: "$tab.particles"
+      -
+        type: "toggle"
+        row: 4
+        label: "$particles.show"
+        state: "particles"
+        action: "particles"
+      -
+        type: "text"
+        row: 7
+        text: "$particles.scope"
+      -
+        type: "heading"
+        row: 11
+        text: "$particles.categories"
+      -
+        type: "toggle"
+        row: 13
+        label: "$particles.leaves"
+        state: "leaves"
+        action: "leaves"
+      -
+        type: "toggle"
+        row: 15
+        label: "$particles.firefly"
+        state: "firefly"
+        action: "firefly"
+      -
+        type: "toggle"
+        row: 17
+        label: "$particles.biome"
+        state: "biome"
+        action: "biome"
+      -
+        type: "slider"
+        x: 280
+        row: 19
+        label: "$particles.density"
+        state: "density"
+        options:
+          -
+            value: "off"
+            label: "$off"
+            action: "density_off"
+          -
+            value: "low"
+            label: "$density.low"
+            action: "density_low"
+          -
+            value: "medium"
+            label: "$density.medium"
+            action: "density_medium"
+          -
+            value: "high"
+            label: "$density.high"
+            action: "density_high"
+      -
+        type: "text"
+        row: 22
+        text: "$particles.disabled"
+  notices:
+    label: "$tab.notices"
+    icon: "notices-icon"
+    keywords:
+      - "拾取"
+      - "提示"
+      - "通知"
+      - "pickup"
+      - "notice"
+      - "notification"
+    widgets:
+      -
+        type: "heading"
+        row: 1
+        text: "$tab.notices"
+      -
+        type: "toggle"
+        row: 4
+        label: "$pickup.show"
+        state: "pickup"
+        action: "pickup"
+      -
+        type: "text"
+        row: 7
+        text: "$pickup.scope"
+      -
+        type: "heading"
+        row: 11
+        text: "$pickup.about"
+      -
+        type: "text"
+        row: 14
+        text: "$pickup.disabled"
+      -
+        type: "text"
+        row: 17
+        text: "$pickup.requires"
+      -
+        type: "text"
+        row: 20
+        text: "$pickup.saved"
+  loot:
+    label: "$tab.loot"
+    icon: "loot-icon"
+    keywords:
+      - "掉落"
+      - "光柱"
+      - "掉落音效"
+      - "loot"
+      - "beam"
+      - "drop"
+    widgets:
+      -
+        type: "heading"
+        row: 1
+        text: "$tab.loot"
+      -
+        type: "toggle"
+        row: 4
+        label: "$loot.show"
+        state: "beams"
+        action: "beam"
+      -
+        type: "text"
+        row: 7
+        text: "$loot.scope"
+      -
+        type: "heading"
+        row: 11
+        text: "$loot.sounds"
+      -
+        type: "toggle"
+        row: 14
+        label: "$loot.play"
+        state: "beam-sounds"
+        action: "beam_sounds"
+      -
+        type: "text"
+        row: 18
+        text: "$loot.separate"
+      -
+        type: "text"
+        row: 20
+        text: "$loot.personal"
+  appearance:
+    label: "$tab.appearance"
+    icon: "appearance-icon"
+    keywords:
+      - "界面"
+      - "语言"
+      - "主题"
+      - "亮色"
+      - "暗色"
+      - "language"
+      - "theme"
+      - "light"
+      - "dark"
+      - "appearance"
+    widgets:
+      -
+        type: "heading"
+        row: 1
+        text: "$appearance.language"
+      -
+        type: "dropdown"
+        row: 3
+        label: "$appearance.language"
+        state: "language"
+        options:
+          -
+            value: "zh_cn"
+            label: "$appearance.chinese"
+            action: "language_zh_cn"
+          -
+            value: "en_us"
+            label: "$appearance.english"
+            action: "language_en_us"
+      -
+        type: "text"
+        row: 7
+        text: "$appearance.language_scope"
+      -
+        type: "heading"
+        row: 11
+        text: "$appearance.theme"
+      -
+        type: "dropdown"
+        row: 13
+        label: "$appearance.theme"
+        state: "theme"
+        options:
+          -
+            value: "dark"
+            label: "$appearance.dark"
+            action: "theme_dark"
+          -
+            value: "light"
+            label: "$appearance.light"
+            action: "theme_light"
+      -
+        type: "text"
+        row: 20
+        text: "$appearance.saved"
+      -
+        type: "text"
+        row: 22
+        text: "$appearance.personal"
+  help:
+    label: "$tab.help"
+    icon: "loot-icon"
+    keywords:
+      - "帮助"
+      - "资源包"
+      - "缩放"
+      - "help"
+      - "resource"
+      - "scale"
+    widgets:
+      -
+        type: "heading"
+        row: 1
+        text: "$menu.title"
+      -
+        type: "text"
+        row: 4
+        text: "$help.navigation"
+      -
+        type: "text"
+        row: 7
+        text: "$help.selected"
+      -
+        type: "heading"
+        row: 11
+        text: "$help.pack"
+      -
+        type: "text"
+        row: 14
+        text: "$help.requires"
+      -
+        type: "text"
+        row: 17
+        text: "$help.scale"
+      -
+        type: "text"
+        row: 20
+        text: "$help.close"

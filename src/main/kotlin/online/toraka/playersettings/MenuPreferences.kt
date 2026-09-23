@@ -42,8 +42,12 @@ data class MenuPreferences(
 
         fun read(data: PersistentDataContainer) =
             MenuPreferences(
-                MenuLanguage.parse(data.get(LANGUAGE_KEY, PersistentDataType.STRING)),
-                MenuTheme.parse(data.get(THEME_KEY, PersistentDataType.STRING)),
+                MenuLanguage.entries.firstOrNull {
+                    it.id == data.get(LANGUAGE_KEY, PersistentDataType.STRING)
+                } ?: MenuRuntime.current.language,
+                MenuTheme.entries.firstOrNull {
+                    it.id == data.get(THEME_KEY, PersistentDataType.STRING)
+                } ?: MenuRuntime.current.theme,
             )
     }
 }

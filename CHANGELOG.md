@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.8
+
+- Externalized the complete seven-page Dialog into commented `menu.yml`, Chinese/English language YAML files and an extracted Chinese configuration guide. Pages, navigation, text, controls, state bindings and actions can be edited without rebuilding.
+- Added `/playersettings check` and `/playersettings reload` with OP-default `playersettings.admin` permission. Reload validates all files before atomically installing them, refreshes open menus, and retains the previous snapshot and operator files after an error. Duplicate keys, invalid types/references, bounds and permanent click collisions are rejected.
+- Replaced both menu language and Dark/Light theme buttons with configurable Chat Flag-style dropdowns: up/down arrow, current-choice label, green selected row, one expanded list at a time, immediate selection and collapse.
+- Generalized the reference slider to 2–8 named choices with configurable labels and commands; compiled all matching rail and thumb glyphs. Preserved the original Ambience density choices and real state readback.
+- Added configurable page, player-command, console-command and state-based toggle actions, with optional permissions and plugin checks. Player command identity and existing PDC preference keys remain unchanged.
+- Added rollback, restart-preservation, invalid-configuration, custom-page, command-template and exhaustive bilingual/dual-theme dropdown/slider layout tests. The fixed canvas geometry, CJK baselines and existing focus-outline shader remain compatible.
+
 ## 0.1.7
 
 - Replaced the particle density dropdown with the supplied Background Opacity reference style: blue left/right arrows, a dark ticked rail, a light beveled thumb, and the current localized value.
