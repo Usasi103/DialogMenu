@@ -18,10 +18,15 @@ taboolib {
             name("LootBeam").optional(true)
             name("PickupNotifier").optional(true)
             name("CraftEngine").optional(true)
+            name("Oraxen").optional(true)
+            name("ItemsAdder").optional(true)
+            name("SX-Item").optional(true)
+            name("NeigeItems").optional(true)
         }
     }
     env { install(Basic, Bukkit, BukkitUtil, I18n, MinecraftChat) }
     version { taboolib = "6.3.0-75b18a2" }
+    relocate("cn.gtemc.itembridge", "online.toraka.playersettings.library.itembridge")
 }
 
 layout.buildDirectory.set(File(System.getProperty("user.home"), ".gradle-builds/${rootProject.name}"))
@@ -29,9 +34,12 @@ layout.buildDirectory.set(File(System.getProperty("user.home"), ".gradle-builds/
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.gtemc.net/releases/")
 }
 
 dependencies {
+    implementation("cn.gtemc:itembridge:1.0.32") { isTransitive = false }
+    add("taboo", "cn.gtemc:itembridge:1.0.32") { isTransitive = false }
     compileOnly("com.google.code.gson:gson:2.8.7")
     compileOnly("io.papermc.paper:paper-api:26.2.build.123-stable")
     compileOnly(kotlin("stdlib"))

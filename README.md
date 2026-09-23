@@ -39,3 +39,6 @@ The density slider follows the supplied Background Opacity reference: blue arrow
 支持 `Display.Material: "source:CE:命名空间:物品ID"`（`CRAFTENGINE` 同义）和 `minecraft:diamond` 原版物品。CE 为软依赖，通过其公开 API 构造真实物品，保留模型和物品提示。中文配置与边界见 [ITEM-SOURCES.md](ITEM-SOURCES.md)，完整样例在 `src/main/resources/examples/items.yml`，插件会导出到 `examples/items.yml`。
 
 带 Material 的页面自动使用原生物品布局，名称/下方按钮处理操作；既有字体画布页面继续保留。原生页面不使用画布皮肤、主题和隐藏焦点功能，不支持自由坐标。使用 `/playersettings open <页面ID>` 打开指定已启用页面，`check` / `reload` 同时验证物品源；无有效物品时停用动作。
+
+
+0.1.13 使用内置 ItemBridge 1.0.32，只启用 Oraxen、ItemsAdder、SX-Item、NeigeItems、CraftEngine 五种自定义物品源，并保留原版物品。已有 CE 配置无需修改。详见 [物品源配置](ITEM-SOURCES.md)。

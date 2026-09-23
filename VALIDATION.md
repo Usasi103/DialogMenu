@@ -106,3 +106,13 @@ The server-side Dialog codec, click routing, resource-pack contents, and live re
 - Started the final JAR without CE: optional event binding caused no class-load failure, vanilla items worked, CE fallback remained visible with no actionable route.
 - Test server/client/config/cache/logs stayed outside production. The temporary client uses a focused subset of the existing hosted pack: full pack exceeded its 2 GiB heap. CE fixture required its normal image/offset configuration before reload could complete; adding that fixture configuration resolved the test harness failure.
 - Limitations: models are native item bodies, actions use captions/buttons; canvas theme/focus suppression/free positioning do not apply. The pack still must be loaded before the public open command. Only CE and vanilla providers are implemented.
+
+
+## 0.1.13 ItemBridge (2026-09-24)
+
+- Built through the workspace formatter and native TabooLib packaging; 31 JUnit tests passed. Verified ItemBridge classes are actually bundled under the relocated package, with MIT license and all five plugin soft dependencies in the final JAR.
+- Added alias/whitelist tests, preserved ID case/Chinese, registry-only validation, forwarding the viewing player with empty context, missing-plugin isolation and API linkage failure fallback.
+- Paper 26.2 build 123 + ItemBridge 1.0.32 + CraftEngine 26.9.1 + NeigeItems 1.21.171: actual CE ID/model/metadata and fresh copies passed; NI Chinese ID, diamond-sword type, name and Lore passed; native client rendered both item sources.
+- Reload with an invalid ID and no fallback preserved the old menu; fallback recovery and check passed. CE reload reconnected both providers. Separate startup without any of the five plugins retained vanilla item display and disabled custom-source fallbacks.
+- Oraxen, ItemsAdder and SX-Item were not available for full-plugin live validation. Their source adapters are supplied by ItemBridge 1.0.32; PlayerSettings tests validate the provider boundary for all five integrations. Provider/plugin API incompatibility is reported and disables the affected action.
+- No menu skin, font, shader, slider or dropdown assets changed. Native item menus retain their prior layout and focus behavior.

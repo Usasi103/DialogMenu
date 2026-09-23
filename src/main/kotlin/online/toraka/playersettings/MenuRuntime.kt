@@ -27,6 +27,7 @@ object MenuRuntime {
             return
         }
         val store = requireNotNull(repository) { "菜单尚未初始化" }
+        ItemBridgeSources.reset()
         val next =
             try {
                 store.readDefinition().also { definition ->

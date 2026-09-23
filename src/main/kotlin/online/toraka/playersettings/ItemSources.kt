@@ -5,6 +5,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.server.PluginDisableEvent
+import org.bukkit.event.server.PluginEnableEvent
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.event.OptionalEvent
 import taboolib.common.platform.event.SubscribeEvent
@@ -29,15 +30,32 @@ data class ItemReference(val provider: String, val input: String) {
                     when (parts[1].lowercase(Locale.ROOT)) {
                         "ce",
                         "craftengine" -> "craftengine"
+                        "oraxen" -> "oraxen"
+                        "ia",
+                        "itemsadder" -> "itemsadder"
+                        "sx-item",
+                        "sxitem",
+                        "si" -> "sxitem"
+                        "neigeitems",
+                        "ni" -> "neigeitems"
                         "minecraft",
                         "vanilla" -> "minecraft"
-                        else -> error("$path: 不支持物品源 ${parts[1]}，可用 CE / CRAFTENGINE / MINECRAFT")
+                        else ->
+                            error(
+                                "$path: 不支持物品源 ${parts[1]}，可用 Oraxen / IA / SX-Item / NI / CE / MINECRAFT"
+                            )
                     }
                 } else "minecraft"
             val input = if (source) parts[2] else value
-            if (provider == "craftengine") {
+            if (provider in setOf("craftengine", "itemsadder")) {
                 require(input.matches(Regex("[a-z0-9_.-]+:[a-z0-9_./-]+"))) {
-                    "$path: CE 物品必须使用小写的 命名空间:物品ID"
+                    "$path: $provider 物品必须使用小写的 命名空间:物品ID"
+                }
+                return ItemReference(provider, input)
+            }
+            if (provider != "minecraft") {
+                require(input.isNotBlank() && input == input.trim() && '%' !in input) {
+                    "$path: 需要物品 ID，不支持 Material 占位符"
                 }
                 return ItemReference(provider, input)
             }
@@ -85,6 +103,8 @@ class MenuItemSources(private val sources: Map<String, MenuItemSource>) {
                 ?: if (reference.provider !in sources) "物品源未安装：${reference.provider}" else null
         } catch (error: Exception) {
             "物品源 ${reference.provider} 无法读取 ${reference.input}：${error.javaClass.simpleName}"
+        } catch (error: LinkageError) {
+            "物品源 ${reference.provider} API 不兼容：${error.javaClass.simpleName}"
         }
 
     private fun build(reference: ItemReference, player: Player?, amount: Int): ItemStack? {
@@ -102,6 +122,8 @@ class MenuItemSources(private val sources: Map<String, MenuItemSource>) {
                 failure = "物品源返回空物品：${display.material.input}"
             } catch (error: Exception) {
                 failure = "物品构建失败 ${display.material.input}：${error.javaClass.simpleName}"
+            } catch (error: LinkageError) {
+                failure = "物品源 ${display.material.provider} API 不兼容：${error.javaClass.simpleName}"
             }
         }
         val fallback =
@@ -130,9 +152,8 @@ object ItemSources {
                         override fun build(input: String, player: Player?): ItemStack? =
                             if (problem(input) == null) ItemStack(Material.matchMaterial(input)!!)
                             else null
-                    },
-                "craftengine" to CraftEngineItemSource,
-            )
+                    }
+            ) + ItemBridgeSources.sources()
         )
 
     fun validate(menu: MenuDefinition, sources: MenuItemSources = registry): List<String> {
@@ -156,6 +177,7 @@ object ItemSources {
     }
 
     fun changed() {
+        ItemBridgeSources.reset()
         runCatching { validate(MenuRuntime.current) }
             .onSuccess {
                 it.forEach { warning -> Bukkit.getLogger().warning("[PlayerSettings] $warning") }
@@ -171,38 +193,11 @@ object ItemSources {
 
     @SubscribeEvent
     fun disabled(event: PluginDisableEvent) {
-        if (event.plugin.name == "CraftEngine") submit { changed() }
-    }
-}
-
-/** Only documented public API methods are reflected; CE classes are never required at load time. */
-private object CraftEngineItemSource : MenuItemSource {
-    private fun definition(input: String): Any? {
-        val plugin =
-            Bukkit.getPluginManager().getPlugin("CraftEngine")?.takeIf { it.isEnabled }
-                ?: return null
-        val api =
-            Class.forName(
-                "net.momirealms.craftengine.bukkit.api.CraftEngineItems",
-                true,
-                plugin.javaClass.classLoader,
-            )
-        return api.getMethod("byId", String::class.java).invoke(null, input)
+        if (event.plugin.name in ItemBridgeSources.plugins.values) submit { changed() }
     }
 
-    override fun problem(input: String): String? {
-        if (Bukkit.getPluginManager().getPlugin("CraftEngine")?.isEnabled != true)
-            return "CraftEngine 未安装或未启用"
-        return if (definition(input) != null) null else "CE 尚未加载或不存在物品：$input"
-    }
-
-    override fun build(input: String, player: Player?): ItemStack? {
-        val definition = definition(input) ?: return null
-        return if (player == null)
-            definition.javaClass.getMethod("buildBukkitItem").invoke(definition) as? ItemStack
-        else
-            definition.javaClass
-                .getMethod("buildBukkitItem", Player::class.java)
-                .invoke(definition, player) as? ItemStack
+    @SubscribeEvent
+    fun enabled(event: PluginEnableEvent) {
+        if (event.plugin.name in ItemBridgeSources.plugins.values) submit { changed() }
     }
 }

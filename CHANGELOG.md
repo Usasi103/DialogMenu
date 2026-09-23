@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.13] - 2026-09-24
+
+- 使用 ItemBridge 1.0.32 统一获取 Oraxen、ItemsAdder、SX-Item、NeigeItems、CraftEngine 物品；只启用这五种集成，均为软依赖，原版物品与旧 CE 写法保持兼容。
+- 内置并隔离 ItemBridge 包名，保留 MIT 许可；无需额外安装 ItemBridge 插件，也不打包五种物品插件本体。
+- 支持 IA / NI / SI 等别名以及 NI/SX 的中文和区分大小写 ID；验证只查询注册表，展示时传入玩家并克隆返回物品。
+- 插件启停及配置重载重新检测来源；不兼容 API 产生明确错误与安全回退，保留 CE 自动重载刷新、点击时复核和动作停用。
+- 补充五种来源的配置说明、依赖缺失和 API 不兼容测试。界面资源包及现有白框隐藏规则、滑条和下拉框行为没有变动。
+
+
 ## [0.1.12] - 2026-09-24
 
 - 新增 TrMenu 风格物品源：`source:CE:namespace:id` / `source:CRAFTENGINE:namespace:id`，以及原版 Material 和 `minecraft:id`；CraftEngine 保持可选软依赖。

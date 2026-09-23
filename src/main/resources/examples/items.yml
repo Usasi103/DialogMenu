@@ -1,3 +1,4 @@
+# 其他物品源写法：source:ORAXEN:ID、source:IA:命名空间:ID、source:SX-Item:ID、source:NI:ID。
 # 物品源示例：复制为 menus/items.yml，并在 config.yml 的 Pages 末尾加入 items。
 # /playersettings check 检查；/playersettings reload 生效；/playersettings open items 打开。
 # 使用 Display.Material 后整页自动采用原生物品布局，也可显式写 Renderer: items。
