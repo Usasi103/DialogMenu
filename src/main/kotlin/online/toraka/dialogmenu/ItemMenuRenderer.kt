@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import io.papermc.paper.registry.data.dialog.ActionButton
 import io.papermc.paper.registry.data.dialog.action.DialogAction

@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import net.kyori.adventure.text.event.ClickEvent
 
@@ -76,7 +76,7 @@ object MenuRenderer {
                     )
                 }
                 WidgetKind.TOGGLE -> {
-                    val on = SettingsDialog.booleanState(current)
+                    val on = MenuDialog.booleanState(current)
                     canvas.button(
                         widget.x,
                         widget.row,

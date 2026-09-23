@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.entity.Player

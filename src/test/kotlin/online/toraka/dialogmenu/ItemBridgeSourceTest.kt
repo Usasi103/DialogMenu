@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import cn.gtemc.itembridge.api.context.BuildContext
 import cn.gtemc.itembridge.core.BukkitItemBridge

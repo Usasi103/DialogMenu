@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import java.io.File
 import org.bukkit.Bukkit
@@ -15,9 +15,9 @@ object MenuRuntime {
         repository = next
         try {
             next.initialize()
-            Bukkit.getLogger().info("[PlayerSettings] 已加载外置菜单：${next.current.pages.size} 个页面。")
+            Bukkit.getLogger().info("[DialogMenu] 已加载外置菜单：${next.current.pages.size} 个页面。")
         } catch (error: Exception) {
-            Bukkit.getLogger().severe("[PlayerSettings] 配置加载失败，暂用内置默认菜单，原文件未覆盖：${error.message}")
+            Bukkit.getLogger().severe("[DialogMenu] 配置加载失败，暂用内置默认菜单，原文件未覆盖：${error.message}")
         }
     }
 
@@ -32,20 +32,20 @@ object MenuRuntime {
             try {
                 store.readDefinition().also { definition ->
                     ItemSources.validate(definition).forEach {
-                        sender.sendMessage("PlayerSettings 警告：$it")
+                        sender.sendMessage("DialogMenu 警告：$it")
                     }
                 }
             } catch (error: Exception) {
-                sender.sendMessage("PlayerSettings 配置错误，保留原菜单：${error.message}")
-                Bukkit.getLogger().warning("[PlayerSettings] 配置校验失败：${error.message}")
+                sender.sendMessage("DialogMenu 配置错误，保留原菜单：${error.message}")
+                Bukkit.getLogger().warning("[DialogMenu] 配置校验失败：${error.message}")
                 return
             }
         if (checkOnly) {
-            sender.sendMessage("PlayerSettings 配置检查通过：${next.pages.size} 个页面，未应用修改。")
+            sender.sendMessage("DialogMenu 配置检查通过：${next.pages.size} 个页面，未应用修改。")
             return
         }
         store.install(next)
-        SettingsDialog.reloaded()
-        sender.sendMessage("PlayerSettings 重载成功：${next.pages.size} 个页面，已刷新打开的菜单。")
+        MenuDialog.reloaded()
+        sender.sendMessage("DialogMenu 重载成功：${next.pages.size} 个页面，已刷新打开的菜单。")
     }
 }

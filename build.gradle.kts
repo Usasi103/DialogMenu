@@ -9,8 +9,8 @@ plugins {
 
 taboolib {
     description {
-        name("PlayerSettings")
-        desc("Player settings with custom Dialog layout and live personal controls")
+        name("DialogMenu")
+        desc("Configurable Dialog menus with custom layouts and optional item sources")
         dependencies {
 
             name("PlaceholderAPI").optional(true)
@@ -26,7 +26,7 @@ taboolib {
     }
     env { install(Basic, Bukkit, BukkitUtil, I18n, MinecraftChat) }
     version { taboolib = "6.3.0-75b18a2" }
-    relocate("cn.gtemc.itembridge", "online.toraka.playersettings.library.itembridge")
+    relocate("cn.gtemc.itembridge", "online.toraka.dialogmenu.library.itembridge")
 }
 
 layout.buildDirectory.set(File(System.getProperty("user.home"), ".gradle-builds/${rootProject.name}"))

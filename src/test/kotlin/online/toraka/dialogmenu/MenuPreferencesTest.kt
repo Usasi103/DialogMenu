@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import java.lang.reflect.Proxy
 import net.kyori.adventure.key.Key
@@ -11,6 +11,30 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class MenuPreferencesTest {
+    @Test
+    fun readsPreferencesSavedByPlayerSettings() {
+        val data = container()
+        data.set(
+            NamespacedKey("playersettings", "menu_language"),
+            PersistentDataType.STRING,
+            "en_us",
+        )
+        data.set(NamespacedKey("playersettings", "menu_theme"), PersistentDataType.STRING, "light")
+        assertEquals(
+            MenuPreferences(MenuLanguage.ENGLISH, MenuTheme.LIGHT),
+            MenuPreferences.read(data),
+        )
+        MenuPreferences(MenuLanguage.CHINESE, MenuTheme.DARK).save(data)
+        assertEquals(
+            "zh_cn",
+            data.get(NamespacedKey("playersettings", "menu_language"), PersistentDataType.STRING),
+        )
+        assertEquals(
+            "dark",
+            data.get(NamespacedKey("playersettings", "menu_theme"), PersistentDataType.STRING),
+        )
+    }
+
     private fun container(): PersistentDataContainer {
         val values = mutableMapOf<NamespacedKey, Any>()
         return Proxy.newProxyInstance(
@@ -66,14 +90,14 @@ class MenuPreferencesTest {
                 assertTrue(DialogCanvas.textWidth(label) <= 76, label)
             }
         }
-        assertEquals("On", SettingsDialog.toggleLabel("开", MenuLanguage.ENGLISH))
-        assertEquals("Medium", SettingsDialog.densityLabel("中", MenuLanguage.ENGLISH))
+        assertEquals("On", MenuDialog.toggleLabel("开", MenuLanguage.ENGLISH))
+        assertEquals("Medium", MenuDialog.densityLabel("中", MenuLanguage.ENGLISH))
         assertEquals(
             "Level: %playerlevel_level%  Ping: {ping} ms",
             MenuText.get(MenuLanguage.ENGLISH, "profile.level", "{1}", 30),
         )
-        assertEquals("appearance", SettingsDialog.findTab("切换语言"))
-        assertEquals("appearance", SettingsDialog.findTab("Light theme"))
+        assertEquals("appearance", MenuDialog.findTab("切换语言"))
+        assertEquals("appearance", MenuDialog.findTab("Light theme"))
     }
 
     @Test

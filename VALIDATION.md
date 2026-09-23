@@ -1,5 +1,15 @@
 # Validation Record
 
+## 0.1.14
+
+- Native TabooLib build, format checks and all 37 JUnit tests passed. Migration tests cover exact bytes, original-file preservation, existing-new-config precedence, conflict refusal, generated language files and interrupted-copy retry. Old player PDC keys are independently seeded/read/written.
+- The final JAR identity is DialogMenu 0.1.14; package paths, embedded relocated ItemBridge, optional dependencies, resources and MIT license were checked.
+- Isolated Paper 26.2 startup imported the existing PlayerSettings directory. All imported files match the originals byte for byte; eight pages loaded. /dialogmenu and /dmenu, /playersettings, /settings, /player-settings resolve to the same command; alias check and reload succeeded using the old permissions.
+- A real vanilla 26.2 player verified old language/theme keys; CE 26.9.1 and NI 1.21.171 items retain metadata, custom IDs, model and fresh copies. Vanilla item amounts and missing-item fallback remain valid. Oraxen, ItemsAdder and SX-Item actual-plugin tests remain outside this run.
+- Resource font/texture/shader bytes are unchanged from 0.1.13; only pack.mcmeta's visible description is renamed. No new resource generation is required on the existing server.
+- test_server was stopped before deployment and remains stopped. The new JAR is installed, the data directory is renamed, all menu YAML bytes are preserved, and the Chinese guide branding is refreshed. Old JAR/config backups are outside test_server. Actual startup verification used the isolated server; production has not yet loaded this version.
+- The existing private GitHub repository was renamed in place, retaining its repository ID and all eight prior Release IDs. Publication checks verify remote branch/tag, release notes and all attachment SHA-256 digests.
+
 ## 0.1.9
 
 - Native TabooLib build and all 23 JUnit tests passed. JAR SHA-256: `63b5a5c7c9139e5d06c384556459ef9c06eecf6166c47844559a03389d95cb8d`.

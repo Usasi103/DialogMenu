@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -10,17 +10,17 @@ import taboolib.common.platform.command.subCommand
 import taboolib.platform.util.sendLang
 
 @CommandHeader(
-    name = "playersettings",
-    aliases = ["settings", "player-settings"],
+    name = "dialogmenu",
+    aliases = ["dmenu", "playersettings", "settings", "player-settings"],
     permission = "playersettings.use",
     permissionDefault = PermissionDefault.TRUE,
 )
-object SettingsCommand {
+object MenuCommand {
     @CommandBody
     val open = subCommand {
         dynamic("page") {
             suggestion<CommandSender> { _, _ -> MenuRuntime.current.pages.keys.toList() }
-            execute<Player> { player, _, argument -> SettingsDialog.open(player, argument) }
+            execute<Player> { player, _, argument -> MenuDialog.open(player, argument) }
         }
     }
 
@@ -37,7 +37,7 @@ object SettingsCommand {
     @CommandBody
     val main = mainCommand {
         execute<CommandSender> { sender, _, _ ->
-            if (sender is Player) SettingsDialog.open(sender) else sender.sendLang("player-only")
+            if (sender is Player) MenuDialog.open(sender) else sender.sendLang("player-only")
         }
     }
 }

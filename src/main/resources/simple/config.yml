@@ -1,8 +1,8 @@
-# PlayerSettings 简化配置：日常修改各页请打开 menus/ 对应文件。
+# DialogMenu 简化配置：日常修改各页请打开 menus/ 对应文件。
 # Pages 是左侧页面顺序；新增页面后在此加入它的文件名（不含 .yml）。
 # Language / Theme 只设置新玩家默认偏好，不覆盖已保存的选择。
 # MainMenu 是左侧“返回主菜单”的动作；command 以玩家身份执行，不带 /。
-# 修改后 /playersettings check 检查，/playersettings reload 应用（OP 或 playersettings.admin）。
+# 修改后 /dialogmenu check 检查，/dialogmenu reload 应用（OP 或 playersettings.admin）。
 Version: 2
 Title: {zh_cn: "玩家设置", en_us: "Player Settings"}
 DefaultPage: "particles"

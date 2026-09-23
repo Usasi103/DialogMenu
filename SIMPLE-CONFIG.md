@@ -4,7 +4,7 @@
 
 ## 从哪里改
 
-文件都在 `plugins/PlayerSettings/`：
+文件都在 `plugins/DialogMenu/`：
 
 - `config.yml`：菜单标题、默认语言/主题、左侧页面顺序、返回主菜单动作。
 - `menus/appearance.yml`：菜单语言、暗色/亮色下拉框。
@@ -12,7 +12,7 @@
 - `menus/sound.yml`、`notices.yml`、`loot.yml`：音效、拾取提示、掉落光柱。
 - `menus/profile.yml`、`help.yml`：玩家信息和帮助。
 
-保存为 UTF-8，使用空格缩进。执行 `/playersettings check` 检查，再执行 `/playersettings reload` 生效。权限 `playersettings.admin`（默认 OP）；控制台不加 `/`。`/settings check`、`/settings reload` 同样可用。
+保存为 UTF-8，使用空格缩进。执行 `/dialogmenu check` 检查，再执行 `/dialogmenu reload` 生效。权限 `playersettings.admin`（默认 OP）；控制台不加 `/`。`/settings check`、`/settings reload` 同样可用。
 
 检查不应用修改。重载会把主配置和启用的页面一起校验，全部正确才刷新菜单；出错则保留之前的菜单和你写的文件。重启不会覆盖已有文件。重载会收起下拉框，删除当前页面后回到默认页。
 
@@ -150,7 +150,7 @@ Language、Theme 只影响没有有效已存偏好的玩家，不覆盖玩家选
 
 支持 `Display.Material: "source:CE:命名空间:物品ID"`（`CRAFTENGINE` 同义）和 `minecraft:diamond` 原版物品。CE 为软依赖，通过其公开 API 构造真实物品，保留模型和物品提示。中文配置与边界见 [ITEM-SOURCES.md](ITEM-SOURCES.md)，完整样例在 `src/main/resources/examples/items.yml`，插件会导出到 `examples/items.yml`。
 
-带 Material 的页面自动使用原生物品布局，名称/下方按钮处理操作；既有字体画布页面继续保留。原生页面不使用画布皮肤、主题和隐藏焦点功能，不支持自由坐标。使用 `/playersettings open <页面ID>` 打开指定已启用页面，`check` / `reload` 同时验证物品源；无有效物品时停用动作。
+带 Material 的页面自动使用原生物品布局，名称/下方按钮处理操作；既有字体画布页面继续保留。原生页面不使用画布皮肤、主题和隐藏焦点功能，不支持自由坐标。使用 `/dialogmenu open <页面ID>` 打开指定已启用页面，`check` / `reload` 同时验证物品源；无有效物品时停用动作。
 
 
 0.1.13 使用内置 ItemBridge 1.0.32，只启用 Oraxen、ItemsAdder、SX-Item、NeigeItems、CraftEngine 五种自定义物品源，并保留原版物品。已有 CE 配置无需修改。详见 [物品源配置](ITEM-SOURCES.md)。

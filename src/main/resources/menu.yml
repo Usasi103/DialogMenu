@@ -1,7 +1,7 @@
-# PlayerSettings 玩家菜单配置（UTF-8）
-# 修改后执行 /playersettings reload；权限 playersettings.admin（默认 OP），控制台可直接执行。
+# DialogMenu 玩家菜单配置（UTF-8）
+# 修改后执行 /dialogmenu reload；权限 playersettings.admin（默认 OP），控制台可直接执行。
 # 重载失败会保留上一份有效配置，并显示出错文件 / 字段；不会覆盖你修改的文件。
-# /playersettings check 只检查文件，不应用修改。
+# /dialogmenu check 只检查文件，不应用修改。
 #
 # 画布固定为 450 像素宽、29 行；row 每行 9 像素。整体尺寸与白框隐藏着色器配套。
 # x 从左向右计像素，row 从上向下计行。控件不得越界，两个点击区域不得重叠。

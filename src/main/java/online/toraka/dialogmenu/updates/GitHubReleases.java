@@ -1,4 +1,4 @@
-package online.toraka.playersettings.updates;
+package online.toraka.dialogmenu.updates;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

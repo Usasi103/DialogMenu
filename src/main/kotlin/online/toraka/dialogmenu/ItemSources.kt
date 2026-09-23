@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import java.util.Locale
 import org.bukkit.Bukkit
@@ -180,10 +180,10 @@ object ItemSources {
         ItemBridgeSources.reset()
         runCatching { validate(MenuRuntime.current) }
             .onSuccess {
-                it.forEach { warning -> Bukkit.getLogger().warning("[PlayerSettings] $warning") }
+                it.forEach { warning -> Bukkit.getLogger().warning("[DialogMenu] $warning") }
             }
-            .onFailure { Bukkit.getLogger().warning("[PlayerSettings] ${it.message}") }
-        SettingsDialog.reloaded()
+            .onFailure { Bukkit.getLogger().warning("[DialogMenu] ${it.message}") }
+        MenuDialog.reloaded()
     }
 
     @SubscribeEvent(bind = "net.momirealms.craftengine.bukkit.api.event.CraftEngineReloadEvent")

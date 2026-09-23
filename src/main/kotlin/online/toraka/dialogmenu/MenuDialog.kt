@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import io.papermc.paper.connection.PlayerGameConnection
 import io.papermc.paper.dialog.Dialog
@@ -19,7 +19,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.persistence.PersistentDataType
 
-object SettingsDialog {
+object MenuDialog {
     data class View @JvmOverloads constructor(val page: String, val dropdown: Int = -1) {
         fun toggleDropdown(index: Int) = copy(dropdown = if (dropdown == index) -1 else index)
 
@@ -54,7 +54,7 @@ object SettingsDialog {
     fun open(player: Player, page: String = MenuRuntime.current.defaultPage) {
         if (!player.hasPermission("playersettings.use")) return
         if (page !in MenuRuntime.current.pages) {
-            player.sendMessage("PlayerSettings: 未启用的页面 $page")
+            player.sendMessage("DialogMenu: 未启用的页面 $page")
             return
         }
         if (

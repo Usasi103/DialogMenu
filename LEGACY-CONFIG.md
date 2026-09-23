@@ -1,6 +1,6 @@
 # 玩家菜单手动配置
 
-文件保存在 `plugins/PlayerSettings/`：
+文件保存在 `plugins/DialogMenu/`：
 
 - `menu.yml`：页面、顺序、布局、按钮、滑条、状态来源、点击动作。
 - `languages/zh_cn.yml`：中文文案。
@@ -10,7 +10,7 @@
 
 ## 修改后生效
 
-在游戏中执行 `/playersettings check` 检查文件，再执行 `/playersettings reload` 应用。别名 `/settings check`、`/settings reload` 同样可用。控制台输入时不用 `/`。
+在游戏中执行 `/dialogmenu check` 检查文件，再执行 `/dialogmenu reload` 应用。别名 `/settings check`、`/settings reload` 同样可用。控制台输入时不用 `/`。
 
 管理员权限是 `playersettings.admin`，默认 OP。普通玩家打开菜单只需要 `playersettings.use`，默认允许。
 

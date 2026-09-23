@@ -1,4 +1,4 @@
-package online.toraka.playersettings.updates;
+package online.toraka.dialogmenu.updates;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

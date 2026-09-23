@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 /** External YAML translations are selected per player. */
 object MenuText {

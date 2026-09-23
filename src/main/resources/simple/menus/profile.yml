@@ -1,7 +1,7 @@
 # 玩家信息：Layout 决定显示顺序，Icons 定义每一项。
 # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
 # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
-# Bind 自动读取和保存设置；修改后 /playersettings reload。
+# Bind 自动读取和保存设置；修改后 /dialogmenu reload。
 Title: {zh_cn: "玩家信息", en_us: "Profile"}
 Icon: "profile-icon"
 Keywords: ["玩家", "信息", "等级", "金币", "余额", "图鉴", "player", "level", "coin"]

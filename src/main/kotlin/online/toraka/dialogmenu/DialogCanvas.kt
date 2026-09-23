@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import java.util.Properties
 import net.kyori.adventure.key.Key
@@ -178,7 +178,7 @@ class DialogCanvas(
             x,
             row,
             ids.indexOf(selected.lowercase()),
-            SettingsDialog.densityLabel(selected, language),
+            MenuDialog.densityLabel(selected, language),
             ids.map { "density_$it" },
         )
     }

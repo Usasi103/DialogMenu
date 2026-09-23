@@ -1,4 +1,4 @@
-package online.toraka.playersettings.updates;
+package online.toraka.dialogmenu.updates;
 
 import java.io.File;
 import java.util.HashSet;

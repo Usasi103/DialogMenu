@@ -79,16 +79,16 @@ folder = resources / 'simple'
 config = dict(Version=2, Title=label('menu.title'), DefaultPage='particles', Language='zh_cn', Theme='dark',
               HideFocusOutline=True, Pages=list(pages), MainMenu=['close', 'command: menu'])
 (folder / 'config.yml').write_text(
-    '# PlayerSettings 简化配置：日常修改各页请打开 menus/ 对应文件。\n'
+    '# DialogMenu 简化配置：日常修改各页请打开 menus/ 对应文件。\n'
     '# Pages 是左侧页面顺序；新增页面后在此加入它的文件名（不含 .yml）。\n'
     '# Language / Theme 只设置新玩家默认偏好，不覆盖已保存的选择。\n'
     '# MainMenu 是左侧“返回主菜单”的动作；command 以玩家身份执行，不带 /。\n'
-    '# 修改后 /playersettings check 检查，/playersettings reload 应用（OP 或 playersettings.admin）。\n'
+    '# 修改后 /dialogmenu check 检查，/dialogmenu reload 应用（OP 或 playersettings.admin）。\n'
     + dump(config) + '\n', encoding='utf-8', newline='\n')
 for id, value in pages.items():
     header = '# ' + translations['zh_cn']['tab.' + id] + '：Layout 决定显示顺序，Icons 定义每一项。\n'
     header += '# Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。\n'
     header += '# 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。\n'
-    header += '# Bind 自动读取和保存设置；修改后 /playersettings reload。\n'
+    header += '# Bind 自动读取和保存设置；修改后 /dialogmenu reload。\n'
     (folder / f'menus/{id}.yml').write_text(header + dump(value) + '\n', encoding='utf-8', newline='\n')
 print('Generated config.yml and seven simple menu files.')

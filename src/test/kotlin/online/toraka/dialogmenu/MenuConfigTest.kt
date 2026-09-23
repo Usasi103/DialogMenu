@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import java.nio.file.Path
 import net.kyori.adventure.key.Key
@@ -31,7 +31,7 @@ class MenuConfigTest {
         val langFile = directory.resolve("languages/zh_cn.yml").toFile()
         val original = repository.current
         val source = menuFile.readText()
-        assertTrue(source.startsWith("# PlayerSettings"))
+        assertTrue(source.startsWith("# DialogMenu"))
         langFile.writeText(langFile.readText().replace("玩家设置", "我的菜单"))
         menuFile.writeText("pages: [\n")
         assertThrows(Exception::class.java) { repository.reload() }
@@ -288,7 +288,7 @@ class MenuConfigTest {
                     }
                 checkLines(canvas, "dropdown $language $theme $opened")
             }
-            val view = SettingsDialog.View("appearance")
+            val view = MenuDialog.View("appearance")
             assertEquals(index, view.toggleDropdown(index).dropdown)
             assertEquals(-1, view.toggleDropdown(index).toggleDropdown(index).dropdown)
             assertEquals(view, view.toggleDropdown(index).collapsed())

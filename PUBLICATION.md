@@ -1,7 +1,9 @@
-# PlayerSettings publication
+# DialogMenu publication
 
-The cumulative 0.1.9 release URL is https://github.com/Usasi103/PlayerSettings/releases/tag/v0.1.9. The publication workflow verifies the remote main/tag commit, Release notes, attachment digests and preservation of earlier releases and private visibility.
+The current release is https://github.com/Usasi103/DialogMenu/releases/tag/v0.1.14.
+The original private PlayerSettings repository was renamed in place, preserving commits, tags and earlier Releases.
 
-Release attachments are the actual built PlayerSettings-0.1.9.jar, matching resource pack, source archive and SHA256SUMS.txt. Repository checksums are in release/SHA256SUMS.txt. The source archive excludes local dependencies and release metadata; the Git checkout includes the existing compile-only PlaceholderAPI JAR.
-
-With JDK 25 installed, use gradlew.bat test build. Build intermediates remain outside the project. See CHANGELOG.md, RELEASE-0.1.9.md and VALIDATION.md for behavior, limits and checks. Chinese configuration examples are in src/main/resources/配置说明.md and are exported to the plugin directory on first startup.
+Attachments: DialogMenu-0.1.14.jar, matching menu resource pack, source archive and SHA256SUMS.txt.
+The source archive includes the existing compile-only PlaceholderAPI dependency; release metadata is excluded to avoid circular checksums.
+Use JDK 25 and gradlew.bat test build. Intermediates remain outside the project.
+See CHANGELOG.md, MIGRATION.md and VALIDATION.md for behavior and verification.

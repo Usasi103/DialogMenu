@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -73,7 +73,7 @@ class DialogCanvasTest {
             Path.of(
                 System.getProperty("user.home"),
                 ".gradle-builds",
-                "PlayerSettings",
+                "DialogMenu",
                 "layout-probes",
             )
         Files.createDirectories(output)
@@ -89,27 +89,27 @@ class DialogCanvasTest {
 
     @Test
     fun `Chinese and legacy search terms resolve to the correct settings page`() {
-        assertEquals("particles", SettingsDialog.findTab("环境粒子"))
-        assertEquals("particles", SettingsDialog.findTab("萤火虫"))
-        assertEquals("sound", SettingsDialog.findTab("鸟鸣"))
-        assertEquals("notices", SettingsDialog.findTab("拾取提示"))
-        assertEquals("loot", SettingsDialog.findTab("掉落光柱"))
-        assertEquals("loot", SettingsDialog.findTab("掉落音效"))
-        assertEquals("profile", SettingsDialog.findTab("金币"))
-        assertEquals("help", SettingsDialog.findTab("资源包"))
-        assertEquals("particles", SettingsDialog.findTab("density"))
-        assertNull(SettingsDialog.findTab(""))
+        assertEquals("particles", MenuDialog.findTab("环境粒子"))
+        assertEquals("particles", MenuDialog.findTab("萤火虫"))
+        assertEquals("sound", MenuDialog.findTab("鸟鸣"))
+        assertEquals("notices", MenuDialog.findTab("拾取提示"))
+        assertEquals("loot", MenuDialog.findTab("掉落光柱"))
+        assertEquals("loot", MenuDialog.findTab("掉落音效"))
+        assertEquals("profile", MenuDialog.findTab("金币"))
+        assertEquals("help", MenuDialog.findTab("资源包"))
+        assertEquals("particles", MenuDialog.findTab("density"))
+        assertNull(MenuDialog.findTab(""))
     }
 
     @Test
     fun `toggle and density values display Chinese without changing underlying ids`() {
-        assertEquals("开启", SettingsDialog.toggleLabel("ON"))
-        assertEquals("关闭", SettingsDialog.toggleLabel("disabled"))
-        assertEquals("开启", SettingsDialog.toggleLabel("开"))
-        assertEquals("未接入", SettingsDialog.toggleLabel("N/A"))
-        assertEquals("中", SettingsDialog.densityLabel("medium"))
-        assertEquals("高", SettingsDialog.densityLabel("high"))
-        assertEquals("关闭", SettingsDialog.densityLabel("off"))
+        assertEquals("开启", MenuDialog.toggleLabel("ON"))
+        assertEquals("关闭", MenuDialog.toggleLabel("disabled"))
+        assertEquals("开启", MenuDialog.toggleLabel("开"))
+        assertEquals("未接入", MenuDialog.toggleLabel("N/A"))
+        assertEquals("中", MenuDialog.densityLabel("medium"))
+        assertEquals("高", MenuDialog.densityLabel("high"))
+        assertEquals("关闭", MenuDialog.densityLabel("off"))
     }
 
     @Test

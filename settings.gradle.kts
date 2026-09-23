@@ -1,1 +1,1 @@
-rootProject.name = "PlayerSettings"
+rootProject.name = "DialogMenu"

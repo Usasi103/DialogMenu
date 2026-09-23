@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import org.bukkit.configuration.ConfigurationSection
 

@@ -1,14 +1,16 @@
-# PlayerSettings
+# DialogMenu
 
-Paper 26.2 player settings Dialog with Simplified Chinese / English, Dark / Light themes, and the supplied HallowPrison widget skin. Whole bitmap panels, measured glyph advances, fixed coordinates, and Paper custom-click events keep the artwork and controls aligned after each action.
+Paper 26.2 configurable Dialog menus with YAML pages, optional item sources, Simplified Chinese / English, Dark / Light themes, and the supplied HallowPrison widget skin. The bundled player settings menu is one example. Whole bitmap panels, measured glyph advances, fixed coordinates, and Paper custom-click events keep the artwork and controls aligned after each action.
 
-Use `/playersettings`, `/settings`, or `/player-settings`. Permission: `playersettings.use` (allowed by default).
+Use `/dialogmenu` or `/dmenu`. Existing `/playersettings`, `/settings` and `/player-settings` commands remain aliases. Permission: `playersettings.use` (allowed by default); `playersettings.admin` controls check/reload.
+
+Version 0.1.14 renames PlayerSettings to DialogMenu. Remove the old JAR before installing DialogMenu; do not run both. On startup, if the new directory has no config.yml/menu.yml, the plugin imports the old plugins/PlayerSettings directory into plugins/DialogMenu and preserves the originals. Existing new configuration takes precedence. Conflicting files stop migration instead of overwriting edits. See [MIGRATION.md](MIGRATION.md). Existing player preferences and the toraka_settings resource namespace remain compatible.
 
 Open **界面与语言 / Appearance** in the left navigation to choose a menu language and theme from dropdowns styled after the supplied Chat Flag reference. Click a value or arrow to expand, select the green-highlighted current item or another choice, and the menu applies the choice and collapses. Only one dropdown opens at a time. New players default to Simplified Chinese and the dark theme. Preferences survive reconnects and restarts under the existing PDC keys `playersettings:menu_language` and `playersettings:menu_theme`. This changes this player menu; Minecraft and other plugins keep their own language settings.
 
-The menu now uses `plugins/PlayerSettings/config.yml` and one file per page under `menus/`. `Title`, `Layout` and `Icons` organize each page: rearrange names in `Layout`, write labels beside controls, and put click actions directly in `Actions`. Coordinates, state IDs and separate action definitions are handled internally. Chinese comments and the exported `配置说明.md` include ready-to-use examples; see [the simple configuration guide](SIMPLE-CONFIG.md).
+The menu now uses `plugins/DialogMenu/config.yml` and one file per page under `menus/`. `Title`, `Layout` and `Icons` organize each page: rearrange names in `Layout`, write labels beside controls, and put click actions directly in `Actions`. Coordinates, state IDs and separate action definitions are handled internally. Chinese comments and the exported `配置说明.md` include ready-to-use examples; see [the simple configuration guide](SIMPLE-CONFIG.md).
 
-Run `/playersettings check` to validate without applying, then `/playersettings reload` to apply the main configuration and every enabled page together. Both require `playersettings.admin` (OP by default); the `/settings` aliases also work. Invalid files retain the previous valid snapshot and operator files. Existing v1 `menu.yml` installations remain supported when `config.yml` is absent; see [legacy configuration](LEGACY-CONFIG.md). New installations export the simple format. Existing files are never overwritten on startup, and missing referenced pages are reported rather than silently recreated.
+Run `/dialogmenu check` to validate without applying, then `/dialogmenu reload` to apply the main configuration and every enabled page together. Both require `playersettings.admin` (OP by default); the `/settings` aliases also work. Invalid files retain the previous valid snapshot and operator files. Existing v1 `menu.yml` installations remain supported when `config.yml` is absent; see [legacy configuration](LEGACY-CONFIG.md). New installations export the simple format. Existing files are never overwritten on startup, and missing referenced pages are reported rather than silently recreated.
 
 `Name` and `Description` accept plain text or an inline `{zh_cn: ..., en_us: ...}` translation map. `Bind: language`, `theme`, `particle-density` and the documented toggle bindings connect existing settings without extra commands. Custom integrations use inline `State` and per-option `Actions`. Ordered player/console commands retain their identity and optional permission/plugin checks; `close` can precede commands, while navigation/search/refresh can end a sequence. Commands accept `{player}` and `{uuid}`; a failed command stops later actions without undoing commands already executed. Controls flow automatically through the two panels; `heading` starts the lower panel, and overflow fails validation. Popups suppress covered controls until collapsed.
 
@@ -38,7 +40,7 @@ The density slider follows the supplied Background Opacity reference: blue arrow
 
 支持 `Display.Material: "source:CE:命名空间:物品ID"`（`CRAFTENGINE` 同义）和 `minecraft:diamond` 原版物品。CE 为软依赖，通过其公开 API 构造真实物品，保留模型和物品提示。中文配置与边界见 [ITEM-SOURCES.md](ITEM-SOURCES.md)，完整样例在 `src/main/resources/examples/items.yml`，插件会导出到 `examples/items.yml`。
 
-带 Material 的页面自动使用原生物品布局，名称/下方按钮处理操作；既有字体画布页面继续保留。原生页面不使用画布皮肤、主题和隐藏焦点功能，不支持自由坐标。使用 `/playersettings open <页面ID>` 打开指定已启用页面，`check` / `reload` 同时验证物品源；无有效物品时停用动作。
+带 Material 的页面自动使用原生物品布局，名称/下方按钮处理操作；既有字体画布页面继续保留。原生页面不使用画布皮肤、主题和隐藏焦点功能，不支持自由坐标。使用 `/dialogmenu open <页面ID>` 打开指定已启用页面，`check` / `reload` 同时验证物品源；无有效物品时停用动作。
 
 
 0.1.13 使用内置 ItemBridge 1.0.32，只启用 Oraxen、ItemsAdder、SX-Item、NeigeItems、CraftEngine 五种自定义物品源，并保留原版物品。已有 CE 配置无需修改。详见 [物品源配置](ITEM-SOURCES.md)。

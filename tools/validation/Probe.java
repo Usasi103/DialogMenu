@@ -49,11 +49,11 @@ public class Probe extends JavaPlugin {
     }
     private void run() {
         try {
-            target = Bukkit.getPluginManager().getPlugin("PlayerSettings");
+            target = Bukkit.getPluginManager().getPlugin("DialogMenu");
             if (target == null || !((JavaPlugin)target).isEnabled()) throw new AssertionError("Plugin not enabled");
             ClassLoader cl = target.getClass().getClassLoader();
-            Class<?> tab = cl.loadClass("online.toraka.playersettings.PlayerSettings$Tab");
-            Class<?> view = cl.loadClass("online.toraka.playersettings.PlayerSettings$View");
+            Class<?> tab = cl.loadClass("online.toraka.dialogmenu.DialogMenu$Tab");
+            Class<?> view = cl.loadClass("online.toraka.dialogmenu.DialogMenu$View");
             Constructor<?> ctor = view.getConstructor(tab, boolean.class);
             Method show = target.getClass().getDeclaredMethod("show", Player.class, view);
             show.setAccessible(true);

@@ -1,4 +1,4 @@
-package online.toraka.playersettings
+package online.toraka.dialogmenu
 
 import cn.gtemc.itembridge.api.context.BuildContext
 import cn.gtemc.itembridge.core.BukkitItemBridge
@@ -27,12 +27,12 @@ object ItemBridgeSources {
             ?: BukkitItemBridge.builder()
                 .detectSupportedPlugins(
                     { plugin ->
-                        Bukkit.getLogger().info("[PlayerSettings] ItemBridge 已接入 $plugin")
+                        Bukkit.getLogger().info("[DialogMenu] ItemBridge 已接入 $plugin")
                     },
                     { plugin, error ->
                         Bukkit.getLogger()
                             .warning(
-                                "[PlayerSettings] ItemBridge 无法接入 $plugin：${error.javaClass.simpleName}"
+                                "[DialogMenu] ItemBridge 无法接入 $plugin：${error.javaClass.simpleName}"
                             )
                     },
                     { plugin -> plugin.isEnabled && plugin.name in plugins.values },

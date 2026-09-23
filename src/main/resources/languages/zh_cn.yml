@@ -1,4 +1,4 @@
-# 玩家菜单文案：UTF-8 保存，修改后执行 /playersettings reload。
+# 玩家菜单文案：UTF-8 保存，修改后执行 /dialogmenu reload。
 # 左侧键名由 menu.yml 的 $键名 引用。值使用单行文字，不使用颜色代码。
 # 支持 {player}、{uuid}、{ping}、{world} 和 %PlaceholderAPI变量%。
 menu.title: "玩家设置"

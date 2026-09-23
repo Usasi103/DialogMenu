@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.14] - 2026-09-24
+
+- PlayerSettings 正式更名为 DialogMenu，明确插件用于配置多页 Dialog 菜单；更新源码包名、构建产物、日志和更新检查仓库。
+- 主指令改为 /dialogmenu，新增 /dmenu；保留 /playersettings、/settings、/player-settings 及原有子命令。
+- 新配置目录为 plugins/DialogMenu，首次安装自动导入旧 PlayerSettings 配置并保留原文件；已有新配置优先，冲突停止导入，中断可重试。
+- 保留 playersettings.use/admin 权限、玩家语言/主题 PDC 键及 toraka_settings 资源命名空间；菜单和资源包无需因改名重做。
+- 更新中文迁移说明、配置文档和五种物品源示例；延续旧版本 GitHub 提交、标签和 Releases。
+
 ## [0.1.13] - 2026-09-24
 
 - 使用 ItemBridge 1.0.32 统一获取 Oraxen、ItemsAdder、SX-Item、NeigeItems、CraftEngine 物品；只启用这五种集成，均为软依赖，原版物品与旧 CE 写法保持兼容。
