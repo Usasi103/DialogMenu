@@ -68,6 +68,26 @@ class DialogCanvas(
 
     /** Clip covered text before painting a popup, including labels on the next text row. */
     fun coverLabels(x: Int, row: Int, width: Int, rows: Int) {
+        val covered = sprites.filter {
+            it.action != null &&
+                it.x < x + width &&
+                x < it.x + it.skin.width &&
+                it.row < row + rows &&
+                row < it.row + it.skin.rows
+        }
+        // A control starting on a later text row must not repaint over the popup.
+        // Remove its visual and input regions together until the list collapses.
+        sprites.removeAll(covered.toSet())
+        hits.removeAll {
+            it.x < x + width && x < it.x + it.width && it.row < row + rows && row < it.row + it.rows
+        }
+        labels.removeAll { label ->
+            covered.any {
+                label.action == it.action &&
+                    label.x in it.x until it.x + it.skin.width &&
+                    label.row in it.row until it.row + it.skin.rows
+            }
+        }
         val clipped = labels.flatMap { label ->
             if (label.row !in row until row + rows) listOf(label)
             else {

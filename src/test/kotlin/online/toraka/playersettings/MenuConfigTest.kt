@@ -24,6 +24,7 @@ class MenuConfigTest {
 
     @Test
     fun `failed reload preserves complete snapshot and user files while successful reload replaces all files`() {
+        directory.resolve("menu.yml").toFile().writeText(resource("menu.yml"))
         val repository = MenuRepository(directory.toFile())
         repository.initialize()
         val menuFile = directory.resolve("menu.yml").toFile()

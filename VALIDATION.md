@@ -1,5 +1,14 @@
 # Validation Record
 
+## 0.1.9
+
+- Native TabooLib build and all 23 JUnit tests passed. JAR SHA-256: `63b5a5c7c9139e5d06c384556459ef9c06eecf6166c47844559a03389d95cb8d`.
+- New tests cover fresh per-page export, complete multi-file reload rollback, restart preservation, the proposed Title/Layout/Icons example, builtin Bind choices, inline translations, ordered action identities, custom PAPI state, unknown fields, invalid commands/page paths and automatic layout overflow. Legacy tests still pass.
+- All simple pages and expanded dropdowns retain 29 lines at 452 pixels in both languages and themes. Native Minecraft 26.2 FocusableTextWidget verification retains 474 x 269. The 326 hosted assets still match the source; the hosted pack is unchanged from 0.1.8.
+- The actual JAR was exercised with real Paper 26.2, Ambience 1.4.3 and PlaceholderAPI in an isolated server/client outside test_server. Inline text reload applies; check does not change the active session; malformed appearance.yml retains the prior session/file and names the failed file. Non-OP reload is denied.
+- A custom eighth page verified permission denial followed by two ordered console rewards after granting permission, close followed by a player density command, PAPI state readback, and a four-choice dropdown covering another control and crossing the panel boundary. Both language/theme dropdowns work in both palettes. Temporary custom configuration is excluded from deployment.
+- Production migration backs up the exact v1 defaults outside test_server and installs config.yml plus seven pages. Existing player PDC values and the visible UTF-8 CMD launcher are retained. The final startup/console and publication results are recorded by the deployment workflow.
+
 ## 0.1.8
 
 - Native TabooLib build and all 17 JUnit tests passed. Final JAR SHA-256: `2f561062eca059650a1a3b541591d29f408dba96e77080081d3231ef53336977`.

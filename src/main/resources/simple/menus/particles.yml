@@ -1,0 +1,41 @@
+# 环境粒子：Layout 决定显示顺序，Icons 定义每一项。
+# Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+# 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+# Bind 自动读取和保存设置；修改后 /playersettings reload。
+Title: {zh_cn: "环境粒子", en_us: "Particles"}
+Icon: "particles-icon"
+Keywords: ["粒子", "萤火虫", "落叶", "密度", "particle", "firefly", "leaves", "density"]
+Layout: ["总开关", "分类", "落叶", "萤火虫", "群系", "密度", "说明"]
+Icons:
+  总开关:
+    Type: "toggle"
+    Name: {zh_cn: "显示环境粒子", en_us: "Show ambient particles"}
+    Bind: "particles"
+    Description: {zh_cn: "仅影响你自己看到的环境粒子。", en_us: "Changes only the particles you see."}
+  分类:
+    Type: "heading"
+    Name: {zh_cn: "粒子分类与密度", en_us: "Particle categories and density"}
+  落叶:
+    Type: "toggle"
+    Name: {zh_cn: "自然落叶", en_us: "Falling leaves"}
+    Bind: "leaves"
+  萤火虫:
+    Type: "toggle"
+    Name: {zh_cn: "夜间萤火虫", en_us: "Night fireflies"}
+    Bind: "firefly"
+  群系:
+    Type: "toggle"
+    Name: {zh_cn: "生物群系粒子", en_us: "Biome particles"}
+    Bind: "biome"
+  密度:
+    Type: "slider"
+    Name: {zh_cn: "粒子密度", en_us: "Particle density"}
+    Bind: "particle-density"
+    Options:
+      "off": {zh_cn: "关闭", en_us: "Off"}
+      low: {zh_cn: "低", en_us: "Low"}
+      medium: {zh_cn: "中", en_us: "Medium"}
+      high: {zh_cn: "高", en_us: "High"}
+  说明:
+    Type: "text"
+    Name: {zh_cn: "关闭环境粒子后，各分类效果也会暂时隐藏。", en_us: "Disabling particles hides all categories."}

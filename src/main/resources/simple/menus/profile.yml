@@ -1,0 +1,33 @@
+# 玩家信息：Layout 决定显示顺序，Icons 定义每一项。
+# Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+# 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+# Bind 自动读取和保存设置；修改后 /playersettings reload。
+Title: {zh_cn: "玩家信息", en_us: "Profile"}
+Icon: "profile-icon"
+Keywords: ["玩家", "信息", "等级", "金币", "余额", "图鉴", "player", "level", "coin"]
+Layout: ["玩家", "等级", "资产", "金币", "余额", "鱼币", "图鉴", "世界"]
+Icons:
+  玩家:
+    Type: "text"
+    Name: {zh_cn: "玩家：{player}", en_us: "Player: {player}"}
+  等级:
+    Type: "text"
+    Name: {zh_cn: "等级：%playerlevel_level%  延迟：{ping} 毫秒", en_us: "Level: %playerlevel_level%  Ping: {ping} ms"}
+  资产:
+    Type: "heading"
+    Name: {zh_cn: "资产与收集进度", en_us: "Balances and collection"}
+  金币:
+    Type: "text"
+    Name: {zh_cn: "金币：%excellenteconomy_balance_coin%", en_us: "Coins: %excellenteconomy_balance_coin%"}
+  余额:
+    Type: "text"
+    Name: {zh_cn: "余额：%excellenteconomy_balance_money%", en_us: "Balance: %excellenteconomy_balance_money%"}
+  鱼币:
+    Type: "text"
+    Name: {zh_cn: "鱼币：%excellenteconomy_balance_fishcoin%", en_us: "Fish coins: %excellenteconomy_balance_fishcoin%"}
+  图鉴:
+    Type: "text"
+    Name: {zh_cn: "图鉴收集：%handbook_total% / %handbook_max%", en_us: "Collection: %handbook_total% / %handbook_max%"}
+  世界:
+    Type: "text"
+    Name: {zh_cn: "所在世界：{world}", en_us: "World: {world}"}

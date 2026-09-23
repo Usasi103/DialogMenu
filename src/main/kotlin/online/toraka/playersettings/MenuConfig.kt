@@ -45,6 +45,7 @@ data class MenuAction(
     val permission: String,
     val plugin: String,
     val close: Boolean,
+    val steps: List<MenuAction> = emptyList(),
 )
 
 data class MenuPage(
@@ -544,7 +545,7 @@ object MenuConfigParser {
         )
     }
 
-    private fun yaml(source: String, path: String): YamlConfiguration {
+    internal fun yaml(source: String, path: String): YamlConfiguration {
         require(source.length <= 1_048_576) { "$path: 文件超过 1 MiB" }
         return try {
             // Bukkit accepts duplicate keys by default. Reject them before
@@ -596,8 +597,25 @@ class MenuRepository(private val directory: File) {
         private set
 
     fun initialize() {
-        listOf("menu.yml", "languages/zh_cn.yml", "languages/en_us.yml", "配置说明.md").forEach { name
-            ->
+        val simple = File(directory, "config.yml").exists()
+        val legacy = File(directory, "menu.yml").exists()
+        if (!simple && !legacy) {
+            (listOf("config.yml") + SimpleMenuParser.defaultPages.map { "menus/$it.yml" })
+                .forEach { name ->
+                    val file = File(directory, name)
+                    require(!file.exists()) { "$name 已存在：请补全 config.yml，现有页面不会被覆盖" }
+                }
+            // Export pages first: a completed config.yml selects this format on subsequent starts.
+            (SimpleMenuParser.defaultPages.map { "menus/$it.yml" } + "config.yml").forEach { name ->
+                val file = File(directory, name)
+                file.parentFile.mkdirs()
+                file.writeText(resource("simple/$name"), Charsets.UTF_8)
+            }
+        }
+        val extras =
+            if (legacy && !simple) listOf("languages/zh_cn.yml", "languages/en_us.yml", "配置说明.md")
+            else listOf("配置说明.md")
+        extras.forEach { name ->
             val file = File(directory, name)
             if (!file.exists()) {
                 file.parentFile.mkdirs()
@@ -618,8 +636,12 @@ class MenuRepository(private val directory: File) {
     fun readDefinition(): MenuDefinition {
         fun read(name: String): String {
             val file = File(directory, name)
+            require(file.isFile) { "$name: 文件不存在" }
             require(file.length() <= 1_048_576) { "$name: 文件超过 1 MiB" }
             return file.readText(Charsets.UTF_8)
+        }
+        if (File(directory, "config.yml").exists()) {
+            return SimpleMenuParser.parse(read("config.yml")) { id -> read("menus/$id.yml") }
         }
         return MenuConfigParser.parse(
             read("menu.yml"),
@@ -628,7 +650,7 @@ class MenuRepository(private val directory: File) {
     }
 
     companion object {
-        private fun resource(name: String) =
+        internal fun resource(name: String) =
             requireNotNull(MenuRepository::class.java.getResourceAsStream("/$name")) {
                     "缺少默认配置 $name"
                 }

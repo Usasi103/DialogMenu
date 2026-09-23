@@ -105,6 +105,10 @@ object SettingsDialog {
 
     private fun execute(player: Player, view: View, id: String) {
         val definition = MenuRuntime.current.actions[id] ?: return
+        executeDefinition(player, view, definition)
+    }
+
+    private fun executeDefinition(player: Player, view: View, definition: MenuAction) {
         if (definition.permission.isNotEmpty() && !player.hasPermission(definition.permission)) {
             player.sendMessage(message(player, "setting.denied"))
             show(player, view)
@@ -140,25 +144,34 @@ object SettingsDialog {
             }
             return
         }
-        val command =
-            if (definition.type == "toggle-command") {
-                when (booleanState(state(player, definition.state))) {
-                    true -> definition.whenTrue
-                    false -> definition.whenFalse
-                    null -> {
-                        player.sendMessage(message(player, "setting.failed"))
-                        show(player, view)
-                        return
-                    }
-                }
-            } else definition.command
         if (definition.close) player.closeDialog()
-        val expanded = CommandTemplate.render(command, player.name, player.uniqueId.toString())
-        val succeeded =
-            if (definition.type == "console-command")
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), expanded)
-            else player.performCommand(expanded)
-        if (!succeeded) player.sendMessage(message(player, "setting.failed"))
+        for (step in definition.steps.ifEmpty { listOf(definition) }) {
+            if (step.type == "builtin" || step.type == "page") {
+                executeDefinition(player, view, step)
+                return
+            }
+            val command =
+                if (step.type == "toggle-command") {
+                    when (booleanState(state(player, step.state))) {
+                        true -> step.whenTrue
+                        false -> step.whenFalse
+                        null -> {
+                            player.sendMessage(message(player, "setting.failed"))
+                            if (!definition.close) show(player, view)
+                            return
+                        }
+                    }
+                } else step.command
+            val expanded = CommandTemplate.render(command, player.name, player.uniqueId.toString())
+            val succeeded =
+                if (step.type == "console-command")
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), expanded)
+                else player.performCommand(expanded)
+            if (!succeeded) {
+                player.sendMessage(message(player, "setting.failed"))
+                break
+            }
+        }
         if (!definition.close) {
             val token = UUID.randomUUID().toString()
             sessions[player.uniqueId] = Session(token, view, emptySet(), System.currentTimeMillis())

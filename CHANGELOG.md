@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.9
+
+- Added simple per-page configuration: `config.yml` chooses navigation order and defaults; `menus/*.yml` uses Title / Layout / Icons with automatic placement. Pages accept direct text and inline Chinese/English maps without translation-key lookups.
+- Added built-in Bind connections for language, theme, particle density and existing toggles. Custom controls support inline PAPI State and Actions; button commands sit beside their labels and can execute in order with permission/plugin checks.
+- Preserved existing v1 configurations when no config.yml exists. Fresh installs export the new format, and reload validates all enabled pages before replacing the active snapshot. Missing pages and invalid commands retain the current menu and identify the relevant file/field.
+- Automatically place controls into the existing two panels, reject overflow, and hide covered control visuals/hit regions while a dropdown is expanded. Popup rows align across panel backgrounds. No resource-pack changes are required over 0.1.8.
+- Added six tests for fresh export, reload rollback, restart preservation, the proposed simple sample, custom actions, binding validation, path/command validation and bilingual dropdown layout. Updated the Chinese guide and retained a separate legacy guide.
+
 ## 0.1.8
 
 - Externalized the complete seven-page Dialog into commented `menu.yml`, Chinese/English language YAML files and an extracted Chinese configuration guide. Pages, navigation, text, controls, state bindings and actions can be edited without rebuilding.

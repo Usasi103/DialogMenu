@@ -1,0 +1,26 @@
+# 环境音效：Layout 决定显示顺序，Icons 定义每一项。
+# Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+# 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+# Bind 自动读取和保存设置；修改后 /playersettings reload。
+Title: {zh_cn: "环境音效", en_us: "Sounds"}
+Icon: "sound-icon"
+Keywords: ["声音", "音效", "鸟鸣", "风声", "sound", "ambience", "audio"]
+Layout: ["音效", "说明", "保存", "个人", "音量"]
+Icons:
+  音效:
+    Type: "toggle"
+    Name: {zh_cn: "鸟鸣、风声与自然音效", en_us: "Birds, wind and nature"}
+    Bind: "sounds"
+    Description: {zh_cn: "仅调整你自己听到的环境音效。", en_us: "Changes only the ambience you hear."}
+  说明:
+    Type: "heading"
+    Name: {zh_cn: "音效说明", en_us: "About ambience"}
+  保存:
+    Type: "text"
+    Name: {zh_cn: "环境音效偏好会自动保存。", en_us: "Your ambience preference is saved."}
+  个人:
+    Type: "text"
+    Name: {zh_cn: "你的选择不会影响其他玩家。", en_us: "Your choice does not affect other players."}
+  音量:
+    Type: "text"
+    Name: {zh_cn: "总音量请在游戏的声音设置中调整。", en_us: "Set overall volume in Minecraft sound options."}
