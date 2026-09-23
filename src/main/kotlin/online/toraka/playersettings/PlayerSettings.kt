@@ -7,6 +7,10 @@ import taboolib.common.platform.function.getDataFolder
 
 object PlayerSettings : taboolib.common.platform.Plugin() {
     override fun onEnable() {
+        online.toraka.playersettings.updates.UpdateChecker.start(
+            taboolib.platform.BukkitPlugin.getInstance(),
+            "Usasi103/PlayerSettings",
+        )
         if (Bukkit.getPluginManager().getPermission("playersettings.admin") == null) {
             Bukkit.getPluginManager()
                 .addPermission(

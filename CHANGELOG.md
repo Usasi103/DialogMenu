@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.11] - 2026-09-23
+
+- 新增 GitHub Release 异步更新检测，启动错峰检查，默认每 6 小时复查，支持 ETag 和限流退避。
+- 发现较新版本时提示控制台和在线管理员；管理员上线后提醒，同一版本每个在线会话仅提示一次，支持 `toraka.update.notify` 权限。
+- 新增 `update-check.yml` 独立配置；私有仓库通过 `TORAKA_GITHUB_TOKEN` 环境变量读取凭据，认证或网络失败不会被误报为已是最新版。
+- 正确比较数字版本、预发布版本和构建元数据；不建议降级，插件卸载后停止检查和通知。
+
 ## 0.1.10
 
 - Resolve LootBeam and PickupNotifier settings through Ambience 1.5.0 when their standalone plugins are absent. Existing menu files, commands, permissions and PDC settings remain valid.

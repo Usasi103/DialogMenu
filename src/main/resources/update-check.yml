@@ -1,0 +1,15 @@
+# GitHub 正式 Release 更新提醒。修改后重启插件/服务器生效。
+enabled: true
+# 启动后错开 0~119 秒发起检查，之后每 6 小时检查一次。
+startup-delay-seconds: 60
+check-interval-hours: 6
+# 默认只检测正式 Release；使用预发布分支时可开启。
+include-prereleases: false
+notify-console: true
+# OP 或持有 toraka.update.notify 权限的玩家收到提示。
+# 同一版本每次在线会话只提醒一次，普通玩家不会收到。
+notify-admins: true
+# 当前仓库为私有仓库；凭据仅从进程环境读取，不写入配置、日志或 JAR。
+# 使用仅包含目标仓库 Contents: Read 权限的 fine-grained token。
+require-token: true
+token-environment: TORAKA_GITHUB_TOKEN

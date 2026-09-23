@@ -12,6 +12,7 @@ taboolib {
         name("PlayerSettings")
         desc("Player settings with custom Dialog layout and live personal controls")
         dependencies {
+
             name("PlaceholderAPI").optional(true)
             name("Ambience").optional(true)
             name("LootBeam").optional(true)
@@ -30,6 +31,7 @@ repositories {
 }
 
 dependencies {
+    compileOnly("com.google.code.gson:gson:2.8.7")
     compileOnly("io.papermc.paper:paper-api:26.2.build.123-stable")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
