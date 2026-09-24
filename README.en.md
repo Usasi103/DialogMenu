@@ -10,19 +10,12 @@ Each file defines a complete menu, with related pages grouped under `Pages`. Arr
 
 ## Screenshots
 
-In-game screenshots of the bundled quest, conversation, and boss menus. These examples use Chinese menu text.
+In-game screenshots with Chinese menu text. Click an image to view the original.
 
-**Quest list**: Categories, pagination, quest progress, and reward icons.
-
-![DialogMenu quest list with category filters, quest details, progress, and rewards](docs/images/quest-menu.jpg)
-
-**NPC conversation**: A parchment-style interface with a character icon and dialogue choices.
-
-![DialogMenu NPC conversation with the gatekeeper and trial dialogue choices](docs/images/npc-dialogue.jpg)
-
-**Boss introduction**: Background story, combat tips, reward previews, and action buttons.
-
-![DialogMenu boss introduction with background story, combat tips, and rewards](docs/images/boss-menu.jpg)
+| NPC conversation | Boss introduction | Quest list |
+| :---: | :---: | :---: |
+| [![DialogMenu NPC conversation with the gatekeeper and trial dialogue choices](docs/images/npc-dialogue.jpg)](docs/images/npc-dialogue.jpg?raw=true) | [![DialogMenu boss introduction with background story, combat tips, and rewards](docs/images/boss-menu.jpg)](docs/images/boss-menu.jpg?raw=true) | [![DialogMenu quest list with category filters, quest details, progress, and rewards](docs/images/quest-menu.jpg)](docs/images/quest-menu.jpg?raw=true) |
+| Character icon and dialogue choices | Background story, combat tips, and rewards | Categories, pagination, and quest progress |
 
 ## What you can build
 

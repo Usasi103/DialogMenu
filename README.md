@@ -10,19 +10,12 @@ DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 
 
 ## 效果展示
 
-以下为游戏内实拍，展示任务列表、NPC 对话和首领介绍三种示例菜单。
+以下为游戏内实拍，点击图片可查看原图。
 
-**任务列表**：分类、分页、任务进度与奖励图标。
-
-![DialogMenu 任务列表：分类筛选、任务详情、进度与奖励](docs/images/quest-menu.jpg)
-
-**NPC 对话**：羊皮纸风格界面、角色图标与对话选项。
-
-![DialogMenu NPC 对话：守门人对话与试炼选项](docs/images/npc-dialogue.jpg)
-
-**首领介绍**：背景故事、战斗建议、奖励展示与操作按钮。
-
-![DialogMenu 首领介绍：夜巡者背景、战斗建议与奖励](docs/images/boss-menu.jpg)
+| NPC 对话 | 首领介绍 | 任务列表 |
+| :---: | :---: | :---: |
+| [![DialogMenu NPC 对话：守门人对话与试炼选项](docs/images/npc-dialogue.jpg)](docs/images/npc-dialogue.jpg?raw=true) | [![DialogMenu 首领介绍：夜巡者背景、战斗建议与奖励](docs/images/boss-menu.jpg)](docs/images/boss-menu.jpg?raw=true) | [![DialogMenu 任务列表：分类筛选、任务详情、进度与奖励](docs/images/quest-menu.jpg)](docs/images/quest-menu.jpg?raw=true) |
+| 角色图标与对话选项 | 背景故事、战斗建议与奖励 | 分类、分页与任务进度 |
 
 ## 可以制作什么
 
