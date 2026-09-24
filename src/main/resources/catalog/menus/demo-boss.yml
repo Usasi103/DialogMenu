@@ -24,9 +24,11 @@ Pages:
         Text: "夜巡者徽记"
         Color: "#a28ab6"
       title:
-        Position: [156, 2]
+        Position: [156, 1]
         Width: 348
-        Text: "夜 巡 者"
+        Text: "夜巡者"
+        FontSize: 16 # 6–24 像素；默认 8，插件自动预留行高
+        Bold: true # true 加粗 / false 常规
         Color: "#d9bfef"
       subtitle:
         Position: [156, 4]

@@ -15,11 +15,14 @@ object TemplateRenderer {
             }
         }
 
-    fun wrap(text: String, width: Int): List<String> {
+    fun wrap(text: String, width: Int, textSize: Int = 8, bold: Boolean = false): List<String> {
         val lines = mutableListOf<String>()
         var line = ""
         for (character in text) {
-            if (DialogCanvas.textWidth(line + character) > width && line.isNotEmpty()) {
+            if (
+                DialogCanvas.textWidth(line + character, textSize, bold) > width &&
+                    line.isNotEmpty()
+            ) {
                 lines += line
                 line = ""
             }
@@ -56,24 +59,53 @@ object TemplateRenderer {
                     "button" -> {
                         canvas.sprite(element.x, element.row, requireNotNull(sprite), element.id)
                         val label =
-                            DialogCanvas.fit(expand(element.lines.single()), element.width - 8)
+                            DialogCanvas.fit(
+                                expand(element.lines.single()),
+                                element.width - 8,
+                                bold = element.bold,
+                            )
                         canvas.text(
-                            element.x + (element.width - DialogCanvas.textWidth(label)) / 2,
+                            element.x +
+                                (element.width -
+                                    DialogCanvas.textWidth(label, bold = element.bold)) / 2,
                             element.row + 1,
                             label,
                             element.color,
                             element.id,
                             true,
+                            bold = element.bold,
                         )
                     }
                     "text" -> {
-                        val lines = element.lines.flatMap { wrap(expand(it), element.width) }
-                        lines.take(element.rows).forEachIndexed { row, line ->
+                        val stride = TitleFont.lineRows(element.textSize)
+                        val capacity = element.rows / stride
+                        val lines =
+                            element.lines.flatMap {
+                                wrap(expand(it), element.width, element.textSize, element.bold)
+                            }
+                        lines.take(capacity).forEachIndexed { row, line ->
                             val label =
-                                if (row == element.rows - 1 && lines.size > element.rows)
-                                    DialogCanvas.fit(line, element.width - 12) + ".."
+                                if (row == capacity - 1 && lines.size > capacity)
+                                    DialogCanvas.fit(
+                                        line,
+                                        element.width -
+                                            DialogCanvas.textWidth(
+                                                "..",
+                                                element.textSize,
+                                                element.bold,
+                                            ),
+                                        element.textSize,
+                                        element.bold,
+                                    ) + ".."
                                 else line
-                            canvas.text(element.x, element.row + row, label, element.color)
+                            canvas.text(
+                                element.x,
+                                element.row + row * stride,
+                                label,
+                                element.color,
+                                textSize = element.textSize,
+                                bold = element.bold,
+                            )
                         }
                     }
                 }

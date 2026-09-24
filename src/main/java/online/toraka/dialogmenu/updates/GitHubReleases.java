@@ -14,6 +14,10 @@ final class GitHubReleases {
     record Release(String tag, String url) {}
 
     record Result(Release release, String error, long retryAfterSeconds) {
+        static Result unavailable() {
+            return new Result(null, null, 0);
+        }
+
         static Result failed(String message, long retryAfterSeconds) {
             return new Result(null, message, retryAfterSeconds);
         }
@@ -23,7 +27,7 @@ final class GitHubReleases {
 
     @FunctionalInterface
     interface Transport {
-        Response get(URI uri, String token, String etag) throws IOException;
+        Response get(URI uri, String etag) throws IOException;
     }
 
     private final String repository;
@@ -61,19 +65,24 @@ final class GitHubReleases {
         this.transport = Objects.requireNonNull(transport);
     }
 
-    Result check(String token) {
+    Result check() {
         try {
-            Response response = transport.get(endpoint, token, etag);
+            Response response = transport.get(endpoint, etag);
+            // Anonymous 404 covers private/missing repositories and absent Releases.
+            // Drop an earlier public result if the repository becomes private.
+            if (response.status() == 404) {
+                cached = null;
+                etag = null;
+                return Result.unavailable();
+            }
             if (response.status() == 304 && cached != null) {
                 return new Result(cached, null, 0);
             }
             if (response.status() != 200) {
                 String error =
                         switch (response.status()) {
-                            case 401 -> "GitHub 凭据无效或已过期（HTTP 401）";
-                            case 403, 429 ->
-                                    "GitHub 拒绝访问或请求限流（HTTP " + response.status() + "），请检查读取权限或稍后重试";
-                            case 404 -> "仓库没有正式 Release，或私有仓库的凭据缺少 Contents 读取权限（HTTP 404）";
+                            case 401 -> "GitHub 不接受匿名请求（HTTP 401）";
+                            case 403, 429 -> "GitHub 匿名请求被限制（HTTP " + response.status() + "），稍后重试";
                             default -> "GitHub 返回 HTTP " + response.status();
                         };
                 return Result.failed(error, response.retryAfterSeconds());
@@ -125,7 +134,7 @@ final class GitHubReleases {
         }
     }
 
-    static Response httpGet(URI endpoint, String token, String etag) throws IOException {
+    static Response httpGet(URI endpoint, String etag) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) endpoint.toURL().openConnection();
         try {
             connection.setConnectTimeout(5000);
@@ -134,9 +143,6 @@ final class GitHubReleases {
             connection.setRequestProperty("User-Agent", "Toraka-Plugin-Update-Checker");
             connection.setRequestProperty("Accept", "application/vnd.github+json");
             connection.setRequestProperty("X-GitHub-Api-Version", "2026-03-10");
-            if (token != null && !token.isBlank()) {
-                connection.setRequestProperty("Authorization", "Bearer " + token.trim());
-            }
             if (etag != null) {
                 connection.setRequestProperty("If-None-Match", etag);
             }

@@ -9,7 +9,6 @@ notify-console: true
 # OP 或持有 toraka.update.notify 权限的玩家收到提示。
 # 同一版本每次在线会话只提醒一次，普通玩家不会收到。
 notify-admins: true
-# 当前仓库为私有仓库；凭据仅从进程环境读取，不写入配置、日志或 JAR。
-# 使用仅包含目标仓库 Contents: Read 权限的 fine-grained token。
-require-token: true
-token-environment: TORAKA_GITHUB_TOKEN
+# 仅匿名检查公开仓库，不读取任何 GitHub Token。
+# 私有/不存在的仓库或没有 Release 时静默跳过，不提示配置凭据。
+# 旧版 require-token / token-environment 字段已废弃，即使保留也不会读取。

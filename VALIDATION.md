@@ -1,5 +1,13 @@
 # Validation Record
 
+## 0.1.19
+
+- Native TabooLib build, formatting and all 63 DialogMenu tests passed. FontSize 6–24, Bold, old TextSize alias, line allocation, measured width/wrapping and invalid input are covered. New font definitions reuse existing atlases and measured glyph ink bounds; no GUI shader or old font is replaced.
+- Minecraft/Paper 26.2 rendered FontSize 16 with Bold true and a hot-reloaded FontSize 13 with Bold false. Boss introduction -> confirmation -> cancel and blank-area focus were checked. Other sizes are covered by model tests, not individual screenshots.
+- Shared anonymous updater passes 17 API/version/notification tests in Ambience, including absence of Authorization, 404 cache revocation, restored public notifications, async/main-thread scheduling and administrator permissions. An isolated Paper 26.2 probe verified TabooLib and JavaPlugin scheduling, delayed messages, public/private transitions and disable cleanup.
+- The repository was made public at the owner's request. Authenticated metadata and anonymous HTML HTTP 200 confirm public access. Anonymous API reads encountered IP rate limiting; runtime checks retain backoff and do not require credentials or report this as up-to-date.
+- test_server received the verified 0.1.19 JAR and boss title settings. Twenty-two installed maintained plugins were updated; Enchant was not newly installed. Public repository checks are enabled; current private repository checks are disabled in deployment configuration. The launcher no longer fetches a GitHub token. Visible UTF-8 CMD startup is retained.
+
 ## 0.1.18
 
 - Native TabooLib packaging, formatting and all 61 JUnit tests passed. Quest tests cover five-entry paging, category routes, completion filtering, completed paging, empty categories, session state, both skins, generated hit regions and invalid progress/layout/icon rejection.

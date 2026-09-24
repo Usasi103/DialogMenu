@@ -7,6 +7,7 @@ import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.ShadowColor
 import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextDecoration
 
 /** Whole sprites share an origin with the nine-pixel click grid. */
 class DialogCanvas(
@@ -35,6 +36,8 @@ class DialogCanvas(
         val color: Int,
         val action: String? = null,
         val raised: Boolean = false,
+        val textSize: Int = 8,
+        val bold: Boolean = false,
     )
 
     data class Hit(val x: Int, val row: Int, val width: Int, val rows: Int, val action: String)
@@ -55,8 +58,20 @@ class DialogCanvas(
         color: Int = theme.text,
         action: String? = null,
         raised: Boolean = false,
+        textSize: Int = 8,
+        bold: Boolean = false,
     ) {
-        labels += Label(x, row, text, color, action, raised)
+        labels +=
+            Label(
+                x,
+                row,
+                if (textSize != 8) TitleFont.normalize(text) else text,
+                color,
+                action,
+                raised,
+                textSize,
+                bold,
+            )
     }
 
     fun button(x: Int, row: Int, skin: Skin, label: String, action: String, rightInset: Int = 6) {
@@ -107,7 +122,7 @@ class DialogCanvas(
                 var start = cursor
                 var run = ""
                 for (character in label.text) {
-                    val advance = textWidth(character.toString())
+                    val advance = textWidth(character.toString(), label.textSize, label.bold)
                     if (cursor + advance <= x || cursor >= x + width) {
                         if (run.isEmpty()) start = cursor
                         run += character
@@ -177,10 +192,14 @@ class DialogCanvas(
                     result.append(space(it.x))
                     var label: Component =
                         Component.text(it.text, TextColor.color(it.color))
-                            .font(if (it.raised) buttonLabelFont else labelFont)
+                            .font(
+                                if (it.textSize != 8) TitleFont.font(it.textSize)
+                                else if (it.raised) buttonLabelFont else labelFont
+                            )
+                    label = label.decoration(TextDecoration.BOLD, it.bold)
                     if (it.action != null) label = label.clickEvent(click(it.action))
                     result.append(label)
-                    result.append(space(-it.x - textWidth(it.text)))
+                    result.append(space(-it.x - textWidth(it.text, it.textSize, it.bold)))
                 }
             result.append(space(lineWidth))
             if (row < rows - 1) result.append(Component.newline())
@@ -275,14 +294,17 @@ class DialogCanvas(
 
         // ASCII metrics come from the bundled menu font, independent of GUI
         // scale, Force Unicode Font, or another pack's minecraft:default.
-        fun textWidth(text: String): Int = text.sumOf { c ->
-            metrics.getProperty("label.${c.code}")?.toInt() ?: 9
-        }
+        fun textWidth(text: String, textSize: Int = 8, bold: Boolean = false): Int =
+            (if (textSize != 8) TitleFont.width(text, textSize)
+            else
+                text.sumOf { c ->
+                    metrics.getProperty("label.${c.code}")?.toInt() ?: 9
+                }) + if (bold) text.length else 0
 
-        fun fit(text: String, pixels: Int): String {
+        fun fit(text: String, pixels: Int, textSize: Int = 8, bold: Boolean = false): String {
             var result = ""
             for (c in text) {
-                if (textWidth(result + c) > pixels) break
+                if (textWidth(result + c, textSize, bold) > pixels) break
                 result += c
             }
             return result

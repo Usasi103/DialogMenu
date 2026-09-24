@@ -24,9 +24,7 @@ public final class UpdateChecker implements Listener {
             long intervalHours,
             long startupSeconds,
             boolean console,
-            boolean admins,
-            boolean requireToken,
-            String tokenEnvironment) {}
+            boolean admins) {}
 
     private final Plugin plugin;
     private final GitHubReleases releases;
@@ -62,14 +60,9 @@ public final class UpdateChecker implements Listener {
                             Math.max(
                                     0, Math.min(3600, config.getLong("startup-delay-seconds", 60))),
                             config.getBoolean("notify-console", true),
-                            config.getBoolean("notify-admins", true),
-                            config.getBoolean("require-token", true),
-                            config.getString("token-environment", "TORAKA_GITHUB_TOKEN"));
+                            config.getBoolean("notify-admins", true));
             if (!settings.enabled()) {
                 return;
-            }
-            if (!settings.tokenEnvironment().matches("[A-Za-z_][A-Za-z0-9_]*")) {
-                throw new IllegalArgumentException("Invalid environment variable name");
             }
             UpdateChecker checker =
                     new UpdateChecker(
@@ -96,18 +89,7 @@ public final class UpdateChecker implements Listener {
         if (closed || System.currentTimeMillis() < retryAt) {
             return;
         }
-        String token = System.getenv(settings.tokenEnvironment());
-        GitHubReleases.Result result;
-        if (settings.requireToken() && (token == null || token.isBlank())) {
-            result =
-                    GitHubReleases.Result.failed(
-                            "私有仓库需要在服务器环境变量 "
-                                    + settings.tokenEnvironment()
-                                    + " 配置具有 Contents 读取权限的 GitHub Token",
-                            0);
-        } else {
-            result = releases.check(token);
-        }
+        GitHubReleases.Result result = releases.check();
         retryAt = System.currentTimeMillis() + result.retryAfterSeconds() * 1000;
         if (!closed && plugin.isEnabled()) {
             try {
@@ -130,6 +112,12 @@ public final class UpdateChecker implements Listener {
             return;
         }
         lastError = null;
+        if (result.release() == null) {
+            available = null;
+            notified.clear();
+            lastConsoleTag = null;
+            return;
+        }
         var localVersion = ReleaseVersion.parse(current);
         var latestVersion = ReleaseVersion.parse(result.release().tag());
         if (localVersion.isEmpty() || latestVersion.isEmpty()) {

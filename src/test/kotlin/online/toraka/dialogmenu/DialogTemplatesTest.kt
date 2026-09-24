@@ -13,6 +13,70 @@ class DialogTemplatesTest {
     private fun source(id: String) = MenuRepository.resource("templates/$id.yml")
 
     @Test
+    fun titleSizeUsesMeasuredLargerGlyphsAndReservesVerticalSpace() {
+        val template = TemplateParser.parse("boss-intro", source("boss-intro"))
+        val title = template.elements.single { it.id == "title" }
+        assertTrue(title.bold)
+        assertEquals(54, DialogCanvas.textWidth("夜巡者", 16, true))
+        assertEquals(16, title.textSize)
+        assertEquals(3, title.rows)
+        assertEquals(51, DialogCanvas.textWidth("夜巡者", 16))
+        assertEquals(listOf("夜", "巡", "者"), TemplateRenderer.wrap("夜巡者", 33, 16))
+        assertTrue(title.row + title.rows <= template.elements.single { it.id == "subtitle" }.row)
+        val component =
+            TemplateRenderer.render(template, template.values(emptyMap()), { it }) {
+                    ClickEvent.custom(Key.key("test", it))
+                }
+                .build()
+        assertTrue(component.children().any { it.font() == TitleFont.font(16) })
+        for (invalid in
+            listOf(
+                source("boss-intro").replace("FontSize: 16", "FontSize: 25"),
+                source("boss-intro").replace("FontSize: 16", "Rows: 2\n    FontSize: 16"),
+            )) assertThrows(IllegalArgumentException::class.java) {
+            TemplateParser.parse("boss-intro", invalid)
+        }
+    }
+
+    @Test
+    fun customFontSizesAndBoldPreserveTextFlowAndRejectInvalidConfiguration() {
+        for (size in 6..24) {
+            val template =
+                TemplateParser.parse(
+                    "boss-intro",
+                    source("boss-intro").replace("FontSize: 16", "FontSize: $size"),
+                )
+            val title = template.elements.single { it.id == "title" }
+            assertEquals(TitleFont.lineRows(size), title.rows)
+            assertEquals(size, title.textSize)
+            assertTrue(
+                TemplateRenderer.wrap("夜巡者 ABC 123", 51, size, true).all {
+                    DialogCanvas.textWidth(it, size, true) <= 51
+                }
+            )
+            TemplateRenderer.render(template, template.values(emptyMap()), { it }) {
+                    ClickEvent.custom(Key.key("test", it))
+                }
+                .build()
+        }
+        val legacy =
+            TemplateParser.parse(
+                "boss-intro",
+                source("boss-intro").replace("FontSize: 16", "TextSize: 16"),
+            )
+        assertEquals(16, legacy.elements.single { it.id == "title" }.textSize)
+        for (invalid in
+            listOf(
+                source("boss-intro").replace("Bold: true", "Bold: 'true'"),
+                source("boss-intro").replace("FontSize: 16", "FontSize: 5"),
+                source("boss-intro").replace("FontSize: 16", "FontSize: 12.5"),
+                source("boss-intro").replace("FontSize: 16", "TextSize: 12\n    FontSize: 16"),
+            )) assertThrows(IllegalArgumentException::class.java) {
+            TemplateParser.parse("boss-intro", invalid)
+        }
+    }
+
+    @Test
     fun bundledPagesLinkAndAllDifficultyChoicesMatchTheirHitRegions() {
         val templates =
             TemplateRepository.defaults.associateWith { TemplateParser.parse(it, source(it)) }

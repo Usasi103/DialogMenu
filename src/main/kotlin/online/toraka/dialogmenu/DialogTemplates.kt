@@ -20,6 +20,8 @@ data class TemplateElement(
     val selected: Pair<String, String>?,
     val permission: String,
     val actions: List<String>,
+    val textSize: Int = 8,
+    val bold: Boolean = false,
 )
 
 data class DialogTemplate(
@@ -156,6 +158,9 @@ object TemplateParser {
                         "Font",
                         "Glyph",
                         "Advance",
+                        "TextSize",
+                        "FontSize",
+                        "Bold",
                     ),
                     location,
                 )
@@ -163,6 +168,21 @@ object TemplateParser {
                 require(type in setOf("text", "button", "sprite")) {
                     "$location.Type: text/button/sprite"
                 }
+                val legacySize = integer(conf, "TextSize", 8, 6..24, location)
+                val textSize = integer(conf, "FontSize", legacySize, 6..24, location)
+                require(
+                    !conf.contains("FontSize") ||
+                        !conf.contains("TextSize") ||
+                        legacySize == textSize
+                ) {
+                    "$location: FontSize 与 TextSize 同时设置时必须相同"
+                }
+                require(type == "text" || textSize == 8) { "$location.FontSize: 仅文字元素支持自定义字号" }
+                require(!conf.contains("Bold") || conf.isBoolean("Bold")) {
+                    "$location.Bold: 需要 true/false"
+                }
+                val bold = conf.getBoolean("Bold", false)
+                val lineRows = TitleFont.lineRows(textSize)
                 val position = conf.getList("Position")
                 require(
                     position != null && position.size == 2 && position.all { it is Int && it >= 0 }
@@ -200,7 +220,8 @@ object TemplateParser {
                     else null
                 val elementWidth =
                     sprite?.width ?: integer(conf, "Width", width - x - 12, 1..960, location)
-                val elementRows = sprite?.rows ?: integer(conf, "Rows", 1, 1..28, location)
+                val elementRows = sprite?.rows ?: integer(conf, "Rows", lineRows, 1..28, location)
+                require(elementRows >= lineRows) { "$location.Rows: 当前字号至少占 $lineRows 行" }
                 require(x + elementWidth <= width && row + elementRows <= rows) {
                     "$location: 元素超出画布"
                 }
@@ -286,6 +307,8 @@ object TemplateParser {
                     condition(conf.getString("SelectedWhen")),
                     conf.getString("Permission", "")!!,
                     actions,
+                    textSize,
+                    bold,
                 )
             }
         val buttons = elements.filter { it.type == "button" }
