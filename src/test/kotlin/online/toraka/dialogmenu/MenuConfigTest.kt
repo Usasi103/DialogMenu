@@ -247,7 +247,7 @@ class MenuConfigTest {
         val menu = MenuRepository.bundled()
         val widgets = menu.common + menu.pages.getValue("appearance").widgets
         val indices = widgets.indices.filter { widgets[it].kind == WidgetKind.DROPDOWN }
-        assertEquals(3, indices.size)
+        assertEquals(2, indices.size)
         for (index in indices) {
             val widget = widgets[index]
             for (language in MenuLanguage.entries) for (theme in MenuTheme.entries) for (opened in
@@ -265,11 +265,10 @@ class MenuConfigTest {
                     )
                 assertTrue(canvas.hits.any { it.action == "dropdown/$index" })
                 assertEquals(
-                    if (opened) widget.options.size else 0,
+                    if (opened) 2 else 0,
                     canvas.hits.count {
                         it.action.startsWith("action/language_") ||
-                            it.action.startsWith("action/theme_") ||
-                            it.action.startsWith("action/menu_scale_")
+                            it.action.startsWith("action/theme_")
                     },
                 )
                 if (opened)

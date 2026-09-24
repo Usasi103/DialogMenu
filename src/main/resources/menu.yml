@@ -21,7 +21,7 @@
 # text/heading 的 color：text / muted / heading 或 '#RRGGBB'。
 # sprite 的可选贴图见 配置说明.md；贴图尺寸由资源包固定，不在 YAML 中缩放。
 #
-# states 值可以是完整的 '%PAPI变量%'，或 pickup / loot-beams / loot-sounds / language / theme / menu-scale。
+# states 值可以是完整的 '%PAPI变量%'，或 pickup / loot-beams / loot-sounds / language / theme。
 # actions 支持 builtin、page、player-command、console-command、toggle-command。
 # builtin 的 value：close / refresh / search / language:zh_cn / language:en_us / theme:dark / theme:light。
 # page 的 value 是目标页面 ID。命令不带 /，只允许 {player}、{uuid} 两种命令占位符。
@@ -62,7 +62,6 @@ states:
   beam-sounds: "loot-sounds"
   language: "language"
   theme: "theme"
-  menu-scale: "menu-scale"
 # 动作定义：控件通过 action 引用左边的 ID。
 actions:
   close:
@@ -142,15 +141,6 @@ actions:
   theme_light:
     type: "builtin"
     value: "theme:light"
-  menu_scale_50:
-    type: "builtin"
-    value: "menu-scale:50"
-  menu_scale_75:
-    type: "builtin"
-    value: "menu-scale:75"
-  menu_scale_100:
-    type: "builtin"
-    value: "menu-scale:100"
 # 所有页面共用的背景、搜索、返回主菜单、刷新按钮。
 common:
   -
@@ -512,15 +502,6 @@ pages:
             value: "light"
             label: "$appearance.light"
             action: "theme_light"
-      -
-        type: "dropdown"
-        row: 17
-        label: "$appearance.scale"
-        state: "menu-scale"
-        options:
-          - {value: "50", label: "50%", action: "menu_scale_50"}
-          - {value: "75", label: "75%", action: "menu_scale_75"}
-          - {value: "100", label: "100%", action: "menu_scale_100"}
       -
         type: "text"
         row: 20

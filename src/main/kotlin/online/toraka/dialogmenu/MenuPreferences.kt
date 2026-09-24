@@ -30,25 +30,15 @@ enum class MenuTheme(val id: String, val text: Int, val muted: Int, val heading:
 data class MenuPreferences(
     val language: MenuLanguage = MenuLanguage.CHINESE,
     val theme: MenuTheme = MenuTheme.DARK,
-    val scale: MenuScale = MenuScale.NORMAL,
 ) {
     fun save(data: PersistentDataContainer) {
         data.set(LANGUAGE_KEY, PersistentDataType.STRING, language.id)
         data.set(THEME_KEY, PersistentDataType.STRING, theme.id)
-        data.set(SCALE_KEY, PersistentDataType.STRING, scale.id)
     }
 
     companion object {
         private val LANGUAGE_KEY = NamespacedKey("playersettings", "menu_language")
         private val THEME_KEY = NamespacedKey("playersettings", "menu_theme")
-        private val SCALE_KEY = NamespacedKey("dialogmenu", "menu_scale")
-
-        fun readScale(data: PersistentDataContainer): MenuScale =
-            MenuScale.parse(data.get(SCALE_KEY, PersistentDataType.STRING))
-
-        fun saveScale(data: PersistentDataContainer, scale: MenuScale) {
-            data.set(SCALE_KEY, PersistentDataType.STRING, scale.id)
-        }
 
         fun read(data: PersistentDataContainer, defaults: MenuDefinition = MenuRuntime.current) =
             MenuPreferences(
@@ -58,7 +48,6 @@ data class MenuPreferences(
                 MenuTheme.entries.firstOrNull {
                     it.id == data.get(THEME_KEY, PersistentDataType.STRING)
                 } ?: defaults.theme,
-                readScale(data),
             )
     }
 }

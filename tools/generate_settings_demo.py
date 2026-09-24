@@ -16,10 +16,10 @@ samples = {
     "Your ambience preference is saved.": "Try the switch; this preview keeps your choice.",
     "你的提示偏好会自动保存。": "重新打开演示后，选项恢复初始状态。",
     "Your notice preference is saved.": "Reopening the demo resets its choices.",
-    "选择会自动保存，下次打开继续使用。": "语言、主题与缩放仅应用于本次演示。",
-    "Your choices are saved for your next visit.": "Language, theme and scale apply to this preview.",
-    "仅影响你自己的玩家菜单。": "演示选项不会改变你的真实玩家设置。",
-    "Applies only to your own player menu.": "The demo leaves your real settings unchanged.",
+    "选择会自动保存，下次打开继续使用。": "语言与主题仅应用于本次演示。",
+    "Your choices are saved for your next visit.": "Language and theme apply to this preview.",
+    "仅影响你自己的玩家菜单。": "语言、主题及其他选项仅用于本次演示。",
+    "Applies only to your own player menu.": "Other choices apply only to this preview.",
     "所在世界：{world}": "演示数据 · 世界：{world}",
     "World: {world}": "Sample data · World: {world}",
     "仅调整你自己听到的环境音效。": "预览音效开关，不改变实际环境音效。",
@@ -39,8 +39,8 @@ source = source.replace("/dmenu open settings", "/dmenu open demo-settings")
 source = source.replace("Bind 自动读取和保存设置", "Bind 在本演示内模拟状态")
 source = source.replace("绑定内置偏好并自动保存", "在本演示内模拟内置偏好")
 source = source.replace("内置偏好绑定 ID，自动读取与保存", "演示绑定 ID，仅改变本次演示状态")
-source = source.replace("按玩家自动保存，设置、任务与对话画布共用", "仅缩放本次演示，不改变其他菜单")
 source = ("# 独立设置模板；真实服务器 settings.yml 继续使用 Type: settings。\n"
           "# Type: settings-demo 让开关/滑条/下拉框独立运行，无需 Ambience 或 PAPI。\n"
-          "# 示例资产为静态演示数据；重新打开会重置，不写玩家偏好、不执行业务命令。\n" + source)
+          "# 示例资产为静态演示数据；模拟选项重新打开重置，不执行业务命令。\n"
+          "# 不写入玩家真实偏好。\n" + source)
 (menus / "demo-settings.yml").write_text(source, encoding="utf-8", newline="\n")

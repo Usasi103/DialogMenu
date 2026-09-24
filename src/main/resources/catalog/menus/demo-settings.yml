@@ -1,6 +1,7 @@
 # 独立设置模板；真实服务器 settings.yml 继续使用 Type: settings。
 # Type: settings-demo 让开关/滑条/下拉框独立运行，无需 Ambience 或 PAPI。
-# 示例资产为静态演示数据；重新打开会重置，不写玩家偏好、不执行业务命令。
+# 示例资产为静态演示数据；模拟选项重新打开重置，不执行业务命令。
+# 不写入玩家真实偏好。
 # 图标与材质：Icon（单数）是左侧分类字体贴图；Icons（复数）是本页控件集合。
 # 左侧 Icon 可选 profile-icon / sound-icon / particles-icon / notices-icon / loot-icon / appearance-icon。
 # Icon 不能填 DIAMOND、source:IA:... 或 Font/Glyph 配置段；换图片需改资源包对应的 9 像素贴图。
@@ -248,7 +249,7 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
     Title: {zh_cn: "界面与语言", en_us: "Appearance"} # 左侧分类名称与右侧页面标题
     Icon: "appearance-icon" # 左侧分类图标的内置贴图 ID
     Keywords: ["界面", "语言", "主题", "亮色", "暗色", "language", "theme", "light", "dark"] # 搜索此分类时匹配的关键词列表
-    Layout: ["语言", "主题设置", "主题", "菜单缩放", "保存说明", "个人设置"] # 显示顺序；名称必须与下方 Icons 的项目名称一致
+    Layout: ["语言", "主题设置", "主题", "保存说明", "个人设置"] # 显示顺序；名称必须与下方 Icons 的项目名称一致
     Icons: # 本页的文字、按钮和选项定义；每个项目名称需唯一
       语言:
         Type: "dropdown" # 竖向展开的下拉选择框，选项写在 Options 中
@@ -266,17 +267,12 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
         Options: # 选项值: 显示文字；按顺序排列，2–8 项；"off" 必须加引号
           dark: {zh_cn: "暗色", en_us: "Dark"}
           light: {zh_cn: "亮色", en_us: "Light"}
-      菜单缩放:
-        Type: "dropdown"
-        Name: {zh_cn: "菜单缩放", en_us: "Menu scale"}
-        Bind: "menu-scale" # 按玩家保存，所有 DialogMenu 画布菜单共用；不修改游戏全局 GUI 设置
-        Options: {"50": "50%", "75": "75%", "100": "100%"}
       保存说明:
         Type: "text" # 纯文字
-        Name: {zh_cn: "语言、主题与缩放仅应用于本次演示。", en_us: "Language, theme and scale apply to this preview."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Name: {zh_cn: "语言与主题仅应用于本次演示。", en_us: "Language and theme apply to this preview."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
       个人设置:
         Type: "text" # 纯文字
-        Name: {zh_cn: "演示选项不会改变你的真实玩家设置。", en_us: "The demo leaves your real settings unchanged."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Name: {zh_cn: "语言、主题及其他选项仅用于本次演示。", en_us: "Other choices apply only to this preview."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
   help:
     # 使用帮助：Layout 决定显示顺序，Icons 定义每一项。
     # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。

@@ -22,7 +22,7 @@ class SettingsDemoTest {
         val first = SettingsDemoSession(menu, MenuPreferences())
         val otherPlayer = SettingsDemoSession(menu, MenuPreferences())
         val controls = menu.pages.values.flatMap { it.widgets }.filter { it.state.isNotEmpty() }
-        assertEquals(12, controls.size)
+        assertEquals(11, controls.size)
         controls.forEach { widget ->
             val initial = first.state(widget.state)
             assertNotNull(initial)

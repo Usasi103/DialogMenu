@@ -10,7 +10,6 @@ class SettingsDemoSession(private val menu: MenuDefinition, initial: MenuPrefere
                     when (menu.states[widget.state]) {
                         "language" -> initial.language.id
                         "theme" -> initial.theme.id
-                        "menu-scale" -> initial.scale.id
                         else ->
                             if (widget.kind == WidgetKind.TOGGLE) "true"
                             else widget.options.last().value
@@ -23,7 +22,6 @@ class SettingsDemoSession(private val menu: MenuDefinition, initial: MenuPrefere
             MenuPreferences(
                 MenuLanguage.parse(valueFor("language") ?: menu.language.id),
                 MenuTheme.parse(valueFor("theme") ?: menu.theme.id),
-                MenuScale.parse(valueFor("menu-scale")),
             )
 
     private fun valueFor(binding: String) =

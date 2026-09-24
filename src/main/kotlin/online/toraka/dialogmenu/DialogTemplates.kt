@@ -33,11 +33,7 @@ data class DialogTemplate(
     val background: DialogCanvas.Skin?,
     val variables: Map<String, List<String>>,
     val elements: List<TemplateElement>,
-    val maxScale: MenuScale = MenuScale.NORMAL,
 ) {
-    fun displayScale(preference: MenuScale): MenuScale =
-        if (preference.percent <= maxScale.percent) preference else maxScale
-
     fun values(previous: Map<String, String>) = variables.mapValues { (key, options) ->
         previous[key]?.takeIf { it in options } ?: options.first()
     }
@@ -95,15 +91,8 @@ object TemplateParser {
         require(theme in setOf("amethyst", "parchment")) { "$path.Skin: amethyst 或 parchment" }
         val geometry = root.getConfigurationSection("Canvas")
         geometry?.let {
-            keys(
-                it,
-                setOf("Width", "Rows", "Background", "HideFocusOutline", "MaxScale"),
-                "$path.Canvas",
-            )
+            keys(it, setOf("Width", "Rows", "Background", "HideFocusOutline"), "$path.Canvas")
         }
-        val maxScaleValue = integer(geometry, "MaxScale", 100, 50..100, path)
-        require(maxScaleValue in setOf(50, 75, 100)) { "$path.Canvas.MaxScale: 使用 50 / 75 / 100" }
-        val maxScale = MenuScale.parse(maxScaleValue.toString())
         val width = integer(geometry, "Width", 552, 180..960, path)
         val rows = integer(geometry, "Rows", 20, 8..28, path)
         require(
@@ -341,17 +330,7 @@ object TemplateParser {
                 }
             }
         }
-        return DialogTemplate(
-            id,
-            title,
-            width,
-            rows,
-            hide,
-            background,
-            variables,
-            elements,
-            maxScale,
-        )
+        return DialogTemplate(id, title, width, rows, hide, background, variables, elements)
     }
 
     fun validateLinks(templates: Map<String, DialogTemplate>) {

@@ -53,8 +53,6 @@ page('appearance', 'appearance-icon', ['界面', '语言', '主题', '亮色', '
     '主题设置': heading('appearance.theme'),
     '主题': item('dropdown', 'appearance.theme', Bind='theme',
                Options={'dark': label('appearance.dark'), 'light': label('appearance.light')}),
-    '菜单缩放': {'Type': 'dropdown', 'Name': {'zh_cn': '菜单缩放', 'en_us': 'Menu scale'},
-                 'Bind': 'menu-scale', 'Options': {'50': '50%', '75': '75%', '100': '100%'}},
     '保存说明': text('appearance.saved'), '个人设置': text('appearance.personal')})
 page('help', 'loot-icon', ['帮助', '资源包', '缩放', 'help', 'resource', 'scale'], {
     '导航': text('help.navigation'), '高亮': text('help.selected'), '资源包': heading('help.pack'),

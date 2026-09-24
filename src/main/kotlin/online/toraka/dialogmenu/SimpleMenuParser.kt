@@ -23,11 +23,6 @@ object SimpleMenuParser {
                 ),
             "theme" to
                 Binding("theme", choices = mapOf("dark" to "theme_dark", "light" to "theme_light")),
-            "menu-scale" to
-                Binding(
-                    "menu-scale",
-                    choices = MenuScale.entries.associate { it.id to "menu_scale_${it.id}" },
-                ),
             "particle-density" to
                 Binding(
                     "density",

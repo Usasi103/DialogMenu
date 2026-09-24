@@ -33,7 +33,6 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
     Title: "夜巡者 · 试炼档案" # 此页的 Dialog 标题；画布中的大标题在 Elements 中单独定义
     Skin: amethyst # 内置皮肤：amethyst 紫色 / parchment 木色；需要对应资源包
     Canvas: # 画布尺寸、背景及焦点白框设置
-      MaxScale: 75 # 此页最大显示比例；50 / 75 / 100，玩家选择更小比例时沿用玩家选择
       Width: 552 # 画布宽度（像素），180–960；隐藏焦点框时必须为 552
       Rows: 20 # 画布高度（行），8–28；每行 9 像素，隐藏焦点框时必须为 20
       Background: panel # 背景贴图 ID；panel 为内置面板，none 不绘制背景
@@ -156,7 +155,6 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
     Title: "开启挑战" # 此页的 Dialog 标题；画布中的大标题在 Elements 中单独定义
     Skin: amethyst # 内置皮肤：amethyst 紫色 / parchment 木色；需要对应资源包
     Canvas: # 画布尺寸、背景及焦点白框设置
-      MaxScale: 75 # 此页最大显示比例；50 / 75 / 100，玩家选择更小比例时沿用玩家选择
       Width: 552 # 画布宽度（像素），180–960；隐藏焦点框时必须为 552
       Rows: 20 # 画布高度（行），8–28；每行 9 像素，隐藏焦点框时必须为 20
       Background: panel # 背景贴图 ID；panel 为内置面板，none 不绘制背景

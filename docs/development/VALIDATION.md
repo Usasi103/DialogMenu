@@ -1,5 +1,15 @@
 # Validation Record
 
+## Scaling removed (0.1.21-noscale.1-SNAPSHOT, unreleased)
+
+- Standard workspace formatter and TabooLib build passed all 76 tests. The build retains the separately committed fixed six-hour update schedule.
+- Removed 6,765 generated scale resources, scale commands/bindings, `Canvas.MaxScale`, and the scale metrics table. The standalone resource-pack ZIP decreased from 36,147,949 to 4,291,983 bytes (440 entries). No scaled font reference remains in the delivered JAR or pack.
+- A disposable Paper/vanilla 26.2 client rendered the original-size settings, boss and quest menus. A previously saved 75% preference no longer changes the 474px settings body. Both settings and boss bodies were explicitly focused; screenshots show no white focus frame. The 601px-wide, 270px-high GUI also passed with vertical scrolling and integer-centered placement. Native search input and button borders remain visible.
+- The scoped focus shader now accounts for the empty DialogList's 5px footer and 10px trailing layout spacing, alongside the existing Notice layout. Only the original settings/dialogue canvas dimensions are selected.
+- Deployed the development JAR to `test_server` and removed the retired source-pack directories and configuration controls. Five deployed menus pass `dmenu check`; console input/output code pages are 65001 and the visible interactive CMD remains open. Backups and validation fixtures stay outside the deployment server.
+- CraftEngine generation, validation, PackSquash and hosting completed. Both generated and hosted ZIPs contain zero scale assets/references and the verified focus shader; each is 33,494,028 bytes, down from the old hosted pack's 53,044,087 bytes. Their SHA-256 is `3c6eb5f0ebea1ce9e75d5b57e61d6141767d21ca64c7ba43acc9a1ce27b35862`. The deployed JAR matches the tested artifact (`7b6ce3a35b28cbede3190a96dd492d341839d5fe66ab837712a8c96b754b7155`).
+- The earlier scale validation below is historical; menu scaling is no longer supported. This change accumulates on `main` without creating a release tag or GitHub Release.
+
 ## Canvas scale (0.1.21-scale.1-SNAPSHOT, unreleased)
 
 - Standard TabooLib build, formatting and all 75 tests passed. Coverage includes player preference isolation, preservation of language/theme data, corrupt-value fallback, binding validation, text-only actions and safe fallback for external fonts.

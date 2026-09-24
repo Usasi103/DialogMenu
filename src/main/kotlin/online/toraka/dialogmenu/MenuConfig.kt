@@ -152,12 +152,8 @@ object MenuConfigParser {
             "language:en_us",
             "theme:dark",
             "theme:light",
-            "menu-scale:50",
-            "menu-scale:75",
-            "menu-scale:100",
         )
-    private val builtinStates =
-        setOf("pickup", "loot-beams", "loot-sounds", "language", "theme", "menu-scale")
+    private val builtinStates = setOf("pickup", "loot-beams", "loot-sounds", "language", "theme")
 
     fun parse(menu: String, languages: Map<MenuLanguage, String>): MenuDefinition {
         val root = yaml(menu, "menu.yml")

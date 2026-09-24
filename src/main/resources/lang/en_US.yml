@@ -5,7 +5,6 @@ setting-unavailable: '&cThis setting is currently unavailable.'
 
 command-help-title: '&8[&bDialogMenu&8] &fCommand help'
 command-help-player:
-  - '&b/dmenu scale [50|75|100] &8- &7View or change your saved menu scale'
   - '&b/dmenu help &8- &7Show command help'
   - '&b/dmenu &8- &7Open the default menu (in game)'
   - '&b/dmenu open <menu> [page] &8- &7Open a menu or page'
@@ -15,6 +14,3 @@ command-help-admin:
   - '&b/dmenu check &8- &7Validate configuration without applying changes'
   - '&b/dmenu reload &8- &7Reload configuration and refresh open menus'
 command-help-aliases: '&7Aliases: &f/dialogmenu &8/ &f/settings &8/ &f/playersettings &8/ &f/player-settings'
-menu-scale-current: '&7Current menu scale: &f{0}%&7. Use &f/dmenu scale 50|75|100&7.'
-menu-scale-invalid: '&cChoose a menu scale of 50, 75 or 100.'
-menu-scale-saved: '&7Menu scale saved: &f{0}%&7. Applies to settings, quests and dialogue menus.'

@@ -197,20 +197,7 @@ class DialogCanvas(
         if (size != 8) textWidth(text, size, bold).toFloat()
         else LabelMetrics.width(text, if (raised) buttonLabelFont else labelFont, bold)
 
-    /** External fonts without compiled variants retain their original layout. */
-    fun supportedScale(requested: MenuScale): MenuScale {
-        val fonts =
-            sprites.map { it.skin.font } +
-                labels.map {
-                    if (it.textSize != 8) TitleFont.font(it.textSize, it.raised)
-                    else if (it.raised) buttonLabelFont else labelFont
-                }
-        return if (fonts.all { ScaledFonts.supports(it, requested) }) requested
-        else MenuScale.NORMAL
-    }
-
-    fun build(scale: MenuScale = MenuScale.NORMAL): Component {
-        if (scale != MenuScale.NORMAL) return buildScaled(scale)
+    fun build(): Component {
         val result = Component.text()
         val lineWidth = width + WRAP_SLACK
         for (row in 0 until rows) {
@@ -275,85 +262,6 @@ class DialogCanvas(
                 }
             result.append(space(lineWidth))
             if (row < rows - 1) result.append(Component.newline())
-        }
-        return result.build().shadowColor(ShadowColor.none())
-    }
-
-    /** Keep native glyph bounds and mouse hit areas in the same scaled coordinate system. */
-    private fun buildScaled(scale: MenuScale): Component {
-        val result = Component.text()
-        val lineWidth = ceil(width * scale.factor).toInt() + WRAP_SLACK
-        val outputRows = scale.rows(rows)
-        fun paint(x: Float, glyph: Component, advance: Float) {
-            result.append(space(x))
-            result.append(glyph)
-            result.append(space(-x - advance))
-        }
-        for (outputRow in 0 until outputRows) {
-            sprites
-                .filter { scale.y(it.row) / 9 == outputRow }
-                .forEach { sprite ->
-                    val font = ScaledFonts.font(sprite.skin.font, scale, scale.y(sprite.row) % 9)
-                    repeat(sprite.skin.columns) { column ->
-                        val codepoint = sprite.skin.glyph + column
-                        val x =
-                            scale.pixel(
-                                (sprite.x + column * sprite.skin.width / sprite.skin.columns)
-                                    .toFloat()
-                            )
-                        paint(
-                            x,
-                            Component.text(codepoint.toChar().toString())
-                                .font(font)
-                                .color(NamedTextColor.WHITE),
-                            ScaledFonts.advance(sprite.skin.font, scale, codepoint),
-                        )
-                    }
-                }
-            labels
-                .filter { scale.y(it.row) / 9 == outputRow }
-                .forEach { label ->
-                    val originalFont =
-                        if (label.textSize != 8) TitleFont.font(label.textSize, label.raised)
-                        else if (label.raised) buttonLabelFont else labelFont
-                    val font = ScaledFonts.font(originalFont, scale, scale.y(label.row) % 9)
-                    var cursor = label.x
-                    label.text.codePoints().forEach { codepoint ->
-                        val character = String(Character.toChars(codepoint))
-                        var glyph =
-                            Component.text(character, TextColor.color(label.color)).font(font)
-                        if (label.action != null && hits.none { it.action == label.action }) {
-                            glyph = glyph.clickEvent(click(label.action))
-                        }
-                        val advance = ScaledFonts.advance(originalFont, scale, codepoint)
-                        paint(scale.pixel(cursor), glyph, advance)
-                        val plain = labelAdvance(character, label.textSize, false, label.raised)
-                        val bold = labelAdvance(character, label.textSize, label.bold, label.raised)
-                        if (label.bold) paint(scale.pixel(cursor + bold - plain), glyph, advance)
-                        cursor += bold
-                    }
-                }
-            // Vanilla 26.2 tests bitmap glyph rectangles, including transparent glyphs.
-            // A space-provider click grid would retain 9px-high rows after scaling.
-            hits
-                .filter { scale.y(it.row) / 9 == outputRow }
-                .forEach { hit ->
-                    val left = scale.pixel(hit.x.toFloat())
-                    val right = scale.pixel((hit.x + hit.width).toFloat())
-                    val height = scale.y(hit.row + hit.rows) - scale.y(hit.row)
-                    val font =
-                        Key.key("dialogmenu_settings", "scaled/hit/$height/${scale.y(hit.row) % 9}")
-                    val count = ceil(right - left).toInt()
-                    paint(
-                        left,
-                        Component.text("\uE000".repeat(count))
-                            .font(font)
-                            .clickEvent(click(hit.action)),
-                        count.toFloat(),
-                    )
-                }
-            result.append(space(lineWidth))
-            if (outputRow < outputRows - 1) result.append(Component.newline())
         }
         return result.build().shadowColor(ShadowColor.none())
     }
