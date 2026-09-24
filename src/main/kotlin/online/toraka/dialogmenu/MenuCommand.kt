@@ -17,18 +17,31 @@ import taboolib.platform.util.sendLang
 )
 object MenuCommand {
     @CommandBody
+    val pack = subCommand {
+        execute<Player> { player, _, _ -> MenuResources.send(player) }
+    }
+
+    @CommandBody
     val template = subCommand {
         dynamic("template") {
-            suggestion<CommandSender> { _, _ -> MenuRuntime.templates.keys.toList() }
+            suggestion<CommandSender>(uncheck = true) { _, _ ->
+                MenuRuntime.templates.keys.toList()
+            }
             execute<Player> { player, _, argument -> TemplateDialog.open(player, argument) }
         }
     }
 
     @CommandBody
     val open = subCommand {
-        dynamic("page") {
-            suggestion<CommandSender> { _, _ -> MenuRuntime.current.pages.keys.toList() }
-            execute<Player> { player, _, argument -> MenuDialog.open(player, argument) }
+        dynamic("menu") {
+            suggestion<CommandSender>(uncheck = true) { _, _ -> MenuRuntime.menuIds }
+            execute<Player> { player, _, argument -> MenuRuntime.open(player, argument) }
+            dynamic("page", optional = true) {
+                suggestion<CommandSender> { _, context -> MenuRuntime.pages(context["menu"]) }
+                execute<Player> { player, context, argument ->
+                    MenuRuntime.open(player, context["menu"], argument)
+                }
+            }
         }
     }
 
@@ -45,7 +58,7 @@ object MenuCommand {
     @CommandBody
     val main = mainCommand {
         execute<CommandSender> { sender, _, _ ->
-            if (sender is Player) MenuDialog.open(sender) else sender.sendLang("player-only")
+            if (sender is Player) MenuRuntime.open(sender) else sender.sendLang("player-only")
         }
     }
 }

@@ -2,20 +2,47 @@ package online.toraka.dialogmenu
 
 import cn.gtemc.itembridge.api.context.BuildContext
 import cn.gtemc.itembridge.core.BukkitItemBridge
+import java.util.Locale
+import java.util.Properties
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-/** The public configuration accepts only these integrations, even if ItemBridge supports more. */
+/** Metadata shared with the build's soft-dependency list; provider classes stay lazily loaded. */
 object ItemBridgeSources {
-    val plugins =
-        linkedMapOf(
-            "oraxen" to "Oraxen",
-            "itemsadder" to "ItemsAdder",
-            "sxitem" to "SX-Item",
-            "neigeitems" to "NeigeItems",
-            "craftengine" to "CraftEngine",
+    val plugins: Map<String, String> =
+        Properties()
+            .apply {
+                requireNotNull(
+                        ItemBridgeSources::class
+                            .java
+                            .getResourceAsStream("/itembridge-providers.properties")
+                    )
+                    .use { load(it) }
+            }
+            .entries
+            .associate { it.key.toString() to it.value.toString() }
+            .toSortedMap()
+    private val aliases =
+        mapOf(
+            "ce" to "craftengine",
+            "ia" to "itemsadder",
+            "si" to "sxitem",
+            "sx-item" to "sxitem",
+            "ni" to "neigeitems",
+            "mm" to "mythicmobs",
+            "mi" to "mmoitems",
+            "hdb" to "headdatabase",
+            "cf" to "customfishing",
+            "ei" to "executableitems",
+            "eb" to "executableblocks",
         )
+
+    fun provider(name: String): String? {
+        val lower = name.lowercase(Locale.ROOT)
+        return (aliases[lower] ?: lower).takeIf { it in plugins }
+    }
+
     private var current: BukkitItemBridge? = null
 
     fun reset() {
@@ -35,7 +62,7 @@ object ItemBridgeSources {
                                 "[DialogMenu] ItemBridge 无法接入 $plugin：${error.javaClass.simpleName}"
                             )
                     },
-                    { plugin -> plugin.isEnabled && plugin.name in plugins.values },
+                    { plugin -> plugin.isEnabled },
                 )
                 .build()
                 .also { current = it }

@@ -1,0 +1,196 @@
+# 首领演示菜单：一个文件包含全部子页面。
+# /dmenu open demo-boss；本例仅演示，不接入真实任务或副本。
+# page: 页面名 在本菜单内跳转；menu: 菜单文件名 打开另一个画布菜单。
+# Position 为 [横向像素, 纵向行]，每行 9 像素；关闭使用 × 或 ESC。
+Version: 1
+Type: canvas
+DefaultPage: intro
+Pages:
+  intro:
+    Title: "夜巡者 · 试炼档案"
+    Skin: amethyst
+    Canvas: {Width: 552, Rows: 20, Background: panel, HideFocusOutline: true}
+    Variables:
+      difficulty: [normal, hard, overload]
+    Elements:
+      portrait:
+        Type: sprite
+        Position: [21, 3]
+        Sprite: emblem
+        # 可替换为资源包字体立绘；配置方法见 npc-dialogue.yml 的 portrait。
+      portrait-caption:
+        Position: [33, 15]
+        Width: 102
+        Text: "夜巡者徽记"
+        Color: "#a28ab6"
+      title:
+        Position: [156, 2]
+        Width: 348
+        Text: "夜 巡 者"
+        Color: "#d9bfef"
+      subtitle:
+        Position: [156, 4]
+        Width: 348
+        Text: "放弃存在，只为守护之人"
+        Color: "#a28ab6"
+      divider:
+        Type: sprite
+        Position: [156, 5]
+        Sprite: divider
+      story-heading:
+        Position: [156, 6]
+        Width: 348
+        Text: "背景故事"
+        Color: "#ba98d6"
+      story:
+        Position: [156, 7]
+        Width: 348
+        Rows: 3
+        Text: "他曾是凡人法师，为守护故土踏入虚空。如今仍徘徊在旧日高塔，等待能够唤醒记忆的挑战者。"
+      advice-heading:
+        Position: [156, 11]
+        Width: 348
+        Text: "战斗建议"
+        Color: "#ba98d6"
+      advice:
+        Position: [156, 12]
+        Width: 348
+        Rows: 2
+        Text: ["· 躲避地面标记，留意蓄力攻击。", "· 与队友分散站位，保留位移技能。"]
+      rewards:
+        Position: [156, 14]
+        Width: 100
+        Text: "可能奖励"
+        Color: "#bca4d0"
+      reward-shard:
+        Type: sprite
+        Position: [156, 16]
+        Sprite: reward
+      reward-mark:
+        Type: sprite
+        Position: [192, 16]
+        Sprite: reward
+      reward-gear:
+        Type: sprite
+        Position: [228, 16]
+        Sprite: reward
+      shard-label:
+        Position: [165, 17]
+        Width: 9
+        Text: "碎"
+        Color: "#af90d9"
+      mark-label:
+        Position: [201, 17]
+        Width: 9
+        Text: "印"
+        Color: "#af90d9"
+      gear-label:
+        Position: [237, 17]
+        Width: 9
+        Text: "装"
+        Color: "#af90d9"
+      information:
+        Type: button
+        Position: [294, 17]
+        Text: "攻击与信息"
+        Actions: ["message: 试炼模板：请将本按钮接到你的攻略菜单。", "refresh"]
+      start:
+        Type: button
+        Position: [414, 17]
+        Text: "开始战斗"
+        Actions: ["page: confirm"]
+      close:
+        Type: button
+        Position: [522, 1]
+        Sprite: close
+        Text: "×"
+        Actions: ["close"]
+  confirm:
+    Title: "开启挑战"
+    Skin: amethyst
+    Canvas: {Width: 552, Rows: 20, Background: panel, HideFocusOutline: true}
+    Variables:
+      difficulty: [normal, hard, overload]
+    Elements:
+      title:
+        Position: [240, 2]
+        Width: 130
+        Text: "开启挑战"
+        Color: "#d9bfef"
+      requirement:
+        Position: [192, 4]
+        Width: 250
+        Text: "所需物品：虚空钥匙 × 1"
+        Color: "#bca4d0"
+      divider:
+        Type: sprite
+        Position: [102, 5]
+        Sprite: divider
+      question:
+        Position: [177, 7]
+        Width: 300
+        Text: "您确定要开始这场战斗吗？"
+      normal:
+        Type: button
+        Position: [144, 9]
+        Text: "普通"
+        SelectedWhen: difficulty=normal
+        SelectedSprite: selected
+        Actions: ["set: difficulty=normal", "refresh"]
+      hard:
+        Type: button
+        Position: [144, 11]
+        Text: "困难"
+        SelectedWhen: difficulty=hard
+        SelectedSprite: selected
+        Actions: ["set: difficulty=hard", "refresh"]
+      overload:
+        Type: button
+        Position: [144, 13]
+        Text: "过量"
+        SelectedWhen: difficulty=overload
+        SelectedSprite: selected
+        Actions: ["set: difficulty=overload", "refresh"]
+      modifier-heading:
+        Position: [282, 9]
+        Width: 222
+        Text: "难度修正"
+        Color: "#ba98d6"
+      normal-description:
+        Position: [282, 11]
+        Width: 222
+        Rows: 4
+        VisibleWhen: difficulty=normal
+        Text: ["· 无属性加成", "· 默认奖励和经验倍率"]
+      hard-description:
+        Position: [282, 11]
+        Width: 222
+        Rows: 4
+        VisibleWhen: difficulty=hard
+        Text: ["· 更高生命与攻击", "· 适合熟悉机制的队伍"]
+      overload-description:
+        Position: [282, 11]
+        Width: 222
+        Rows: 4
+        VisibleWhen: difficulty=overload
+        Text: ["· 极限挑战", "· 请按实际副本配置奖励"]
+      confirm:
+        Type: button
+        Position: [162, 17]
+        Text: "确认"
+        # 演示动作不会扣物品或召唤首领。接入真实插件时在此替换为：
+        # Actions: ["console: yourdungeon join {player} {difficulty}", "close"]
+        # 物品消耗、次数限制和奖励由副本插件检查，不应依赖菜单文字。
+        # Permission: "yourdungeon.enter"
+        Actions: ["message: 已选择难度 {difficulty}；当前为演示模板，尚未连接副本。", "close"]
+      cancel:
+        Type: button
+        Position: [282, 17]
+        Text: "取消"
+        Actions: ["page: intro"]
+      close:
+        Type: button
+        Position: [522, 1]
+        Sprite: close
+        Text: "×"
+        Actions: ["close"]

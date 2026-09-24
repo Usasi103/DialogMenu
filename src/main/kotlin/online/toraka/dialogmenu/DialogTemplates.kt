@@ -62,9 +62,10 @@ object TemplateParser {
     private val idPattern = Regex("[a-z][a-z0-9_-]{0,47}")
     private val valuePattern = Regex("[a-zA-Z0-9_-]{1,48}")
 
-    fun parse(id: String, source: String): DialogTemplate {
-        require(id.matches(idPattern)) { "无效模板文件名 $id" }
-        val path = "templates/$id.yml"
+    fun parse(id: String, source: String, path: String = "templates/$id.yml"): DialogTemplate {
+        require(id.split('/').size <= 2 && id.split('/').all { it.matches(idPattern) }) {
+            "无效菜单页面 ID $id"
+        }
         val root = MenuConfigParser.yaml(source, path)
         keys(root, setOf("Version", "Title", "Skin", "Canvas", "Variables", "Elements"), path)
         require(root.get("Version") == 1) { "$path.Version: 必须为 1" }
@@ -206,7 +207,13 @@ object TemplateParser {
                     val argument = action.substringAfter(':', "").trim()
                     when (verb) {
                         "set" -> require(condition(argument) != null)
-                        "template" -> require(argument.matches(idPattern)) { "$location: 无效目标模板" }
+                        "template" ->
+                            require(
+                                argument.split('/').size <= 2 &&
+                                    argument.split('/').all { it.matches(idPattern) }
+                            ) {
+                                "$location: 无效目标页面"
+                            }
                         "message" -> require(argument.isNotBlank()) { "$location: 消息不能为空" }
                         "command",
                         "console" -> {

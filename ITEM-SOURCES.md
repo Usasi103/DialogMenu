@@ -1,41 +1,84 @@
-# 物品源配置
+# 物品源配置（0.1.16）
 
-0.1.13 通过随插件打包并隔离包名的 [ItemBridge 1.0.32](https://github.com/jhqwqmc/ItemBridge) 支持 Oraxen、ItemsAdder、SX-Item、NeigeItems、CraftEngine 五种可选物品源，同时保留原版物品。无需额外安装 ItemBridge 插件；只安装自己使用的物品插件即可。语法参考 [TrMenu 物品源](https://hhhhhy.gitbook.io/trmenu-v3/menu/icon/display/material#wu-pin-yuan)，五种来源均使用 ItemBridge 的适配器，不会自动接入库内其他物品源。不安装这些插件仍可使用原有菜单和原版物品。
+支持内置 [ItemBridge 1.0.32](https://github.com/jhqwqmc/ItemBridge) 的全部 **39 种插件适配器**，以及原版物品。
+这些插件均为软依赖，无需另外安装 ItemBridge；只安装实际使用的物品插件。
+未来 ItemBridge 增加的适配器需要随 DialogMenu 更新库版本和清单，不会从网上自动下载未知适配器。
+
+统一语法：`source:插件ID:物品ID`。插件 ID 不分大小写，后面的完整物品 ID 原样传给对应适配器。
+例如 `source:Nexo:my_sword`、`source:MythicMobs:SkeletonKingSword`、`source:MMOItems:SWORD:my_sword`、`source:HeadDatabase:123`。
+MMOItems 等来源的组合 ID 格式由该版本 ItemBridge 适配器规定；请使用对应来源的真实 ID。
+CE、IA、NI、SI/SX-Item 旧写法继续可用；另有 MM=MythicMobs、MI=MMOItems、HDB=HeadDatabase、CF=CustomFishing、EI=ExecutableItems、EB=ExecutableBlocks。
+原版可写 `DIAMOND`、`minecraft:diamond`、`source:VANILLA:diamond`。
+
+| 插件 | 插件 ID |
+| --- | --- |
+| AdvancedItems | `advanceditems` |
+| AzureFlow | `azureflow` |
+| Baikiruto | `baikiruto` |
+| BreweryX | `breweryx` |
+| CraftEngine | `craftengine` |
+| CrazyVouchers | `crazyvouchers` |
+| CustomCrafting | `customcrafting` |
+| CustomFishing | `customfishing` |
+| DragonArmourers | `dragonarmourers` |
+| EcoArmor | `ecoarmor` |
+| EcoCrates | `ecocrates` |
+| EcoItems | `ecoitems` |
+| EcoMobs | `ecomobs` |
+| EcoPets | `ecopets` |
+| EcoScrolls | `ecoscrolls` |
+| EmakiItem | `emakiitem` |
+| ExecutableBlocks | `executableblocks` |
+| ExecutableItems | `executableitems` |
+| HeadDatabase | `headdatabase` |
+| HMCCosmetics | `hmccosmetics` |
+| ItemEdit | `itemedit` |
+| ItemsAdder | `itemsadder` |
+| ItemsXL | `itemsxl` |
+| MagicGem | `magicgem` |
+| MMOItems | `mmoitems` |
+| MythicMobs | `mythicmobs` |
+| NeigeItems | `neigeitems` |
+| Nexo | `nexo` |
+| Nova | `nova` |
+| Oraxen | `oraxen` |
+| PxRpg | `pxrpg` |
+| Ratziel | `ratziel` |
+| Reforges | `reforges` |
+| Sertraline | `sertraline` |
+| Slimefun | `slimefun` |
+| StatTrackers | `stattrackers` |
+| SX-Item | `sxitem` |
+| Talismans | `talismans` |
+| Zaphkiel | `zaphkiel` |
+
+每个菜单一个文件。下面保存为 `menus/items-demo.yml` 后执行 `/dmenu check`、`/dmenu reload`，再 `/dmenu open items-demo`：
 
 ```yaml
-Title: 我的物品菜单
-Layout: [开始战斗]
-Icons:
-  开始战斗:
-    Display:
-      Material: "source:CE:boss:night_watcher"
-      Name: "开始战斗"
-      Lore: ["点击名称或下方按钮进入挑战"]
-      Fallback: BARRIER
-    Permission: "boss.challenge"
-    Actions: ["close", "command: boss challenge"]
+Version: 1
+Type: settings
+Title: 物品演示
+DefaultPage: main
+MainMenu: [close]
+Pages:
+  main:
+    Title: 我的物品
+    Layout: [武器]
+    Icons:
+      武器:
+        Display:
+          Material: "source:Nexo:my_sword"
+          Name: 预览武器
+          Fallback: BARRIER
+        Actions: [close]
 ```
 
-保存到 `menus/battle.yml`，在 `config.yml` 的 `Pages` 中加入 `battle`（最多 8 页）。该示例需要自行创建对应 CE 物品和挑战指令。现成的彩虹鱼示例见插件导出的 `examples/items.yml`；复制到 `menus/items.yml` 并启用即可使用。
+示例 ID 需要在对应插件里实际存在；未安装 Nexo 或找不到物品时显示屏障并停用按钮。
+若想加到已有菜单，复制 main 页的内容到该菜单 `Pages.物品页ID`，无需新增全局注册。
+`examples/items.yml` 是用于玩家设置菜单的单页片段，应放到 `menus/settings.yml` 的 `Pages.items` 下；其 profile 跳转要求同菜单存在 profile 页。
 
-1. `/dialogmenu check` 检查所有启用页面和物品 ID。
-2. `/dialogmenu reload` 应用修改并刷新打开的菜单。
-3. `/dialogmenu open battle` 打开指定页面；`/settings open battle` 同样有效。
-
-前两条需要 `playersettings.admin`（默认 OP），打开需要 `playersettings.use`（默认允许），并沿用资源包已加载检查。
-
-| Material 写法 | 含义 |
-| --- | --- |
-| `source:ORAXEN:my_sword` | Oraxen |
-| `source:IA:weapons:sword` / `source:ITEMSADDER:weapons:sword` | ItemsAdder |
-| `source:SX-Item:我的武器` / `source:SXITEM:我的武器` / `source:SI:我的武器` | SX-Item |
-| `source:NI:我的武器` / `source:NEIGEITEMS:我的武器` | NeigeItems |
-| `DIAMOND` / `minecraft:diamond` | 原版物品 |
-| `source:MINECRAFT:diamond` / `source:VANILLA:diamond` | 原版物品源 |
-| `source:CE:customfishing:rainbow_fish` | CraftEngine 物品 |
-| `source:CRAFTENGINE:customfishing:rainbow_fish` | 同上 |
-
-物品源别名不区分大小写；CE / ItemsAdder ID 必须使用小写并包含命名空间；Oraxen / SX-Item / NeigeItems 的 ID 保留大小写和中文。`Material` 不展开 PAPI，仅支持表中的物品源，不支持其他 TrMenu 物品源、JS、JSON、动画或头颅语法。未知字段、未知源和错误 ID 会明确报错。
+检查/重载权限 `playersettings.admin`（默认 OP）；打开权限 `playersettings.use`，仍需已加载服务器资源包。
+CE / ItemsAdder ID 要求小写命名空间；其他来源保留大小写、中文及内部冒号。Material 不展开 PAPI，不额外解析 TrMenu 的 JS、JSON、动画或头颅表达式。
 
 `Display` 支持 `Material`、`Name`、`Lore`、`Amount`（1–99）、`Fallback`（可选原版物品）。`Name` 与外层 `Name` 二选一，`Lore` 与外层 `Description` 二选一；说明最多 6 行，均支持行内中英双语。它们是菜单文字，不改写源物品的名称、Lore、模型或其他数据。每次展示取新物品并克隆，仅修改展示副本数量，不给玩家物品。
 

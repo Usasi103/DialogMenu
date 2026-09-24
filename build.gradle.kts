@@ -1,4 +1,5 @@
 import org.gradle.api.attributes.java.TargetJvmVersion
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import io.izzel.taboolib.gradle.*
 
@@ -17,14 +18,13 @@ taboolib {
             name("Ambience").optional(true)
             name("LootBeam").optional(true)
             name("PickupNotifier").optional(true)
-            name("CraftEngine").optional(true)
-            name("Oraxen").optional(true)
-            name("ItemsAdder").optional(true)
-            name("SX-Item").optional(true)
-            name("NeigeItems").optional(true)
+            val providers = Properties().apply {
+                rootProject.file("src/main/resources/itembridge-providers.properties").inputStream().use { load(it) }
+            }
+            providers.values.map { it.toString() }.sorted().forEach { name(it).optional(true) }
         }
     }
-    env { install(Basic, Bukkit, BukkitUtil, I18n, MinecraftChat) }
+    env { install(Basic, Bukkit, BukkitUtil, BukkitNMS, I18n, MinecraftChat) }
     version { taboolib = "6.3.0-75b18a2" }
     relocate("cn.gtemc.itembridge", "online.toraka.dialogmenu.library.itembridge")
 }
@@ -42,6 +42,7 @@ dependencies {
     add("taboo", "cn.gtemc:itembridge:1.0.32") { isTransitive = false }
     compileOnly("com.google.code.gson:gson:2.8.7")
     compileOnly("io.papermc.paper:paper-api:26.2.build.123-stable")
+    compileOnly("io.netty:netty-transport:4.2.15.Final")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
     testImplementation("io.papermc.paper:paper-api:26.2.build.123-stable")

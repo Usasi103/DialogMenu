@@ -20,7 +20,9 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.persistence.PersistentDataType
 
 object MenuDialog {
-    data class View @JvmOverloads constructor(val page: String, val dropdown: Int = -1) {
+    data class View
+    @JvmOverloads
+    constructor(val page: String, val dropdown: Int = -1, val menu: String = "settings") {
         fun toggleDropdown(index: Int) = copy(dropdown = if (dropdown == index) -1 else index)
 
         fun collapsed() = copy(dropdown = -1)
@@ -50,27 +52,31 @@ object MenuDialog {
         sessions.clear()
         views.forEach { (uuid, view) ->
             val player = Bukkit.getPlayer(uuid) ?: return@forEach
-            if (player.hasPermission("playersettings.use")) show(player, view.collapsed())
+            if (
+                player.hasPermission("playersettings.use") &&
+                    MenuRuntime.settings(view.menu) != null
+            )
+                show(player, view.collapsed())
             else player.closeDialog()
         }
     }
 
-    fun open(player: Player, page: String = MenuRuntime.current.defaultPage) {
+    fun open(
+        player: Player,
+        page: String = MenuRuntime.current.defaultPage,
+        menuId: String = "settings",
+    ) {
         if (!player.hasPermission("playersettings.use")) return
-        if (page !in MenuRuntime.current.pages) {
+        val menu = MenuRuntime.settings(menuId)
+        if (menu == null || page !in menu.pages) {
             player.sendMessage("DialogMenu: 未启用的页面 $page")
             return
         }
-        if (
-            player.resourcePackStatus !=
-                org.bukkit.event.player.PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED
-        ) {
-            player.sendMessage(message(player, "pack.required"))
-            return
+        MenuResources.open(player) {
+            player.closeInventory()
+            TemplateDialog.forget(player.uniqueId)
+            show(player, View(page, menu = menuId))
         }
-        player.closeInventory()
-        TemplateDialog.forget(player.uniqueId)
-        show(player, View(page))
     }
 
     @taboolib.common.platform.event.SubscribeEvent
@@ -103,12 +109,19 @@ object MenuDialog {
             }
             when {
                 action == "search_submit" -> {
-                    val found = findTab(query.orEmpty())
+                    val found = MenuRuntime.settings(session.view.menu)?.search(query.orEmpty())
                     if (found == null) player.sendMessage(message(player, "search.empty"))
-                    show(player, View(found ?: session.view.page))
+                    show(
+                        player,
+                        session.view.copy(page = found ?: session.view.page, dropdown = -1),
+                    )
                 }
                 action == "search_back" -> show(player, session.view)
-                action.startsWith("page/") -> show(player, View(action.substringAfter('/')))
+                action.startsWith("page/") ->
+                    show(
+                        player,
+                        session.view.copy(page = action.substringAfter('/'), dropdown = -1),
+                    )
                 action.startsWith("dropdown/") -> {
                     val index = action.substringAfter('/').toIntOrNull() ?: return@submit
                     show(player, session.view.toggleDropdown(index))
@@ -120,7 +133,7 @@ object MenuDialog {
     }
 
     private fun execute(player: Player, view: View, id: String) {
-        val definition = MenuRuntime.current.actions[id] ?: return
+        val definition = MenuRuntime.settings(view.menu)?.actions?.get(id) ?: return
         executeDefinition(player, view, definition)
     }
 
@@ -136,7 +149,7 @@ object MenuDialog {
             return
         }
         if (definition.type == "page") {
-            show(player, View(definition.value))
+            show(player, view.copy(page = definition.value, dropdown = -1))
             return
         }
         if (definition.type == "builtin") {
@@ -145,7 +158,11 @@ object MenuDialog {
                 definition.value == "search" -> searchDialog(player, view)
                 definition.value == "refresh" -> show(player, view)
                 else -> {
-                    val prefs = MenuPreferences.read(player.persistentDataContainer)
+                    val prefs =
+                        MenuPreferences.read(
+                            player.persistentDataContainer,
+                            MenuRuntime.settings(view.menu) ?: return,
+                        )
                     val value = definition.value.substringAfter(':')
                     val next =
                         if (definition.value.startsWith("language:"))
@@ -165,7 +182,11 @@ object MenuDialog {
             }
             val command =
                 if (step.type == "toggle-command") {
-                    when (booleanState(state(player, step.state))) {
+                    when (
+                        booleanState(
+                            state(player, step.state, MenuRuntime.settings(view.menu) ?: return)
+                        )
+                    ) {
                         true -> step.whenTrue
                         false -> step.whenFalse
                         null -> {
@@ -195,9 +216,16 @@ object MenuDialog {
     }
 
     private fun show(player: Player, requested: View) {
-        val menu = MenuRuntime.current
-        val view = if (requested.page in menu.pages) requested else View(menu.defaultPage)
-        val prefs = MenuPreferences.read(player.persistentDataContainer)
+        val menu =
+            MenuRuntime.settings(requested.menu)
+                ?: run {
+                    player.closeDialog()
+                    return
+                }
+        val view =
+            if (requested.page in menu.pages) requested
+            else requested.copy(page = menu.defaultPage, dropdown = -1)
+        val prefs = MenuPreferences.read(player.persistentDataContainer, menu)
         val token = UUID.randomUUID().toString().replace("-", "")
         val actions = linkedSetOf<String>()
         fun click(action: String): ClickEvent<*> {
@@ -255,7 +283,7 @@ object MenuDialog {
                 view.page,
                 prefs.language,
                 prefs.theme,
-                { cache.getOrPut(it) { state(player, it) } },
+                { cache.getOrPut(it) { state(player, it, menu) } },
                 { expandText(player, it) },
                 ::click,
                 view.dropdown,
@@ -340,10 +368,10 @@ object MenuDialog {
         )
     }
 
-    private fun state(player: Player, id: String): String? =
-        when (val binding = MenuRuntime.current.states.getValue(id)) {
-            "language" -> MenuPreferences.read(player.persistentDataContainer).language.id
-            "theme" -> MenuPreferences.read(player.persistentDataContainer).theme.id
+    private fun state(player: Player, id: String, menu: MenuDefinition): String? =
+        when (val binding = menu.states.getValue(id)) {
+            "language" -> MenuPreferences.read(player.persistentDataContainer, menu).language.id
+            "theme" -> MenuPreferences.read(player.persistentDataContainer, menu).theme.id
             "pickup" ->
                 if (EffectPlugins.provider("PickupNotifier") != null)
                     (!player.persistentDataContainer.has(

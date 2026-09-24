@@ -57,6 +57,7 @@ object DialogMenu : taboolib.common.platform.Plugin() {
     }
 
     override fun onDisable() {
+        MenuResources.shutdown()
         TemplateDialog.shutdown()
         MenuDialog.shutdown()
     }

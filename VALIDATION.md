@@ -1,5 +1,16 @@
 # Validation Record
 
+## 0.1.16
+
+- Workspace formatting, native TabooLib packaging and all 53 JUnit tests passed. New coverage includes complete menu catalogs, local/cross-menu page references, legacy compatibility, all 39 ItemBridge provider IDs, resource-pack configuration validation and per-player/per-pack state isolation.
+- Actual Paper 26.2 build 123 parsed the original production settings and the consolidated settings file into equal definitions: all 8 pages, translations, actions and item metadata configuration are preserved. Commands tested include new explicit menu/page routes and old settings/template aliases.
+- Real CraftEngine 26.9.1 and NeigeItems 1.21.171 items preserve custom metadata and fresh copies; absent Nexo uses a disabled barrier fallback. All 39 adapters match the bundled ItemBridge 1.0.32 registry; the other 37 plugins were not individually installed for live testing.
+- Real Minecraft 26.2 OpenGL clicks verified intro -> confirmation -> hard difficulty -> cancel -> confirmation, retaining difficulty. Confirmation emits the demo message and closes without starting a dungeon. NPC/boss screens have no native bottom close button; canvas close and ESC work, with no blank-content white outline at the supported size.
+- CraftEngine automatically delivered the configured pack before PlayerJoin. Its successful UUID unlocks all tested menu commands without repeating the download. A different External UUID remains blocked despite that loaded pack; invalid SHA1 reload preserves the previous requirement. URL mode /dmenu pack downloads and unlocks; removing that pack revokes access, reloading it restores access, and restoring the original CraftEngine configuration reuses its still-loaded identity.
+- Login responses are observed through TabooLib packet events and a read-only Netty observer before CraftEngine's consuming handler. Bundled outgoing pack push/pop packets are handled. No TabooLib/CraftEngine framework class, downloader, method or existing network handler is replaced.
+- The same tested JAR is installed and released; production remains stopped. Development fixtures, scripts, logs, screenshots and backups stay outside test_server. Resource images/fonts/shaders are unchanged from 0.1.15, including the local sprite-based source; its full hosted ZIP still needs the previously pending normal CraftEngine workflow.
+- Limitations: resource checks use server-sent UUID/status acknowledgements, not inspection of client images. Manually enabled local packs need RequireLoaded=false. Real rendering/network checks cover the stated server/client versions; other backends and all third-party sender implementations are not claimed.
+
 ## 0.1.15
 
 - Native TabooLib build, formatting and all 41 JUnit tests passed. New tests cover template references, all difficulty values and visible controls, coordinates, overlapping buttons, command-variable validation, independent defaults, failed-reload preservation and restart.

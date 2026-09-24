@@ -40,14 +40,14 @@ data class MenuPreferences(
         private val LANGUAGE_KEY = NamespacedKey("playersettings", "menu_language")
         private val THEME_KEY = NamespacedKey("playersettings", "menu_theme")
 
-        fun read(data: PersistentDataContainer) =
+        fun read(data: PersistentDataContainer, defaults: MenuDefinition = MenuRuntime.current) =
             MenuPreferences(
                 MenuLanguage.entries.firstOrNull {
                     it.id == data.get(LANGUAGE_KEY, PersistentDataType.STRING)
-                } ?: MenuRuntime.current.language,
+                } ?: defaults.language,
                 MenuTheme.entries.firstOrNull {
                     it.id == data.get(THEME_KEY, PersistentDataType.STRING)
-                } ?: MenuRuntime.current.theme,
+                } ?: defaults.theme,
             )
     }
 }

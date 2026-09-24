@@ -10,7 +10,30 @@ import org.mockito.Mockito.*
 
 class ItemBridgeSourceTest {
     @Test
-    fun `only five integrations accepted with aliases and preserved item IDs`() {
+    fun `provider catalog covers every hook detected by the actual library without optional plugin classes`() {
+        val manager = mock(org.bukkit.plugin.PluginManager::class.java)
+        val requested = linkedSetOf<String>()
+        `when`(manager.getPlugin(anyString())).thenAnswer { invocation ->
+            requested += invocation.getArgument<String>(0)
+            null
+        }
+        mockStatic(org.bukkit.Bukkit::class.java).use { bukkit ->
+            bukkit
+                .`when`<org.bukkit.plugin.PluginManager> { org.bukkit.Bukkit.getPluginManager() }
+                .thenReturn(manager)
+            val failures = mutableListOf<Throwable>()
+            val bridge =
+                BukkitItemBridge.builder()
+                    .detectSupportedPlugins({}, { _, error -> failures += error }, { it.isEnabled })
+                    .build()
+            assertTrue(bridge.providers().isEmpty())
+            assertTrue(failures.isEmpty(), failures.toString())
+        }
+        assertEquals(requested, ItemBridgeSources.plugins.values.toSet())
+    }
+
+    @Test
+    fun `all bundled integrations accepted with aliases and preserved item IDs`() {
         val cases =
             mapOf(
                 "ORAXEN:MySword" to ItemReference("oraxen", "MySword"),
@@ -22,19 +45,26 @@ class ItemBridgeSourceTest {
                 "NeigeItems:MySword" to ItemReference("neigeitems", "MySword"),
                 "NI:group:MySword" to ItemReference("neigeitems", "group:MySword"),
                 "CE:fish:rainbow_fish" to ItemReference("craftengine", "fish:rainbow_fish"),
+                "NEXO:MySword" to ItemReference("nexo", "MySword"),
+                "MM:MySword" to ItemReference("mythicmobs", "MySword"),
+                "MI:SWORD:MySword" to ItemReference("mmoitems", "SWORD:MySword"),
+                "HDB:123" to ItemReference("headdatabase", "123"),
             )
         cases.forEach { (input, expected) ->
             assertEquals(expected, ItemReference.parse("source:$input", "test"))
         }
-        assertEquals(
-            setOf("Oraxen", "ItemsAdder", "SX-Item", "NeigeItems", "CraftEngine"),
-            ItemBridgeSources.plugins.values.toSet(),
-        )
+        assertEquals(39, ItemBridgeSources.plugins.size)
+        ItemBridgeSources.plugins.forEach { (id, name) ->
+            val input = if (id in setOf("craftengine", "itemsadder")) "test:sword" else "TestSword"
+            assertEquals(
+                ItemReference(id, input),
+                ItemReference.parse("source:$name:$input", "test"),
+            )
+            assertEquals(ItemReference(id, input), ItemReference.parse("source:$id:$input", "test"))
+        }
         for (input in
             listOf(
-                "NEXO:blade",
-                "MM:blade",
-                "HDB:blade",
+                "unknown:blade",
                 "IA:missing_namespace",
                 "IA:Mixed:case",
                 "NI:%dynamic%",

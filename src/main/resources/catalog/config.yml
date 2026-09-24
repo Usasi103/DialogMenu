@@ -1,0 +1,16 @@
+# 全局设置默认菜单和所需资源包；每个 menus/*.yml 都是一个完整菜单，自动加载。
+# 文件名就是菜单 ID，不需要另写注册列表。
+Version: 3
+DefaultMenu: settings
+
+# 所需文件：DialogMenu-resourcepack-0.1.16.zip；本机素材版也可用（两者字体 ID 相同）。
+# 当前已合入 plugins/CraftEngine/resources/toranca_pack/resourcepack/，由下方 default 包发送。
+# 指定本插件所需资源包。CraftEngine 模式的 Pack 对应其 resource-pack.packs 下的 ID。
+ResourcePack:
+  Name: "DialogMenu 菜单资源（CraftEngine 合并包）"
+  Provider: CraftEngine # CraftEngine / URL / External
+  Pack: default # 可以改成 CraftEngine 配置中的其他包 ID
+  RequireLoaded: true # 玩家必须成功加载指定包才能打开菜单
+  URL: "" # URL 模式填 ZIP 直链，玩家通过 /dmenu pack 下载
+  UUID: "" # URL 模式可由地址生成；External 模式填写发送方使用的包 UUID
+  SHA1: "" # URL 模式可填 40 位 SHA-1，由客户端校验下载内容

@@ -3,11 +3,11 @@ package online.toraka.dialogmenu
 import io.papermc.paper.connection.PlayerGameConnection
 import io.papermc.paper.dialog.Dialog
 import io.papermc.paper.event.player.PlayerCustomClickEvent
-import io.papermc.paper.registry.data.dialog.ActionButton
+import io.papermc.paper.registry.RegistryKey
 import io.papermc.paper.registry.data.dialog.DialogBase
-import io.papermc.paper.registry.data.dialog.action.DialogAction
 import io.papermc.paper.registry.data.dialog.body.DialogBody
 import io.papermc.paper.registry.data.dialog.type.DialogType
+import io.papermc.paper.registry.set.RegistrySet
 import java.util.UUID
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
@@ -27,22 +27,18 @@ object TemplateDialog {
 
     private val sessions = mutableMapOf<UUID, Session>()
 
-    fun open(player: Player, id: String) {
+    fun open(player: Player, requested: String) {
+        val id = MenuRuntime.resolveTemplate(requested)
         if (!player.hasPermission("playersettings.use")) return
         if (id !in MenuRuntime.templates) {
             player.sendMessage("DialogMenu：模板不存在 $id")
             return
         }
-        if (
-            player.resourcePackStatus !=
-                org.bukkit.event.player.PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED
-        ) {
-            player.sendMessage("请先加载服务器资源包，再打开对话模板。")
-            return
+        MenuResources.open(player) {
+            MenuDialog.forget(player.uniqueId)
+            player.closeInventory()
+            show(player, id, emptyMap())
         }
-        MenuDialog.forget(player.uniqueId)
-        player.closeInventory()
-        show(player, id, emptyMap())
     }
 
     fun forget(uuid: UUID) {
@@ -84,7 +80,6 @@ object TemplateDialog {
                 },
             )
         val content = canvas.build()
-        actions += "builtin/close"
         sessions[player.uniqueId] = Session(token, id, values, actions, System.currentTimeMillis())
         player.showDialog(
             Dialog.create { factory ->
@@ -107,17 +102,9 @@ object TemplateDialog {
                             .build()
                     )
                     .type(
-                        DialogType.notice(
-                            ActionButton.create(
-                                Component.text("关闭对话"),
-                                null,
-                                120,
-                                DialogAction.customClick(
-                                    Key.key("toraka_dialogue", "$token/builtin/close"),
-                                    null,
-                                ),
-                            )
-                        )
+                        // An empty dialog list has no native buttons or exit action.
+                        // The canvas supplies its own close button; ESC remains available.
+                        DialogType.dialogList(RegistrySet.keySet(RegistryKey.DIALOG)).build()
                     )
             }
         )
@@ -144,11 +131,6 @@ object TemplateDialog {
             )
                 return@submit
             val template = MenuRuntime.templates[session.template] ?: return@submit
-            if (id == "builtin/close") {
-                sessions.remove(player.uniqueId)
-                player.closeDialog()
-                return@submit
-            }
             val element = template.elements.firstOrNull { it.id == id } ?: return@submit
             if (!TemplateRenderer.visible(element, session.values)) return@submit
             sessions.remove(player.uniqueId)

@@ -28,22 +28,13 @@ data class ItemReference(val provider: String, val input: String) {
                         "$path: 使用 source:CE:命名空间:物品ID"
                     }
                     when (parts[1].lowercase(Locale.ROOT)) {
-                        "ce",
-                        "craftengine" -> "craftengine"
-                        "oraxen" -> "oraxen"
-                        "ia",
-                        "itemsadder" -> "itemsadder"
-                        "sx-item",
-                        "sxitem",
-                        "si" -> "sxitem"
-                        "neigeitems",
-                        "ni" -> "neigeitems"
                         "minecraft",
                         "vanilla" -> "minecraft"
                         else ->
-                            error(
-                                "$path: 不支持物品源 ${parts[1]}，可用 Oraxen / IA / SX-Item / NI / CE / MINECRAFT"
-                            )
+                            ItemBridgeSources.provider(parts[1])
+                                ?: error(
+                                    "$path: 未知物品源 ${parts[1]}，请使用 ItemBridge 插件 ID（见 ITEM-SOURCES.md）"
+                                )
                     }
                 } else "minecraft"
             val input = if (source) parts[2] else value
@@ -178,7 +169,7 @@ object ItemSources {
 
     fun changed() {
         ItemBridgeSources.reset()
-        runCatching { validate(MenuRuntime.current) }
+        runCatching { MenuRuntime.definitions.flatMap { validate(it) } }
             .onSuccess {
                 it.forEach { warning -> Bukkit.getLogger().warning("[DialogMenu] $warning") }
             }

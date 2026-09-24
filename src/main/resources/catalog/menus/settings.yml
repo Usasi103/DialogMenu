@@ -1,0 +1,230 @@
+# 玩家设置是一个菜单；Pages 内每项是它的子页面，顺序也是导航顺序。
+# /dmenu open settings；修改后 /dmenu check，再 /dmenu reload。
+Version: 1
+Type: settings
+Title: {zh_cn: "玩家设置", en_us: "Player Settings"}
+DefaultPage: "particles"
+Language: "zh_cn"
+Theme: "dark"
+HideFocusOutline: true
+MainMenu: ["close", "command: menu"]
+
+Pages:
+  profile:
+    # 玩家信息：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
+    Title: {zh_cn: "玩家信息", en_us: "Profile"}
+    Icon: "profile-icon"
+    Keywords: ["玩家", "信息", "等级", "金币", "余额", "图鉴", "player", "level", "coin"]
+    Layout: ["玩家", "等级", "资产", "金币", "余额", "鱼币", "图鉴", "世界"]
+    Icons:
+      玩家:
+        Type: "text"
+        Name: {zh_cn: "玩家：{player}", en_us: "Player: {player}"}
+      等级:
+        Type: "text"
+        Name: {zh_cn: "等级：%playerlevel_level%  延迟：{ping} 毫秒", en_us: "Level: %playerlevel_level%  Ping: {ping} ms"}
+      资产:
+        Type: "heading"
+        Name: {zh_cn: "资产与收集进度", en_us: "Balances and collection"}
+      金币:
+        Type: "text"
+        Name: {zh_cn: "金币：%excellenteconomy_balance_coin%", en_us: "Coins: %excellenteconomy_balance_coin%"}
+      余额:
+        Type: "text"
+        Name: {zh_cn: "余额：%excellenteconomy_balance_money%", en_us: "Balance: %excellenteconomy_balance_money%"}
+      鱼币:
+        Type: "text"
+        Name: {zh_cn: "鱼币：%excellenteconomy_balance_fishcoin%", en_us: "Fish coins: %excellenteconomy_balance_fishcoin%"}
+      图鉴:
+        Type: "text"
+        Name: {zh_cn: "图鉴收集：%handbook_total% / %handbook_max%", en_us: "Collection: %handbook_total% / %handbook_max%"}
+      世界:
+        Type: "text"
+        Name: {zh_cn: "所在世界：{world}", en_us: "World: {world}"}
+  sound:
+    # 环境音效：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
+    Title: {zh_cn: "环境音效", en_us: "Sounds"}
+    Icon: "sound-icon"
+    Keywords: ["声音", "音效", "鸟鸣", "风声", "sound", "ambience", "audio"]
+    Layout: ["音效", "说明", "保存", "个人", "音量"]
+    Icons:
+      音效:
+        Type: "toggle"
+        Name: {zh_cn: "鸟鸣、风声与自然音效", en_us: "Birds, wind and nature"}
+        Bind: "sounds"
+        Description: {zh_cn: "仅调整你自己听到的环境音效。", en_us: "Changes only the ambience you hear."}
+      说明:
+        Type: "heading"
+        Name: {zh_cn: "音效说明", en_us: "About ambience"}
+      保存:
+        Type: "text"
+        Name: {zh_cn: "环境音效偏好会自动保存。", en_us: "Your ambience preference is saved."}
+      个人:
+        Type: "text"
+        Name: {zh_cn: "你的选择不会影响其他玩家。", en_us: "Your choice does not affect other players."}
+      音量:
+        Type: "text"
+        Name: {zh_cn: "总音量请在游戏的声音设置中调整。", en_us: "Set overall volume in Minecraft sound options."}
+  particles:
+    # 环境粒子：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
+    Title: {zh_cn: "环境粒子", en_us: "Particles"}
+    Icon: "particles-icon"
+    Keywords: ["粒子", "萤火虫", "落叶", "密度", "particle", "firefly", "leaves", "density"]
+    Layout: ["总开关", "分类", "落叶", "萤火虫", "群系", "密度", "说明"]
+    Icons:
+      总开关:
+        Type: "toggle"
+        Name: {zh_cn: "显示环境粒子", en_us: "Show ambient particles"}
+        Bind: "particles"
+        Description: {zh_cn: "仅影响你自己看到的环境粒子。", en_us: "Changes only the particles you see."}
+      分类:
+        Type: "heading"
+        Name: {zh_cn: "粒子分类与密度", en_us: "Particle categories and density"}
+      落叶:
+        Type: "toggle"
+        Name: {zh_cn: "自然落叶", en_us: "Falling leaves"}
+        Bind: "leaves"
+      萤火虫:
+        Type: "toggle"
+        Name: {zh_cn: "夜间萤火虫", en_us: "Night fireflies"}
+        Bind: "firefly"
+      群系:
+        Type: "toggle"
+        Name: {zh_cn: "生物群系粒子", en_us: "Biome particles"}
+        Bind: "biome"
+      密度:
+        Type: "slider"
+        Name: {zh_cn: "粒子密度", en_us: "Particle density"}
+        Bind: "particle-density"
+        Options:
+          "off": {zh_cn: "关闭", en_us: "Off"}
+          low: {zh_cn: "低", en_us: "Low"}
+          medium: {zh_cn: "中", en_us: "Medium"}
+          high: {zh_cn: "高", en_us: "High"}
+      说明:
+        Type: "text"
+        Name: {zh_cn: "关闭环境粒子后，各分类效果也会暂时隐藏。", en_us: "Disabling particles hides all categories."}
+  notices:
+    # 拾取提示：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
+    Title: {zh_cn: "拾取提示", en_us: "Pickup notices"}
+    Icon: "notices-icon"
+    Keywords: ["拾取", "提示", "通知", "pickup", "notice", "notification"]
+    Layout: ["拾取提示", "说明", "拾取", "资源包", "保存"]
+    Icons:
+      拾取提示:
+        Type: "toggle"
+        Name: {zh_cn: "显示物品拾取提示", en_us: "Show pickup notices"}
+        Bind: "pickup"
+        Description: {zh_cn: "在屏幕上显示刚刚拾取的物品。", en_us: "Shows the items you just picked up."}
+      说明:
+        Type: "heading"
+        Name: {zh_cn: "提示说明", en_us: "About pickup notices"}
+      拾取:
+        Type: "text"
+        Name: {zh_cn: "关闭提示后仍然可以正常拾取物品。", en_us: "You can still pick up items with notices off."}
+      资源包:
+        Type: "text"
+        Name: {zh_cn: "需要加载服务器资源包和界面组件。", en_us: "Requires the server resource pack and HUD."}
+      保存:
+        Type: "text"
+        Name: {zh_cn: "你的提示偏好会自动保存。", en_us: "Your notice preference is saved."}
+  loot:
+    # 掉落光柱：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
+    Title: {zh_cn: "掉落光柱", en_us: "Loot beams"}
+    Icon: "loot-icon"
+    Keywords: ["掉落", "光柱", "掉落音效", "loot", "beam", "drop"]
+    Layout: ["光柱", "音效设置", "音效", "分别设置", "个人设置"]
+    Icons:
+      光柱:
+        Type: "toggle"
+        Name: {zh_cn: "显示掉落光柱", en_us: "Show loot beams"}
+        Bind: "loot-beams"
+        Description: {zh_cn: "帮助你发现地面上的稀有掉落物。", en_us: "Helps you spot rare items on the ground."}
+      音效设置:
+        Type: "heading"
+        Name: {zh_cn: "掉落音效", en_us: "Loot sounds"}
+      音效:
+        Type: "toggle"
+        Name: {zh_cn: "播放光柱音效", en_us: "Play loot sounds"}
+        Bind: "loot-sounds"
+      分别设置:
+        Type: "text"
+        Name: {zh_cn: "光柱与音效可以分别设置。", en_us: "Beams and sounds can be set separately."}
+      个人设置:
+        Type: "text"
+        Name: {zh_cn: "仅影响你自己的画面与声音。", en_us: "Changes only your own view and sounds."}
+  appearance:
+    # 界面与语言：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
+    Title: {zh_cn: "界面与语言", en_us: "Appearance"}
+    Icon: "appearance-icon"
+    Keywords: ["界面", "语言", "主题", "亮色", "暗色", "language", "theme", "light", "dark"]
+    Layout: ["语言", "主题设置", "主题", "保存说明", "个人设置"]
+    Icons:
+      语言:
+        Type: "dropdown"
+        Name: {zh_cn: "菜单语言", en_us: "Menu language"}
+        Bind: "language"
+        Description: {zh_cn: "仅切换此玩家菜单的语言。", en_us: "Applies to this player menu."}
+        Options: {zh_cn: "简体中文", en_us: "English"}
+      主题设置:
+        Type: "heading"
+        Name: {zh_cn: "界面主题", en_us: "Menu theme"}
+      主题:
+        Type: "dropdown"
+        Name: {zh_cn: "界面主题", en_us: "Menu theme"}
+        Bind: "theme"
+        Options:
+          dark: {zh_cn: "暗色", en_us: "Dark"}
+          light: {zh_cn: "亮色", en_us: "Light"}
+      保存说明:
+        Type: "text"
+        Name: {zh_cn: "选择会自动保存，下次打开继续使用。", en_us: "Your choices are saved for your next visit."}
+      个人设置:
+        Type: "text"
+        Name: {zh_cn: "仅影响你自己的玩家菜单。", en_us: "Applies only to your own player menu."}
+  help:
+    # 使用帮助：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
+    Title: {zh_cn: "使用帮助", en_us: "Help"}
+    Icon: "loot-icon"
+    Keywords: ["帮助", "资源包", "缩放", "help", "resource", "scale"]
+    Layout: ["导航", "高亮", "资源包", "加载", "缩放", "关闭"]
+    Icons:
+      导航:
+        Type: "text"
+        Name: {zh_cn: "点击左侧分类，查看并调整对应设置。", en_us: "Choose a category on the left to change settings."}
+      高亮:
+        Type: "text"
+        Name: {zh_cn: "绿色按钮表示该设置当前已开启。", en_us: "Green buttons show the active selection."}
+      资源包:
+        Type: "heading"
+        Name: {zh_cn: "资源包与界面大小", en_us: "Resource pack and GUI scale"}
+      加载:
+        Type: "text"
+        Name: {zh_cn: "此界面需要服务器资源包。", en_us: "This menu needs the server resource pack."}
+      缩放:
+        Type: "text"
+        Name: {zh_cn: "若界面显示不完整，请调低界面缩放。", en_us: "Lower GUI scale if the menu does not fit."}
+      关闭:
+        Type: "text"
+        Name: {zh_cn: "点击下方返回游戏，也可按 Esc 关闭。", en_us: "Use Back to game below or press Esc to close."}
