@@ -1,5 +1,12 @@
 # Validation Record
 
+## Configuration comments and documentation organization (unreleased)
+
+- Parsed all 19 edited YAML files with SnakeYAML and compared their values, scalar types and ordering against the originals; no configuration values changed. The four deployed menus keep their existing settings and the additional item-source page.
+- Ran the old and updated default generators in external scratch directories; all eight generated YAML documents have identical configuration values and ordering.
+- Checked 56 relative links across the 18 organized documents. The English README contains no Chinese text. Existing Wiki draft files remain unchanged.
+- This change only updates documentation and YAML comments. No runtime code, JAR or resource-pack assets changed, and the server did not require a reload or restart.
+
 ## Unreleased (0.1.21-SNAPSHOT)
 
 - Standard TabooLib build and all 71 tests passed. New regressions cover the real eight-pixel coin glyph, fractional Unicode/bold advances, row origins, the profile default, and legacy sprite font IDs resolving to the new namespaces.

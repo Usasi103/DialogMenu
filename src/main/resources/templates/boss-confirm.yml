@@ -1,92 +1,119 @@
+# 画布字段说明：
+# Position: [X, Y]：相对画布左上角；X 是像素，Y 是从 0 开始的行号，每行 9 像素。
+# Canvas.Width 是整个画布的宽度；Canvas.Rows 是画布行数，20 行等于 180 像素。
+# Elements 内 text 的 Width 是文字换行宽度（像素），Rows 是预留高度（行）。
+# 文字按 Width 自动换行；Rows 容量不足时截断并显示 ..；大字每行会占用更多画布行。
+# FontSize 默认 8，仅 text 可自定义 6–24；Bold: true 加粗，false 常规。
+# 按钮和内置 sprite 的尺寸由 Sprite 贴图决定，修改 Width / Rows 不会拉伸贴图。
+# 自定义 Font 图标的 Width / Rows 声明占位尺寸，Advance 为字形实际前进宽度（像素）。
+# 自定义图标的实际大小由资源包字体定义决定；Advance 不准确会导致后续内容错位。
+# Color 仅接受六位十六进制颜色，如 '#55FF55'；不支持 settings 的 text / muted / heading 别名。
+# Canvas.HideFocusOutline: true 依赖配套资源包着色器，且仅支持 552 像素 × 20 行。
+# 修改画布尺寸时须设 HideFocusOutline: false；背景和各元素仍须在新画布边界内。
+# Variables 的首个选项是默认值；set 修改当前玩家本次会话的值，refresh 重新绘制。
+# VisibleWhen / SelectedWhen 写作 变量名=值；分别控制是否显示、是否使用 SelectedSprite。
+# Actions 按顺序执行：page 跳本菜单页，menu 打开其他菜单，message 发提示，close 关闭。
+# command / console 分别以玩家 / 控制台身份执行指令，指令不带 /；权限和业务校验由实际插件处理。
+# 原版 16 色对照（Color 填右侧的 '#RRGGBB'，不能直接填 &a 或 §a）：
+# &0 黑 '#000000'；&1 深蓝 '#0000AA'；&2 深绿 '#00AA00'；&3 湖蓝 '#00AAAA'。
+# &4 深红 '#AA0000'；&5 紫 '#AA00AA'；&6 金 '#FFAA00'；&7 灰 '#AAAAAA'。
+# &8 深灰 '#555555'；&9 蓝 '#5555FF'；&a 绿 '#55FF55'；&b 青 '#55FFFF'。
+# &c 红 '#FF5555'；&d 粉紫 '#FF55FF'；&e 黄 '#FFFF55'；&f 白 '#FFFFFF'。
+# YAML 中 # 会开始注释，因此十六进制颜色必须加引号，例如 Color: '#55FF55'。
+
 # 参考图的难度确认页。选择仅改变本次对话的变量，不直接启动副本/扣物品。
 # /dmenu template boss-confirm
 # Variables 每项第一值为默认值；在 template: 跳转中保留相同的合法变量。
-Version: 1
-Title: "开启挑战"
-Skin: amethyst
-Canvas: {Width: 552, Rows: 20, Background: panel, HideFocusOutline: true}
-Variables:
-  difficulty: [normal, hard, overload]
-Elements:
+Version: 1 # 配置格式版本，保持当前值
+Title: "开启挑战" # 此页的 Dialog 标题；画布中的大标题在 Elements 中单独定义
+Skin: amethyst # 内置皮肤：amethyst 紫色 / parchment 木色；需要对应资源包
+Canvas: # 画布尺寸、背景及焦点白框设置
+  Width: 552 # 画布宽度（像素），180–960；隐藏焦点框时必须为 552
+  Rows: 20 # 画布高度（行），8–28；每行 9 像素，隐藏焦点框时必须为 20
+  Background: panel # 背景贴图 ID；panel 为内置面板，none 不绘制背景
+  HideFocusOutline: true # true 隐藏该菜单的焦点白框；需要配套资源包着色器，false 保留
+Variables: # 当前玩家本次会话的枚举变量；每组首项为默认值
+  difficulty: [normal, hard, overload] # 难度允许值；默认 normal，set 动作只能设置此列表中的值
+Elements: # 画布元素定义；每个元素 ID 唯一，按书写顺序绘制
   title:
-    Position: [240, 2]
-    Width: 130
-    Text: "开启挑战"
-    Color: "#d9bfef"
+    Position: [240, 2] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 130 # 文字区域宽度（像素），超出按此宽度自动换行
+    Text: "开启挑战" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Color: "#d9bfef" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   requirement:
-    Position: [192, 4]
-    Width: 250
-    Text: "所需物品：虚空钥匙 × 1"
-    Color: "#bca4d0"
+    Position: [192, 4] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 250 # 文字区域宽度（像素），超出按此宽度自动换行
+    Text: "所需物品：虚空钥匙 × 1" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Color: "#bca4d0" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   divider:
-    Type: sprite
-    Position: [102, 5]
-    Sprite: divider
+    Type: sprite # 资源包贴图或字体图标
+    Position: [102, 5] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: divider # 内置贴图 ID，决定按钮或图标的形状与尺寸
   question:
-    Position: [177, 7]
-    Width: 300
-    Text: "您确定要开始这场战斗吗？"
+    Position: [177, 7] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 300 # 文字区域宽度（像素），超出按此宽度自动换行
+    Text: "您确定要开始这场战斗吗？" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
   normal:
-    Type: button
-    Position: [144, 9]
-    Text: "普通"
-    SelectedWhen: difficulty=normal
-    SelectedSprite: selected
-    Actions: ["set: difficulty=normal", "refresh"]
+    Type: button # 可点击按钮，动作写在 Actions 中
+    Position: [144, 9] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Text: "普通" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    SelectedWhen: difficulty=normal # 选中条件：变量名=值；成立时使用 SelectedSprite
+    SelectedSprite: selected # 选中时使用的贴图 ID；尺寸须与原 Sprite 一致
+    Actions: ["set: difficulty=normal", "refresh"] # 点击后按顺序执行的动作列表；命令不带 /
   hard:
-    Type: button
-    Position: [144, 11]
-    Text: "困难"
-    SelectedWhen: difficulty=hard
-    SelectedSprite: selected
-    Actions: ["set: difficulty=hard", "refresh"]
+    Type: button # 可点击按钮，动作写在 Actions 中
+    Position: [144, 11] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Text: "困难" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    SelectedWhen: difficulty=hard # 选中条件：变量名=值；成立时使用 SelectedSprite
+    SelectedSprite: selected # 选中时使用的贴图 ID；尺寸须与原 Sprite 一致
+    Actions: ["set: difficulty=hard", "refresh"] # 点击后按顺序执行的动作列表；命令不带 /
   overload:
-    Type: button
-    Position: [144, 13]
-    Text: "过量"
-    SelectedWhen: difficulty=overload
-    SelectedSprite: selected
-    Actions: ["set: difficulty=overload", "refresh"]
+    Type: button # 可点击按钮，动作写在 Actions 中
+    Position: [144, 13] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Text: "过量" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    SelectedWhen: difficulty=overload # 选中条件：变量名=值；成立时使用 SelectedSprite
+    SelectedSprite: selected # 选中时使用的贴图 ID；尺寸须与原 Sprite 一致
+    Actions: ["set: difficulty=overload", "refresh"] # 点击后按顺序执行的动作列表；命令不带 /
   modifier-heading:
-    Position: [282, 9]
-    Width: 222
-    Text: "难度修正"
-    Color: "#ba98d6"
+    Position: [282, 9] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 222 # 文字区域宽度（像素），超出按此宽度自动换行
+    Text: "难度修正" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Color: "#ba98d6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   normal-description:
-    Position: [282, 11]
-    Width: 222
-    Rows: 4
-    VisibleWhen: difficulty=normal
-    Text: ["· 无属性加成", "· 默认奖励和经验倍率"]
+    Position: [282, 11] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 222 # 文字区域宽度（像素），超出按此宽度自动换行
+    Rows: 4 # 文字区域高度（行），每行 9 像素；放大字号后每行文字占更多行
+    VisibleWhen: difficulty=normal # 显示条件：变量名=值；不满足时隐藏此元素
+    Text: ["· 无属性加成", "· 默认奖励和经验倍率"] # 显示文字；正文可用字符串或列表，按钮须为单行字符串
   hard-description:
-    Position: [282, 11]
-    Width: 222
-    Rows: 4
-    VisibleWhen: difficulty=hard
-    Text: ["· 更高生命与攻击", "· 适合熟悉机制的队伍"]
+    Position: [282, 11] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 222 # 文字区域宽度（像素），超出按此宽度自动换行
+    Rows: 4 # 文字区域高度（行），每行 9 像素；放大字号后每行文字占更多行
+    VisibleWhen: difficulty=hard # 显示条件：变量名=值；不满足时隐藏此元素
+    Text: ["· 更高生命与攻击", "· 适合熟悉机制的队伍"] # 显示文字；正文可用字符串或列表，按钮须为单行字符串
   overload-description:
-    Position: [282, 11]
-    Width: 222
-    Rows: 4
-    VisibleWhen: difficulty=overload
-    Text: ["· 极限挑战", "· 请按实际副本配置奖励"]
+    Position: [282, 11] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 222 # 文字区域宽度（像素），超出按此宽度自动换行
+    Rows: 4 # 文字区域高度（行），每行 9 像素；放大字号后每行文字占更多行
+    VisibleWhen: difficulty=overload # 显示条件：变量名=值；不满足时隐藏此元素
+    Text: ["· 极限挑战", "· 请按实际副本配置奖励"] # 显示文字；正文可用字符串或列表，按钮须为单行字符串
   confirm:
-    Type: button
-    Position: [162, 17]
-    Text: "确认"
+    Type: button # 可点击按钮，动作写在 Actions 中
+    Position: [162, 17] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Text: "确认" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
     # 演示动作不会扣物品或召唤首领。接入真实插件时在此替换为：
     # Actions: ["console: yourdungeon join {player} {difficulty}", "close"]
     # 物品消耗、次数限制和奖励由副本插件检查，不应依赖菜单文字。
     # Permission: "yourdungeon.enter"
-    Actions: ["message: 已选择难度 {difficulty}；当前为演示模板，尚未连接副本。", "close"]
+    Actions: ["message: 已选择难度 {difficulty}；当前为演示模板，尚未连接副本。", "close"] # 点击后按顺序执行的动作列表；命令不带 /
   cancel:
-    Type: button
-    Position: [282, 17]
-    Text: "取消"
-    Actions: ["template: boss-intro"]
+    Type: button # 可点击按钮，动作写在 Actions 中
+    Position: [282, 17] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Text: "取消" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Actions: ["template: boss-intro"] # 点击后按顺序执行的动作列表；命令不带 /
   close:
-    Type: button
-    Position: [522, 1]
-    Sprite: close
-    Text: "×"
-    Actions: ["close"]
+    Type: button # 可点击按钮，动作写在 Actions 中
+    Position: [522, 1] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: close # 内置贴图 ID，决定按钮或图标的形状与尺寸
+    Text: "×" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Actions: ["close"] # 点击后按顺序执行的动作列表；命令不带 /

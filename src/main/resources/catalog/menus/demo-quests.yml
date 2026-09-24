@@ -2,28 +2,28 @@
 # 修改后 /dmenu check、/dmenu reload。分类和任务均可直接增删，自动分页。
 # 这是界面演示：进度来自下面的配置，不会统计击杀、钓鱼或发放真实奖励。
 # 追踪/领取状态只存在于当前玩家这次打开的菜单内，切分类和翻页会保留，重新打开重置。
-Version: 1
-Type: quest-demo
-Title: "任务列表"
-Subtitle: "选择任务，查看目标与奖励"
+Version: 1 # 配置格式版本，保持当前值
+Type: quest-demo # 任务列表演示；进度与奖励来自本文件
+Title: "任务列表" # 任务菜单的主标题
+Subtitle: "选择任务，查看目标与奖励" # 主标题下的说明文字
 Skin: amethyst # amethyst 紫色 / parchment 木色
-HideFocusOutline: true
+HideFocusOutline: true # true 隐藏该菜单的焦点白框；需要配套资源包着色器，false 保留
 PageSize: 5 # 1–5；当前按每页 5 个任务排版
 
 # 分类 ID 自定（最多 3 个），all / 全部、completed / 已完成 自动添加，不要手动定义。
 # 达到目标的任务进入“已完成”（含待领取）；原分类仅显示未完成，“全部”仍显示所有任务。
-Categories:
+Categories: # 自定义分类 ID: 显示名称；最多 3 个，“全部”和“已完成”自动添加
   daily: "每日"
   weekly: "每周"
   story: "主线"
 
 # [横向像素, 纵向行号]，一行 9 像素。整体仍为 552×180。
 # 条目宽 180、高 18；任务详情宽 312。越界或按钮重叠会阻止重载。
-Layout:
-  Categories: [16, 3]
-  List: [16, 6]
-  Detail: [222, 6]
-  Pagination: [16, 17]
+Layout: # 各区域的起点；[X 像素, Y 行号]，每行 9 像素
+  Categories: [16, 3] # 分类按钮起点：[X 像素, Y 行号]
+  List: [16, 6] # 左侧任务列表的起点
+  Detail: [222, 6] # 右侧任务详情的起点
+  Pagination: [16, 17] # 左侧翻页按钮的起点
 
 # 1–15 个任务，按书写顺序排列。Progress: [当前进度, 目标数量]。
 # 进度达到目标后可模拟领取；Claimed: true 表示示例初始为已领取。
@@ -33,78 +33,78 @@ Layout:
 # 自定义示例：Icon: {Font: "my_pack:icons", Glyph: "\uE001", Width: 12, Advance: 13}
 # 自定义字体建议高度 12、ascent 4；图形应放在 18 像素高的条目内。
 # 每个任务最多 3 项奖励；Text 写短文案，实际奖励由以后接入的任务插件处理。
-Tasks:
+Tasks: # 演示任务定义；1–15 个，按书写顺序排列，任务 ID 需唯一
   mine:
-    Name: "矿洞清剿"
-    Category: daily
-    Icon: iron_sword
-    Description: "清理旧矿洞里的亡灵，保护采矿队。"
-    Objective: "击败矿洞亡灵"
-    Progress: [8, 12]
-    Rewards:
+    Name: "矿洞清剿" # 列表和详情中显示的任务名称
+    Category: daily # 所属分类 ID，须与上方 Categories 的自定义键一致
+    Icon: iron_sword # 资源包字体图标 ID；可用名称见上方注释，不是物品源发放
+    Description: "清理旧矿洞里的亡灵，保护采矿队。" # 右侧详情中的任务背景说明
+    Objective: "击败矿洞亡灵" # 右侧详情中的目标文字
+    Progress: [8, 12] # [当前进度, 目标数量]；达到目标进入“已完成”，不自动统计实际游戏行为
+    Rewards: # 最多 3 项；Icon 为图标，Text 为显示文字，此 demo 不发放实际奖励
       - {Icon: gold_ingot, Text: "金币 × 300"}
       - {Icon: experience_bottle, Text: "经验 × 120"}
       - {Icon: amethyst_shard, Text: "碎片 × 3"}
   fish:
-    Name: "渔夫的委托"
-    Category: daily
-    Icon: fishing_rod
-    Description: "河边的渔夫正在收集新鲜的鱼。"
-    Objective: "钓起任意鱼类"
-    Progress: [5, 5]
-    Rewards:
+    Name: "渔夫的委托" # 列表和详情中显示的任务名称
+    Category: daily # 所属分类 ID，须与上方 Categories 的自定义键一致
+    Icon: fishing_rod # 资源包字体图标 ID；可用名称见上方注释，不是物品源发放
+    Description: "河边的渔夫正在收集新鲜的鱼。" # 右侧详情中的任务背景说明
+    Objective: "钓起任意鱼类" # 右侧详情中的目标文字
+    Progress: [5, 5] # [当前进度, 目标数量]；达到目标进入“已完成”，不自动统计实际游戏行为
+    Rewards: # 最多 3 项；Icon 为图标，Text 为显示文字，此 demo 不发放实际奖励
       - {Icon: gold_ingot, Text: "金币 × 200"}
       - {Icon: experience_bottle, Text: "经验 × 80"}
       - {Icon: cod, Text: "鲜鱼 × 5"}
   boss:
-    Name: "夜巡者试炼"
-    Category: weekly
-    Icon: nether_star
-    Description: "与队友前往旧塔，挑战夜巡者。"
-    Objective: "完成夜巡者试炼"
-    Progress: [1, 3]
-    Rewards:
+    Name: "夜巡者试炼" # 列表和详情中显示的任务名称
+    Category: weekly # 所属分类 ID，须与上方 Categories 的自定义键一致
+    Icon: nether_star # 资源包字体图标 ID；可用名称见上方注释，不是物品源发放
+    Description: "与队友前往旧塔，挑战夜巡者。" # 右侧详情中的任务背景说明
+    Objective: "完成夜巡者试炼" # 右侧详情中的目标文字
+    Progress: [1, 3] # [当前进度, 目标数量]；达到目标进入“已完成”，不自动统计实际游戏行为
+    Rewards: # 最多 3 项；Icon 为图标，Text 为显示文字，此 demo 不发放实际奖励
       - {Icon: gold_ingot, Text: "金币 × 1500"}
       - {Icon: nether_star, Text: "印记 × 1"}
       - {Icon: diamond_chestplate, Text: "装备箱 × 1"}
   arrival:
-    Name: "初来乍到"
-    Category: story
-    Icon: book
-    Description: "认识营地的向导，开启新的旅途。"
-    Objective: "与营地向导交谈"
-    Progress: [1, 1]
-    Claimed: true
-    Rewards:
+    Name: "初来乍到" # 列表和详情中显示的任务名称
+    Category: story # 所属分类 ID，须与上方 Categories 的自定义键一致
+    Icon: book # 资源包字体图标 ID；可用名称见上方注释，不是物品源发放
+    Description: "认识营地的向导，开启新的旅途。" # 右侧详情中的任务背景说明
+    Objective: "与营地向导交谈" # 右侧详情中的目标文字
+    Progress: [1, 1] # [当前进度, 目标数量]；达到目标进入“已完成”，不自动统计实际游戏行为
+    Claimed: true # true 表示初始已领取；false 或省略表示未领取，仅模拟本次会话状态
+    Rewards: # 最多 3 项；Icon 为图标，Text 为显示文字，此 demo 不发放实际奖励
       - {Icon: bread, Text: "面包 × 16"}
       - {Icon: experience_bottle, Text: "经验 × 100"}
   ore:
-    Name: "矿石补给"
-    Category: daily
-    Icon: iron_ingot
-    Description: "为营地的铁匠准备一批新材料。"
-    Objective: "采集铁矿石"
-    Progress: [12, 24]
-    Rewards:
+    Name: "矿石补给" # 列表和详情中显示的任务名称
+    Category: daily # 所属分类 ID，须与上方 Categories 的自定义键一致
+    Icon: iron_ingot # 资源包字体图标 ID；可用名称见上方注释，不是物品源发放
+    Description: "为营地的铁匠准备一批新材料。" # 右侧详情中的任务背景说明
+    Objective: "采集铁矿石" # 右侧详情中的目标文字
+    Progress: [12, 24] # [当前进度, 目标数量]；达到目标进入“已完成”，不自动统计实际游戏行为
+    Rewards: # 最多 3 项；Icon 为图标，Text 为显示文字，此 demo 不发放实际奖励
       - {Icon: gold_ingot, Text: "金币 × 250"}
       - {Icon: experience_bottle, Text: "经验 × 100"}
   forest:
-    Name: "林地复苏"
-    Category: daily
-    Icon: oak_sapling
-    Description: "补种树苗，让营地周围重新长满绿意。"
-    Objective: "种植树苗"
-    Progress: [3, 10]
-    Rewards:
+    Name: "林地复苏" # 列表和详情中显示的任务名称
+    Category: daily # 所属分类 ID，须与上方 Categories 的自定义键一致
+    Icon: oak_sapling # 资源包字体图标 ID；可用名称见上方注释，不是物品源发放
+    Description: "补种树苗，让营地周围重新长满绿意。" # 右侧详情中的任务背景说明
+    Objective: "种植树苗" # 右侧详情中的目标文字
+    Progress: [3, 10] # [当前进度, 目标数量]；达到目标进入“已完成”，不自动统计实际游戏行为
+    Rewards: # 最多 3 项；Icon 为图标，Text 为显示文字，此 demo 不发放实际奖励
       - {Icon: gold_ingot, Text: "金币 × 180"}
       - {Icon: oak_sapling, Text: "树苗 × 8"}
   expedition:
-    Name: "远行者"
-    Category: weekly
-    Icon: compass
-    Description: "循着地图的标记，寻找散落的遗迹。"
-    Objective: "探索不同遗迹"
-    Progress: [2, 5]
-    Rewards:
+    Name: "远行者" # 列表和详情中显示的任务名称
+    Category: weekly # 所属分类 ID，须与上方 Categories 的自定义键一致
+    Icon: compass # 资源包字体图标 ID；可用名称见上方注释，不是物品源发放
+    Description: "循着地图的标记，寻找散落的遗迹。" # 右侧详情中的任务背景说明
+    Objective: "探索不同遗迹" # 右侧详情中的目标文字
+    Progress: [2, 5] # [当前进度, 目标数量]；达到目标进入“已完成”，不自动统计实际游戏行为
+    Rewards: # 最多 3 项；Icon 为图标，Text 为显示文字，此 demo 不发放实际奖励
       - {Icon: gold_ingot, Text: "金币 × 800"}
       - {Icon: experience_bottle, Text: "经验 × 350"}

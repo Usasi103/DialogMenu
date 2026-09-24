@@ -1,20 +1,43 @@
+# 画布字段说明：
+# Position: [X, Y]：相对画布左上角；X 是像素，Y 是从 0 开始的行号，每行 9 像素。
+# Canvas.Width 是整个画布的宽度；Canvas.Rows 是画布行数，20 行等于 180 像素。
+# Elements 内 text 的 Width 是文字换行宽度（像素），Rows 是预留高度（行）。
+# 文字按 Width 自动换行；Rows 容量不足时截断并显示 ..；大字每行会占用更多画布行。
+# FontSize 默认 8，仅 text 可自定义 6–24；Bold: true 加粗，false 常规。
+# 按钮和内置 sprite 的尺寸由 Sprite 贴图决定，修改 Width / Rows 不会拉伸贴图。
+# 自定义 Font 图标的 Width / Rows 声明占位尺寸，Advance 为字形实际前进宽度（像素）。
+# 自定义图标的实际大小由资源包字体定义决定；Advance 不准确会导致后续内容错位。
+# Color 仅接受六位十六进制颜色，如 '#55FF55'；不支持 settings 的 text / muted / heading 别名。
+# Canvas.HideFocusOutline: true 依赖配套资源包着色器，且仅支持 552 像素 × 20 行。
+# 修改画布尺寸时须设 HideFocusOutline: false；背景和各元素仍须在新画布边界内。
+# Variables 的首个选项是默认值；set 修改当前玩家本次会话的值，refresh 重新绘制。
+# VisibleWhen / SelectedWhen 写作 变量名=值；分别控制是否显示、是否使用 SelectedSprite。
+# Actions 按顺序执行：page 跳本菜单页，menu 打开其他菜单，message 发提示，close 关闭。
+# command / console 分别以玩家 / 控制台身份执行指令，指令不带 /；权限和业务校验由实际插件处理。
+# 原版 16 色对照（Color 填右侧的 '#RRGGBB'，不能直接填 &a 或 §a）：
+# &0 黑 '#000000'；&1 深蓝 '#0000AA'；&2 深绿 '#00AA00'；&3 湖蓝 '#00AAAA'。
+# &4 深红 '#AA0000'；&5 紫 '#AA00AA'；&6 金 '#FFAA00'；&7 灰 '#AAAAAA'。
+# &8 深灰 '#555555'；&9 蓝 '#5555FF'；&a 绿 '#55FF55'；&b 青 '#55FFFF'。
+# &c 红 '#FF5555'；&d 粉紫 '#FF55FF'；&e 黄 '#FFFF55'；&f 白 '#FFFFFF'。
+# YAML 中 # 会开始注释，因此十六进制颜色必须加引号，例如 Color: '#55FF55'。
+
 # /dmenu template npc-dialogue
 # 独立对话模板，不占用 config.yml 的 Pages。修改后 /dmenu check、/dmenu reload。
 # Position: [X 像素, Row 行号]，Row 每格 9 像素；按钮尺寸由 Sprite 决定。
 # parchment 使用本地 UI_Sprite.png 编译的框与按钮；仅改文字和位置无需重做资源包。
-Version: 1
-Title: "守门人的委托"
-Skin: parchment
-Canvas:
-  Width: 552
-  Rows: 20
-  Background: panel
-  HideFocusOutline: true
-Elements:
+Version: 1 # 配置格式版本，保持当前值
+Title: "守门人的委托" # 此页的 Dialog 标题；画布中的大标题在 Elements 中单独定义
+Skin: parchment # 内置皮肤：amethyst 紫色 / parchment 木色；需要对应资源包
+Canvas: # 画布尺寸、背景及焦点白框设置
+  Width: 552 # 画布宽度（像素），180–960；隐藏焦点框时必须为 552
+  Rows: 20 # 画布高度（行），8–28；每行 9 像素，隐藏焦点框时必须为 20
+  Background: panel # 背景贴图 ID；panel 为内置面板，none 不绘制背景
+  HideFocusOutline: true # true 隐藏该菜单的焦点白框；需要配套资源包着色器，false 保留
+Elements: # 画布元素定义；每个元素 ID 唯一，按书写顺序绘制
   portrait:
-    Type: sprite
-    Position: [24, 3]
-    Sprite: emblem
+    Type: sprite # 资源包贴图或字体图标
+    Position: [24, 3] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: emblem # 内置贴图 ID，决定按钮或图标的形状与尺寸
     # 这是可替换图标，并非角色模型。已有字体立绘时可改为：
     # Font: "my_pack:portraits"
     # Glyph: "\uE001"
@@ -22,42 +45,42 @@ Elements:
     # Rows: 12
     # Advance: 109
   name:
-    Position: [156, 3]
-    Width: 330
-    Text: "守门人 · 艾琳"
-    Color: "#f0d8b9"
+    Position: [156, 3] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 330 # 文字区域宽度（像素），超出按此宽度自动换行
+    Text: "守门人 · 艾琳" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Color: "#f0d8b9" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   subtitle:
-    Position: [156, 5]
-    Width: 330
-    Text: "古堡入口 / 初次相遇"
-    Color: "#bda58d"
+    Position: [156, 5] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 330 # 文字区域宽度（像素），超出按此宽度自动换行
+    Text: "古堡入口 / 初次相遇" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Color: "#bda58d" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   divider:
-    Type: sprite
-    Position: [156, 6]
-    Sprite: divider
+    Type: sprite # 资源包贴图或字体图标
+    Position: [156, 6] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: divider # 内置贴图 ID，决定按钮或图标的形状与尺寸
   dialogue:
-    Position: [156, 8]
-    Width: 348
-    Rows: 5
-    Text:
+    Position: [156, 8] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
+    Rows: 5 # 文字区域高度（行），每行 9 像素；放大字号后每行文字占更多行
+    Text: # 显示文字；正文可用字符串或列表，按钮须为单行字符串
       - "你好，{player}。高塔里的灯又亮了。"
       - "如果你愿意帮忙，请先了解守卫的故事，再决定是否进入试炼。"
       - "你准备好了吗？"
   continue:
-    Type: button
-    Position: [156, 16]
-    Sprite: wide-button
-    Text: "了解试炼"
-    Actions: ["template: boss-intro"]
+    Type: button # 可点击按钮，动作写在 Actions 中
+    Position: [156, 16] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: wide-button # 内置贴图 ID，决定按钮或图标的形状与尺寸
+    Text: "了解试炼" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Actions: ["template: boss-intro"] # 点击后按顺序执行的动作列表；命令不带 /
   leave:
-    Type: button
-    Position: [312, 16]
-    Sprite: wide-button
-    Text: "稍后再来"
-    Actions: ["close"]
+    Type: button # 可点击按钮，动作写在 Actions 中
+    Position: [312, 16] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: wide-button # 内置贴图 ID，决定按钮或图标的形状与尺寸
+    Text: "稍后再来" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Actions: ["close"] # 点击后按顺序执行的动作列表；命令不带 /
   close:
-    Type: button
-    Position: [516, 2]
-    Sprite: close
-    Text: "×"
-    Actions: ["close"]
+    Type: button # 可点击按钮，动作写在 Actions 中
+    Position: [516, 2] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: close # 内置贴图 ID，决定按钮或图标的形状与尺寸
+    Text: "×" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Actions: ["close"] # 点击后按顺序执行的动作列表；命令不带 /

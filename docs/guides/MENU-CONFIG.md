@@ -77,12 +77,12 @@ Pages:
 名称/说明可写纯中文或 `{zh_cn: 中文, en_us: English}`，不需要 `$文本键`。
 `Type` 支持 text、heading、button、toggle、slider、dropdown；`Bind`、`Description`、`State`、`Permission` 和 `Actions` 用法延续原有简化格式。
 已有位置、颜色、贴图等自由布局需求请用下方 canvas 类型。
-更多控件字段见 `SIMPLE-CONFIG.md`；该文档里的旧单页内容放到当前 `Pages.<页面ID>` 下即可。
+更多控件字段见 [SIMPLE-CONFIG.md](../archive/SIMPLE-CONFIG.md)；该文档里的旧单页内容放到当前 `Pages.<页面ID>` 下即可。
 
 `page: 页面名` 只在当前菜单内跳转。`command: 指令` 以玩家身份执行，`console: 指令` 以控制台身份执行；不写开头的 `/`。
 settings 的 `close` 放在首项，可接命令；页面跳转、search、refresh 放最后。指令支持 `{player}`、`{uuid}`。
 例如跨菜单可写 `["close", "command: dmenu open demo-boss"]`。
-需要实际物品时在子页内写 `Display.Material`，详见 `ITEM-SOURCES.md`。
+需要实际物品时在子页内写 `Display.Material`，详见 [ITEM-SOURCES.md](ITEM-SOURCES.md)。
 玩家已有语言/主题偏好继续使用原 PDC；文件里的 Language/Theme 仅作默认值。
 
 ## 自由画布：对话和首领 demo
@@ -135,7 +135,7 @@ button/selected 为 108×18，wide-button 为 144×18，close 为 18×18，rewar
 当前使用 CraftEngine 合并资源：`test_server/plugins/CraftEngine/resources/toranca_pack/resourcepack/`。
 保留 dialogmenu_settings、dialogmenu_dialogue 和配套 gui 着色器；无需放到 BetterHud。
 0.1.17 新增首领奖励字体，需合入新资源，执行 `/ce workflow default` 并加载新包。其余贴图和焦点着色器保持原有版本。
-本机 UI_Sprite.png 皮肤与可分发基础皮肤具有相同尺寸；许可和本地编译方式见 `TEMPLATE-ASSETS.md`。
+本机 UI_Sprite.png 皮肤与可分发基础皮肤具有相同尺寸；许可和本地编译方式见 [TEMPLATE-ASSETS.md](TEMPLATE-ASSETS.md)。
 
 旧 `config.yml Version: 2 + menus 单页文件 + templates` 及旧 `menu.yml` 继续读取，不会自动覆盖现有文件。
 当前 test_server 已按原内容合并；旧文件备份在服务器目录外。新版全新安装直接导出上述三个菜单。

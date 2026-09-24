@@ -6,7 +6,7 @@ DialogMenu lets you build menus with Minecraft's Dialog interface and YAML. Crea
 
 Each file defines a complete menu, with related pages grouped under `Pages`. Arrange settings controls in a simple list, or use canvas coordinates to design your own layout. Bundled examples give you a starting point to copy and customize.
 
-[Download the plugin and resource pack](https://github.com/Usasi103/DialogMenu/releases/latest) · [Configuration guide (Chinese)](MENU-CONFIG.md) · [Changelog (Chinese)](CHANGELOG.md)
+[Download the plugin and resource pack](https://github.com/Usasi103/DialogMenu/releases/latest) · [Configuration guide (Chinese)](docs/guides/MENU-CONFIG.md) · [Changelog (Chinese)](CHANGELOG.md)
 
 ## What you can build
 
@@ -100,16 +100,18 @@ The main command is `/dialogmenu`, with `/dmenu` as an alias. `playersettings.us
 
 ## Further reading
 
-- [Settings coordinates and typography (Chinese)](SETTINGS-LAYOUT.md)
+The [documentation index (Chinese)](docs/README.md) groups configuration guides, legacy references, and development notes.
+
+- [Settings coordinates and typography (Chinese)](docs/guides/SETTINGS-LAYOUT.md)
 
 The detailed configuration guides below are currently written in Chinese. This English introduction includes the installation steps, a complete starter menu, integrations, and commands.
 
-- [Menu configuration and canvas layouts](MENU-CONFIG.md)
-- [On/Off switch styles](SWITCHES.md)
-- [Conversation and boss templates, font settings](TEMPLATES.md)
-- [Quest list demo](QUEST-DEMO.md)
-- [Item sources and item pages](ITEM-SOURCES.md)
-- [Migration from PlayerSettings](MIGRATION.md)
-- [Resource artwork and usage scope](TEMPLATE-ASSETS.md)
+- [Menu configuration and canvas layouts](docs/guides/MENU-CONFIG.md)
+- [On/Off switch styles](docs/guides/SWITCHES.md)
+- [Conversation and boss templates, font settings](docs/guides/TEMPLATES.md)
+- [Quest list demo](docs/guides/QUEST-DEMO.md)
+- [Item sources and item pages](docs/guides/ITEM-SOURCES.md)
+- [Migration from PlayerSettings](docs/guides/MIGRATION.md)
+- [Resource artwork and usage scope](docs/guides/TEMPLATE-ASSETS.md)
 
-[Validation notes](VALIDATION.md) and [publication notes](PUBLICATION.md) are available in English. See the [changelog](CHANGELOG.md) for version history.
+[Validation notes](docs/development/VALIDATION.md) and [publication notes](docs/development/PUBLICATION.md) are available in English. See the [changelog](CHANGELOG.md) for version history.

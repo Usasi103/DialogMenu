@@ -63,15 +63,87 @@ def scalar(value):
         return '{' + ', '.join(k + ': ' + scalar(v) for k, v in value.items()) + '}'
     return json.dumps(value, ensure_ascii=False)
 
+FIELD_COMMENTS = {
+    'Version': '配置格式版本，保持当前值',
+    'DefaultPage': '打开菜单时首先显示的页面 ID，必须存在于 Pages 中',
+    'HideFocusOutline': 'true 隐藏该菜单的焦点白框；需要配套资源包着色器，false 保留',
+    'Bold': 'true 加粗；false 常规字体',
+    'Position': '[X 像素, Y 行号]，从 0 开始；Y 每行 9 像素',
+    'Actions': '点击后按顺序执行的动作列表；命令不带 /',
+    'Permission': '点击所需权限节点；省略表示不额外限制',
+    'Language': '新玩家默认语言：zh_cn / en_us；不覆盖玩家已保存的选择',
+    'Theme': '新玩家默认主题：dark 暗色 / light 亮色；不覆盖已保存的选择',
+    'ShowFooter': 'true 显示底部“返回游戏”；false 隐藏，仍可按 Esc 关闭',
+    'MainMenu': '左侧“返回主菜单”的动作；此处关闭后以玩家身份执行 /menu',
+    'Navigation': '左侧分类的排版样式',
+    'Step': '相邻分类的起始行间隔；至少 2 行，每行 9 像素',
+    'TitleStyle': '右侧页面标题样式；省略字段沿用默认值',
+    'Icon': '左侧分类图标的内置贴图 ID',
+    'Keywords': '搜索此分类时匹配的关键词列表',
+    'Layout': '显示顺序；名称必须与下方 Icons 的项目名称一致',
+    'Icons': '本页的文字、按钮和选项定义；每个项目名称需唯一',
+    'FontSize': '字号默认 8；文字/标题 6–24，固定高度控件 6–12',
+    'Width': '文字最大宽度（像素），超出截断；仅用于 text / heading，不改变背景大小',
+    'Color': "文字颜色：text / muted / heading 或 '#RRGGBB'；不支持 &a / §a",
+    'LabelPosition': '左侧 Name 的独立位置：[X 像素, Y 行号]；仅开关、滑条、下拉框',
+    'Style': 'toggle 的外观：switch 为 On/Off 小开关，button 为宽按钮',
+    'Name': '显示文字，可用单个字符串或 zh_cn / en_us 双语配置',
+    'Bind': '内置偏好绑定 ID，自动读取与保存；不要改为显示文字',
+    'Description': '控件下方的说明文字，可用字符串、双语文本或最多 3 项的列表',
+    'Options': '选项值: 显示文字；按顺序排列，2–8 项；"off" 必须加引号',
+    'Renderer': 'items 使用原生物品布局，展示真实物品模型与悬浮提示',
+    'Display': '物品展示定义；本页将采用原生物品布局',
+    'Material': '原版材质或 source:物品源:物品ID；命名空间需完整',
+    'Fallback': '物品源不可用时的原版替代材质，同时停用关联按钮',
+    'Lore': '物品旁的说明列表，不覆盖物品本身的 Lore',
+    'Amount': '展示数量；只影响显示，不发放或扣除物品',
+    'RequiresPlugin': '所需插件名，缺少时该控件不可用',
+    'State': '无 Bind 时读取的完整 %PAPI变量%；需自行配置相应动作',
+    'Title': '菜单或分类显示名称，可用中文或 zh_cn / en_us 双语文本',
+    'Type': '控件类型：text / heading / button / toggle / slider / dropdown',
+    'Pages': '旧版格式的页面 ID 列表，按此顺序显示左侧分类',
+}
+
+LAYOUT_NOTES = """# 排版字段说明（可省略；省略时使用默认样式和自动排版）：
+# Position: [X, Y]：相对菜单画布的位置；X 是像素，Y 是从 0 开始的行号，每行 9 像素。
+# 例如 [123, 3] 表示向右 123 像素、从第 3 行开始；不是屏幕坐标，也不是 Y=3 像素。
+# text / heading 移动文字；button / toggle / slider / dropdown 移动整个控件。
+# LabelPosition: [X, Y]：仅用于 toggle / slider / dropdown，单独定位左侧 Name；省略时跟随控件。
+# FontSize: 8：文字字号，默认 8；text / heading 为 6–24，固定高度控件为 6–12 的整数。
+# Bold: false：true 加粗，false 常规；加粗和放大都会增加文字占用宽度。
+# Width: 316：text / heading 的文字最大横向宽度，单位像素；超出截断，不自动换行。
+# Width 不改变字号，不拉伸贴图，也不修改按钮尺寸；其他控件不要填写 Width。
+# Color: muted：text / heading 的文字颜色；支持 text（正文）、muted（次要文字）、heading（标题）。
+# 这三个颜色名称随 Theme 切换；也可写固定六位十六进制颜色，如 Color: '#55FF55'。
+# Color 不接受 &a、§a、&f 或 &l；加粗请用 Bold，颜色不会改变控件背景。
+# TitleStyle：右侧页面标题样式，可填 Position / FontSize / Bold / Width / Color，规则同 heading。
+# Navigation：左侧分类样式，可填 Position / Step / FontSize / Bold；Step 是行距，至少 2 行。
+# Style: switch：toggle 显示 On/Off 小开关；button 显示宽按钮，省略 Style 默认 button。
+# Layout：按名称引用 Icons，顺序决定自动排版；未列入 Layout 的项目不显示。
+# Name / Description 可直接写中文，也可写 {zh_cn: "中文", en_us: "English"}；语言键不能改名。
+# Bind：绑定内置偏好并自动保存；不要同时填写 State / Actions，选项值须与绑定支持的值一致。
+# Options：slider 的横向档位或 dropdown 的下拉选项，按书写顺序排列，支持 2–8 项。
+# 下拉框要为展开后的列表留出空间；Position / FontSize 修改后运行 /dmenu check 检查边界。
+# Renderer: items 或 Display.Material 会使用原生物品页；该页不支持上述画布坐标与字体样式。
+# 原版 16 色对照（Color 填右侧的 '#RRGGBB'，不能直接填 &a 或 §a）：
+# &0 黑 '#000000'；&1 深蓝 '#0000AA'；&2 深绿 '#00AA00'；&3 湖蓝 '#00AAAA'。
+# &4 深红 '#AA0000'；&5 紫 '#AA00AA'；&6 金 '#FFAA00'；&7 灰 '#AAAAAA'。
+# &8 深灰 '#555555'；&9 蓝 '#5555FF'；&a 绿 '#55FF55'；&b 青 '#55FFFF'。
+# &c 红 '#FF5555'；&d 粉紫 '#FF55FF'；&e 黄 '#FFFF55'；&f 白 '#FFFFFF'。
+# YAML 中 # 会开始注释，因此十六进制颜色必须加引号，例如 Color: '#55FF55'。
+"""
+
+
 def dump(value, indent=0):
     lines = []
     for key, item_value in value.items():
         key_text = json.dumps(key, ensure_ascii=False) if key.lower() in {'on', 'off', 'true', 'false', 'yes', 'no', 'null'} else key
         prefix = ' ' * indent + key_text + ':'
+        note = ' # ' + FIELD_COMMENTS[key] if key in FIELD_COMMENTS else ''
         if isinstance(item_value, dict) and set(item_value) != {'zh_cn', 'en_us'}:
-            lines.extend([prefix, dump(item_value, indent + 2)])
+            lines.extend([prefix + note, dump(item_value, indent + 2)])
         else:
-            lines.append(prefix + ' ' + scalar(item_value))
+            lines.append(prefix + ' ' + scalar(item_value) + note)
     return '\n'.join(lines)
 
 folder = resources / 'simple'
@@ -86,7 +158,7 @@ config = dict(Version=2, Title=label('menu.title'), DefaultPage='profile', Langu
     '# 修改后 /dialogmenu check 检查，/dialogmenu reload 应用（OP 或 playersettings.admin）。\n'
     + dump(config) + '\n', encoding='utf-8', newline='\n')
 for id, value in pages.items():
-    header = '# ' + translations['zh_cn']['tab.' + id] + '：Layout 决定显示顺序，Icons 定义每一项。\n'
+    header = LAYOUT_NOTES + '\n# ' + translations['zh_cn']['tab.' + id] + '：Layout 决定显示顺序，Icons 定义每一项。\n'
     header += '# Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。\n'
     header += '# 默认位置自动计算，可用 Position: [X像素, Y行号] 覆盖；每行9像素；FontSize / Bold 控制文字。\n'
     header += '# Bind 自动读取和保存设置；修改后 /dialogmenu reload。\n'

@@ -1,116 +1,143 @@
+# 画布字段说明：
+# Position: [X, Y]：相对画布左上角；X 是像素，Y 是从 0 开始的行号，每行 9 像素。
+# Canvas.Width 是整个画布的宽度；Canvas.Rows 是画布行数，20 行等于 180 像素。
+# Elements 内 text 的 Width 是文字换行宽度（像素），Rows 是预留高度（行）。
+# 文字按 Width 自动换行；Rows 容量不足时截断并显示 ..；大字每行会占用更多画布行。
+# FontSize 默认 8，仅 text 可自定义 6–24；Bold: true 加粗，false 常规。
+# 按钮和内置 sprite 的尺寸由 Sprite 贴图决定，修改 Width / Rows 不会拉伸贴图。
+# 自定义 Font 图标的 Width / Rows 声明占位尺寸，Advance 为字形实际前进宽度（像素）。
+# 自定义图标的实际大小由资源包字体定义决定；Advance 不准确会导致后续内容错位。
+# Color 仅接受六位十六进制颜色，如 '#55FF55'；不支持 settings 的 text / muted / heading 别名。
+# Canvas.HideFocusOutline: true 依赖配套资源包着色器，且仅支持 552 像素 × 20 行。
+# 修改画布尺寸时须设 HideFocusOutline: false；背景和各元素仍须在新画布边界内。
+# Variables 的首个选项是默认值；set 修改当前玩家本次会话的值，refresh 重新绘制。
+# VisibleWhen / SelectedWhen 写作 变量名=值；分别控制是否显示、是否使用 SelectedSprite。
+# Actions 按顺序执行：page 跳本菜单页，menu 打开其他菜单，message 发提示，close 关闭。
+# command / console 分别以玩家 / 控制台身份执行指令，指令不带 /；权限和业务校验由实际插件处理。
+# 原版 16 色对照（Color 填右侧的 '#RRGGBB'，不能直接填 &a 或 §a）：
+# &0 黑 '#000000'；&1 深蓝 '#0000AA'；&2 深绿 '#00AA00'；&3 湖蓝 '#00AAAA'。
+# &4 深红 '#AA0000'；&5 紫 '#AA00AA'；&6 金 '#FFAA00'；&7 灰 '#AAAAAA'。
+# &8 深灰 '#555555'；&9 蓝 '#5555FF'；&a 绿 '#55FF55'；&b 青 '#55FFFF'。
+# &c 红 '#FF5555'；&d 粉紫 '#FF55FF'；&e 黄 '#FFFF55'；&f 白 '#FFFFFF'。
+# YAML 中 # 会开始注释，因此十六进制颜色必须加引号，例如 Color: '#55FF55'。
+
 # 参考图的首领介绍布局：左侧立绘位，右侧介绍/建议/奖励，下方操作。
 # /dmenu template boss-intro
 # 固定逻辑宽度随 Minecraft GUI 缩放；不是自动铺满任意分辨率的 HUD。
-Version: 1
-Title: "夜巡者 · 试炼档案"
-Skin: amethyst
-Canvas: {Width: 552, Rows: 20, Background: panel, HideFocusOutline: true}
-Variables:
-  difficulty: [normal, hard, overload]
-Elements:
+Version: 1 # 配置格式版本，保持当前值
+Title: "夜巡者 · 试炼档案" # 此页的 Dialog 标题；画布中的大标题在 Elements 中单独定义
+Skin: amethyst # 内置皮肤：amethyst 紫色 / parchment 木色；需要对应资源包
+Canvas: # 画布尺寸、背景及焦点白框设置
+  Width: 552 # 画布宽度（像素），180–960；隐藏焦点框时必须为 552
+  Rows: 20 # 画布高度（行），8–28；每行 9 像素，隐藏焦点框时必须为 20
+  Background: panel # 背景贴图 ID；panel 为内置面板，none 不绘制背景
+  HideFocusOutline: true # true 隐藏该菜单的焦点白框；需要配套资源包着色器，false 保留
+Variables: # 当前玩家本次会话的枚举变量；每组首项为默认值
+  difficulty: [normal, hard, overload] # 难度允许值；默认 normal，set 动作只能设置此列表中的值
+Elements: # 画布元素定义；每个元素 ID 唯一，按书写顺序绘制
   portrait:
-    Type: sprite
-    Position: [21, 3]
-    Sprite: emblem
-    # 可替换为资源包字体立绘；配置方法见 npc-dialogue.yml 的 portrait。
+    Type: sprite # 资源包贴图或字体图标
+    Position: [21, 3] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: emblem # 内置贴图 ID，决定按钮或图标的形状与尺寸
+    # 可替换为资源包字体立绘，使用 Font / Glyph / Width / Rows / Advance；参考下方奖励图标。
   portrait-caption:
-    Position: [33, 15]
-    Width: 102
-    Text: "夜巡者徽记"
-    Color: "#a28ab6"
+    Position: [33, 15] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 102 # 文字区域宽度（像素），超出按此宽度自动换行
+    Text: "夜巡者徽记" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Color: "#a28ab6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   title:
-    Position: [156, 1]
-    Width: 348
-    Text: "夜巡者"
+    Position: [156, 1] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
+    Text: "夜巡者" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
     FontSize: 16 # 6–24 像素；默认 8，插件自动预留行高
     Bold: true # true 加粗 / false 常规
-    Color: "#d9bfef"
+    Color: "#d9bfef" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   subtitle:
-    Position: [156, 4]
-    Width: 348
-    Text: "放弃存在，只为守护之人"
-    Color: "#a28ab6"
+    Position: [156, 4] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
+    Text: "放弃存在，只为守护之人" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Color: "#a28ab6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   divider:
-    Type: sprite
-    Position: [156, 5]
-    Sprite: divider
+    Type: sprite # 资源包贴图或字体图标
+    Position: [156, 5] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: divider # 内置贴图 ID，决定按钮或图标的形状与尺寸
   story-heading:
-    Position: [156, 6]
-    Width: 348
-    Text: "背景故事"
-    Color: "#ba98d6"
+    Position: [156, 6] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
+    Text: "背景故事" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Color: "#ba98d6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   story:
-    Position: [156, 7]
-    Width: 348
-    Rows: 3
-    Text: "他曾是凡人法师，为守护故土踏入虚空。如今仍徘徊在旧日高塔，等待能够唤醒记忆的挑战者。"
+    Position: [156, 7] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
+    Rows: 3 # 文字区域高度（行），每行 9 像素；放大字号后每行文字占更多行
+    Text: "他曾是凡人法师，为守护故土踏入虚空。如今仍徘徊在旧日高塔，等待能够唤醒记忆的挑战者。" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
   advice-heading:
-    Position: [156, 11]
-    Width: 348
-    Text: "战斗建议"
-    Color: "#ba98d6"
+    Position: [156, 11] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
+    Text: "战斗建议" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Color: "#ba98d6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   advice:
-    Position: [156, 12]
-    Width: 348
-    Rows: 2
-    Text: ["· 躲避地面标记，留意蓄力攻击。", "· 与队友分散站位，保留位移技能。"]
+    Position: [156, 12] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
+    Rows: 2 # 文字区域高度（行），每行 9 像素；放大字号后每行文字占更多行
+    Text: ["· 躲避地面标记，留意蓄力攻击。", "· 与队友分散站位，保留位移技能。"] # 显示文字；正文可用字符串或列表，按钮须为单行字符串
   rewards:
-    Position: [156, 14]
-    Width: 100
-    Text: "可能奖励"
-    Color: "#bca4d0"
+    Position: [156, 14] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Width: 100 # 文字区域宽度（像素），超出按此宽度自动换行
+    Text: "可能奖励" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Color: "#bca4d0" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   reward-shard:
-    Type: sprite
-    Position: [156, 16]
-    Sprite: reward
+    Type: sprite # 资源包贴图或字体图标
+    Position: [156, 16] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: reward # 内置贴图 ID，决定按钮或图标的形状与尺寸
   reward-mark:
-    Type: sprite
-    Position: [192, 16]
-    Sprite: reward
+    Type: sprite # 资源包贴图或字体图标
+    Position: [192, 16] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: reward # 内置贴图 ID，决定按钮或图标的形状与尺寸
   reward-gear:
-    Type: sprite
-    Position: [228, 16]
-    Sprite: reward
+    Type: sprite # 资源包贴图或字体图标
+    Position: [228, 16] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: reward # 内置贴图 ID，决定按钮或图标的形状与尺寸
   # 碎片：紫水晶碎片；字体定义见资源包 assets/dialogmenu_dialogue/font/rewards.json。
   shard-icon:
-    Type: sprite
-    Position: [161, 16]
-    Font: "dialogmenu_dialogue:rewards"
-    Glyph: "\uE000"
-    Width: 16
-    Rows: 3
-    Advance: 15
+    Type: sprite # 资源包贴图或字体图标
+    Position: [161, 16] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Font: "dialogmenu_dialogue:rewards" # 资源包字体 ID：命名空间:字体路径；仅用于 sprite
+    Glyph: "\uE000" # 该字体中的单个字形，Unicode 转义要放在双引号内
+    Width: 16 # 自定义图标占位宽度（像素），不会缩放资源包图形
+    Rows: 3 # 自定义图标占位高度（行），每行 9 像素
+    Advance: 15 # 该字形的实际前进宽度（像素），用于抵消排版偏移
   # 印记：下界之星；字体定义见资源包 assets/dialogmenu_dialogue/font/rewards.json。
   mark-icon:
-    Type: sprite
-    Position: [197, 16]
-    Font: "dialogmenu_dialogue:rewards"
-    Glyph: "\uE001"
-    Width: 16
-    Rows: 3
-    Advance: 16
+    Type: sprite # 资源包贴图或字体图标
+    Position: [197, 16] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Font: "dialogmenu_dialogue:rewards" # 资源包字体 ID：命名空间:字体路径；仅用于 sprite
+    Glyph: "\uE001" # 该字体中的单个字形，Unicode 转义要放在双引号内
+    Width: 16 # 自定义图标占位宽度（像素），不会缩放资源包图形
+    Rows: 3 # 自定义图标占位高度（行），每行 9 像素
+    Advance: 16 # 该字形的实际前进宽度（像素），用于抵消排版偏移
   # 装备：钻石胸甲；字体定义见资源包 assets/dialogmenu_dialogue/font/rewards.json。
   gear-icon:
-    Type: sprite
-    Position: [233, 16]
-    Font: "dialogmenu_dialogue:rewards"
-    Glyph: "\uE002"
-    Width: 16
-    Rows: 3
-    Advance: 16
+    Type: sprite # 资源包贴图或字体图标
+    Position: [233, 16] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Font: "dialogmenu_dialogue:rewards" # 资源包字体 ID：命名空间:字体路径；仅用于 sprite
+    Glyph: "\uE002" # 该字体中的单个字形，Unicode 转义要放在双引号内
+    Width: 16 # 自定义图标占位宽度（像素），不会缩放资源包图形
+    Rows: 3 # 自定义图标占位高度（行），每行 9 像素
+    Advance: 16 # 该字形的实际前进宽度（像素），用于抵消排版偏移
   information:
-    Type: button
-    Position: [294, 17]
-    Text: "攻击与信息"
-    Actions: ["message: 试炼模板：请将本按钮接到你的攻略菜单。", "refresh"]
+    Type: button # 可点击按钮，动作写在 Actions 中
+    Position: [294, 17] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Text: "攻击与信息" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Actions: ["message: 试炼模板：请将本按钮接到你的攻略菜单。", "refresh"] # 点击后按顺序执行的动作列表；命令不带 /
   start:
-    Type: button
-    Position: [414, 17]
-    Text: "开始战斗"
-    Actions: ["template: boss-confirm"]
+    Type: button # 可点击按钮，动作写在 Actions 中
+    Position: [414, 17] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Text: "开始战斗" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Actions: ["template: boss-confirm"] # 点击后按顺序执行的动作列表；命令不带 /
   close:
-    Type: button
-    Position: [522, 1]
-    Sprite: close
-    Text: "×"
-    Actions: ["close"]
+    Type: button # 可点击按钮，动作写在 Actions 中
+    Position: [522, 1] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+    Sprite: close # 内置贴图 ID，决定按钮或图标的形状与尺寸
+    Text: "×" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
+    Actions: ["close"] # 点击后按顺序执行的动作列表；命令不带 /

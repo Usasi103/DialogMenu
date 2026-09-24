@@ -6,7 +6,7 @@ DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 
 
 一个文件就是一个完整菜单，相关子页面统一写在 `Pages` 下。简单的设置界面按顺序排列控件，需要自己设计版式时则使用画布坐标。插件附带可直接修改的示例，方便从现有菜单开始制作。
 
-[下载插件与资源包](https://github.com/Usasi103/DialogMenu/releases/latest) · [配置指南](MENU-CONFIG.md) · [更新日志](CHANGELOG.md)
+[下载插件与资源包](https://github.com/Usasi103/DialogMenu/releases/latest) · [配置指南](docs/guides/MENU-CONFIG.md) · [更新日志](CHANGELOG.md)
 
 ## 可以制作什么
 
@@ -100,13 +100,15 @@ Pages:
 
 ## 进一步了解
 
-- [settings 坐标、字号与加粗](SETTINGS-LAYOUT.md)
+[文档目录](docs/README.md)：配置指南、旧版迁移资料与开发记录统一收录在 `docs/`。
 
-- [菜单配置与画布布局](MENU-CONFIG.md)
-- [On/Off 开关样式](SWITCHES.md)
-- [对话、首领模板与字体设置](TEMPLATES.md)
-- [任务列表演示](QUEST-DEMO.md)
-- [物品源与物品页面](ITEM-SOURCES.md)
-- [从 PlayerSettings 迁移](MIGRATION.md)
-- [资源素材与使用范围](TEMPLATE-ASSETS.md)
-- [验证记录](VALIDATION.md)与[更新日志](CHANGELOG.md)
+- [settings 坐标、字号与加粗](docs/guides/SETTINGS-LAYOUT.md)
+
+- [菜单配置与画布布局](docs/guides/MENU-CONFIG.md)
+- [On/Off 开关样式](docs/guides/SWITCHES.md)
+- [对话、首领模板与字体设置](docs/guides/TEMPLATES.md)
+- [任务列表演示](docs/guides/QUEST-DEMO.md)
+- [物品源与物品页面](docs/guides/ITEM-SOURCES.md)
+- [从 PlayerSettings 迁移](docs/guides/MIGRATION.md)
+- [资源素材与使用范围](docs/guides/TEMPLATE-ASSETS.md)
+- [验证记录](docs/development/VALIDATION.md)与[更新日志](CHANGELOG.md)
