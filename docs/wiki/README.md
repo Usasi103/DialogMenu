@@ -46,7 +46,7 @@ settings 子页的 `Renderer: canvas` 指设置界面的字体画布；它与整
 | 文件 | 内容 |
 | --- | --- |
 | `config.yml` | 默认菜单和资源包要求 |
-| `menus/settings.yml` | 玩家设置；个人信息、声音、粒子、拾取、掉落、语言、帮助等页 |
+| `menus/demo-settings.yml` | 独立设置演示；模拟开关、滑条和下拉框，真实 settings 菜单继续保留 |
 | `menus/demo-dialogue.yml` | NPC 对话演示，默认 main 页 |
 | `menus/demo-boss.yml` | 首领演示，intro 介绍和 confirm 确认页 |
 | `menus/demo-quests.yml` | 任务列表演示；任务与奖励的 Icon 配置见 [图标与材质](icons.md) |

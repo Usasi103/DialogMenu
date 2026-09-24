@@ -1,0 +1,307 @@
+# 独立设置模板；真实服务器 settings.yml 继续使用 Type: settings。
+# Type: settings-demo 让开关/滑条/下拉框独立运行，无需 Ambience 或 PAPI。
+# 示例资产为静态演示数据；重新打开会重置，不写玩家偏好、不执行业务命令。
+# 图标与材质：Icon（单数）是左侧分类字体贴图；Icons（复数）是本页控件集合。
+# 左侧 Icon 可选 profile-icon / sound-icon / particles-icon / notices-icon / loot-icon / appearance-icon。
+# Icon 不能填 DIAMOND、source:IA:... 或 Font/Glyph 配置段；换图片需改资源包对应的 9 像素贴图。
+# 真实物品写在 Pages.<页>.Icons.<控件>.Display.Material；原版可写 DIAMOND 或 minecraft:diamond。
+# 不用 CE 也能用：source:IA:my_pack:sword、source:Nexo:my_sword、source:Oraxen:my_sword、source:NI:物品ID。
+# IA 是 ItemsAdder 的别名；安装实际使用的物品插件并填写真实 ID，无需另外安装 ItemBridge。
+# Display.Material 会让整页使用原生物品布局，不能与 toggle / slider / dropdown 同页混用。
+# 字体画布的装饰图标请用 sprite 的 Font/Glyph；任务菜单用 Icon 的 Font/Glyph/Width/Advance。
+# 自定义物品模型和字体图标都需要客户端加载相应资源；发送方式见全局 config.yml 的 ResourcePack。
+# Wiki：docs/wiki/icons.md（图标与材质）、items.md（物品源）、resource-pack.md（非 CE 资源包）。
+
+# 排版字段说明（可省略；省略时使用默认样式和自动排版）：
+# Position: [X, Y]：相对菜单画布的位置；X 是像素，Y 是从 0 开始的行号，每行 9 像素。
+# 例如 [123, 3] 表示向右 123 像素、从第 3 行开始；不是屏幕坐标，也不是 Y=3 像素。
+# text / heading 移动文字；button / toggle / slider / dropdown 移动整个控件。
+# LabelPosition: [X, Y]：仅用于 toggle / slider / dropdown，单独定位左侧 Name；省略时跟随控件。
+# FontSize: 8：文字字号，默认 8；text / heading 为 6–24，固定高度控件为 6–12 的整数。
+# Bold: false：true 加粗，false 常规；加粗和放大都会增加文字占用宽度。
+# Width: 316：text / heading 的文字最大横向宽度，单位像素；超出截断，不自动换行。
+# Width 不改变字号，不拉伸贴图，也不修改按钮尺寸；其他控件不要填写 Width。
+# Color: muted：text / heading 的文字颜色；支持 text（正文）、muted（次要文字）、heading（标题）。
+# 这三个颜色名称随 Theme 切换；也可写固定六位十六进制颜色，如 Color: '#55FF55'。
+# Color 不接受 &a、§a、&f 或 &l；加粗请用 Bold，颜色不会改变控件背景。
+# TitleStyle：右侧页面标题样式，可填 Position / FontSize / Bold / Width / Color，规则同 heading。
+# Navigation：左侧分类样式，可填 Position / Step / FontSize / Bold；Step 是行距，至少 2 行。
+# Style: switch：toggle 显示 On/Off 小开关；button 显示宽按钮，省略 Style 默认 button。
+# Layout：按名称引用 Icons，顺序决定自动排版；未列入 Layout 的项目不显示。
+# Name / Description 可直接写中文，也可写 {zh_cn: "中文", en_us: "English"}；语言键不能改名。
+# Bind：在本演示内模拟内置偏好；不要同时填写 State / Actions，选项值须与绑定支持的值一致。
+# Options：slider 的横向档位或 dropdown 的下拉选项，按书写顺序排列，支持 2–8 项。
+# 下拉框要为展开后的列表留出空间；Position / FontSize 修改后运行 /dmenu check 检查边界。
+# Renderer: items 或 Display.Material 会使用原生物品页；该页不支持上述画布坐标与字体样式。
+# 原版 16 色对照（Color 填右侧的 '#RRGGBB'，不能直接填 &a 或 §a）：
+# &0 黑 '#000000'；&1 深蓝 '#0000AA'；&2 深绿 '#00AA00'；&3 湖蓝 '#00AAAA'。
+# &4 深红 '#AA0000'；&5 紫 '#AA00AA'；&6 金 '#FFAA00'；&7 灰 '#AAAAAA'。
+# &8 深灰 '#555555'；&9 蓝 '#5555FF'；&a 绿 '#55FF55'；&b 青 '#55FFFF'。
+# &c 红 '#FF5555'；&d 粉紫 '#FF55FF'；&e 黄 '#FFFF55'；&f 白 '#FFFFFF'。
+# YAML 中 # 会开始注释，因此十六进制颜色必须加引号，例如 Color: '#55FF55'。
+
+# toggle 的 Style: switch 显示状态文字与小开关；button 恢复宽按钮（省略默认 button）。
+# 玩家设置是一个菜单；Pages 内每项是它的子页面，顺序也是导航顺序。
+# /dmenu open demo-settings；修改后 /dmenu check，再 /dmenu reload。
+Version: 1 # 配置格式版本，保持当前值
+Type: settings-demo # 玩家设置菜单；子页面集中写在 Pages 内
+Title: {zh_cn: "设置演示", en_us: "Settings Demo"} # 菜单标题；可写中文或 zh_cn / en_us 双语文本
+DefaultPage: "profile" # 打开菜单时首先显示的页面 ID，必须存在于 Pages 中
+Language: "zh_cn" # 新玩家默认语言：zh_cn / en_us；不覆盖玩家已保存的选择
+Theme: "dark" # 新玩家默认主题：dark 暗色 / light 亮色；不覆盖已保存的选择
+HideFocusOutline: true # true 隐藏该菜单的焦点白框；需要配套资源包着色器，false 保留
+# 是否显示底部原生“返回游戏”按钮；默认隐藏，可用 Esc 关闭。
+ShowFooter: false # true 显示底部“返回游戏”；false 隐藏，仍可按 Esc 关闭
+MainMenu: ["close"] # 演示菜单无需其他菜单插件
+# 左侧分类：位置、行距、字号、加粗；行距至少 2。
+Navigation: # 左侧分类的排版样式
+  Position: [0, 3] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+  Step: 2 # 相邻分类的起始行间隔；至少 2 行，每行 9 像素
+  FontSize: 8 # 分类字号，默认 8，支持 6–12；大字需配合 Step 留出间距
+  Bold: false # true 加粗；false 常规字体
+
+Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用此 ID；书写顺序也是左侧分类顺序
+  profile:
+    # 玩家信息：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 在本演示内模拟状态；修改后 /dmenu reload。
+    Title: {zh_cn: "玩家信息", en_us: "Profile"} # 左侧分类名称与右侧页面标题
+    TitleStyle: # 右侧页面标题样式；省略字段沿用默认值
+      Position: [122, 1] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
+      FontSize: 8 # 字号默认 8；文字/标题 6–24，固定高度控件 6–12
+      Bold: false # true 加粗；false 常规字体
+    Icon: "profile-icon" # 左侧分类图标的内置贴图 ID
+    Keywords: ["玩家", "信息", "等级", "金币", "余额", "图鉴", "player", "level", "coin"] # 搜索此分类时匹配的关键词列表
+    Layout: ["玩家", "等级", "资产", "金币", "余额", "鱼币", "图鉴", "世界"] # 显示顺序；名称必须与下方 Icons 的项目名称一致
+    Icons: # 本页的文字、按钮和选项定义；每个项目名称需唯一
+      玩家:
+        Type: "text" # 纯文字
+        Position: [123, 3] # 修改这里即可移动“玩家”这行文字
+        FontSize: 8 # 可改为 6–24；放大后可调整后续文字的位置
+        Bold: false # true 加粗；false 常规字体
+        Width: 316 # 文字最大宽度（像素），超出截断；仅用于 text / heading，不改变背景大小
+        Color: muted # 文字颜色：text / muted / heading 或 '#RRGGBB'；不支持 &a / §a
+        Name: {zh_cn: "玩家：{player}", en_us: "Player: {player}"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      等级:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "等级：24  延迟：{ping} 毫秒", en_us: "Level: 24  Ping: {ping} ms"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      资产:
+        Type: "heading" # 分区标题，自动布局时开始下方面板
+        Name: {zh_cn: "资产与收集进度", en_us: "Balances and collection"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      金币:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "金币：1,280", en_us: "Coins: 1,280"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      余额:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "余额：360", en_us: "Balance: 360"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      鱼币:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "鱼币：48", en_us: "Fish coins: 48"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      图鉴:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "图鉴收集：12 / 80", en_us: "Collection: 12 / 80"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      世界:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "演示数据 · 世界：{world}", en_us: "Sample data · World: {world}"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+  sound:
+    # 环境音效：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 在本演示内模拟状态；修改后 /dmenu reload。
+    Title: {zh_cn: "环境音效", en_us: "Sounds"} # 左侧分类名称与右侧页面标题
+    Icon: "sound-icon" # 左侧分类图标的内置贴图 ID
+    Keywords: ["声音", "音效", "鸟鸣", "风声", "sound", "ambience", "audio"] # 搜索此分类时匹配的关键词列表
+    Layout: ["音效", "说明", "保存", "个人", "音量"] # 显示顺序；名称必须与下方 Icons 的项目名称一致
+    Icons: # 本页的文字、按钮和选项定义；每个项目名称需唯一
+      音效:
+        Type: "toggle" # 二元开关
+        Position: [330, 3] # 右侧开关的位置
+        LabelPosition: [123, 4] # 左侧“鸟鸣、风声与自然音效”的位置
+        FontSize: 8 # 控件名称与当前值的字号，支持 6–12
+        Bold: false # true 加粗；false 常规字体
+        Style: "switch" # toggle 的外观：switch 为 On/Off 小开关，button 为宽按钮
+        Name: {zh_cn: "鸟鸣、风声与自然音效", en_us: "Birds, wind and nature"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Bind: "sounds" # 演示绑定 ID，仅改变本次演示状态；不要改为显示文字
+        Description: {zh_cn: "预览音效开关，不改变实际环境音效。", en_us: "Preview the switch without changing real sounds."} # 控件下方的说明文字，可用字符串、双语文本或最多 3 项的列表
+      说明:
+        Type: "heading" # 分区标题，自动布局时开始下方面板
+        Name: {zh_cn: "音效说明", en_us: "About ambience"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      保存:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "可点击开关预览，本次演示内保留选择。", en_us: "Try the switch; this preview keeps your choice."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      个人:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "你的选择不会影响其他玩家。", en_us: "Your choice does not affect other players."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      音量:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "总音量请在游戏的声音设置中调整。", en_us: "Set overall volume in Minecraft sound options."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+  particles:
+    # 环境粒子：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 在本演示内模拟状态；修改后 /dmenu reload。
+    Title: {zh_cn: "环境粒子", en_us: "Particles"} # 左侧分类名称与右侧页面标题
+    Icon: "particles-icon" # 左侧分类图标的内置贴图 ID
+    Keywords: ["粒子", "萤火虫", "落叶", "密度", "particle", "firefly", "leaves", "density"] # 搜索此分类时匹配的关键词列表
+    Layout: ["总开关", "分类", "落叶", "萤火虫", "群系", "密度", "说明"] # 显示顺序；名称必须与下方 Icons 的项目名称一致
+    Icons: # 本页的文字、按钮和选项定义；每个项目名称需唯一
+      总开关:
+        Type: "toggle" # 二元开关
+        Style: "switch" # toggle 的外观：switch 为 On/Off 小开关，button 为宽按钮
+        Name: {zh_cn: "显示环境粒子", en_us: "Show ambient particles"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Bind: "particles" # 演示绑定 ID，仅改变本次演示状态；不要改为显示文字
+        Description: {zh_cn: "预览粒子选项，不改变实际环境粒子。", en_us: "Preview controls without changing real particles."} # 控件下方的说明文字，可用字符串、双语文本或最多 3 项的列表
+      分类:
+        Type: "heading" # 分区标题，自动布局时开始下方面板
+        Name: {zh_cn: "粒子分类与密度", en_us: "Particle categories and density"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      落叶:
+        Type: "toggle" # 二元开关
+        Style: "switch" # toggle 的外观：switch 为 On/Off 小开关，button 为宽按钮
+        Name: {zh_cn: "自然落叶", en_us: "Falling leaves"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Bind: "leaves" # 演示绑定 ID，仅改变本次演示状态；不要改为显示文字
+      萤火虫:
+        Type: "toggle" # 二元开关
+        Style: "switch" # toggle 的外观：switch 为 On/Off 小开关，button 为宽按钮
+        Name: {zh_cn: "夜间萤火虫", en_us: "Night fireflies"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Bind: "firefly" # 演示绑定 ID，仅改变本次演示状态；不要改为显示文字
+      群系:
+        Type: "toggle" # 二元开关
+        Style: "switch" # toggle 的外观：switch 为 On/Off 小开关，button 为宽按钮
+        Name: {zh_cn: "生物群系粒子", en_us: "Biome particles"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Bind: "biome" # 演示绑定 ID，仅改变本次演示状态；不要改为显示文字
+      密度:
+        Type: "slider" # 横向档位滑条，选项写在 Options 中
+        Name: {zh_cn: "粒子密度", en_us: "Particle density"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Bind: "particle-density" # 演示绑定 ID，仅改变本次演示状态；不要改为显示文字
+        Options: # 选项值: 显示文字；按顺序排列，2–8 项；"off" 必须加引号
+          "off": {zh_cn: "关闭", en_us: "Off"}
+          low: {zh_cn: "低", en_us: "Low"}
+          medium: {zh_cn: "中", en_us: "Medium"}
+          high: {zh_cn: "高", en_us: "High"}
+      说明:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "关闭环境粒子后，各分类效果也会暂时隐藏。", en_us: "Disabling particles hides all categories."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+  notices:
+    # 拾取提示：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 在本演示内模拟状态；修改后 /dmenu reload。
+    Title: {zh_cn: "拾取提示", en_us: "Pickup notices"} # 左侧分类名称与右侧页面标题
+    Icon: "notices-icon" # 左侧分类图标的内置贴图 ID
+    Keywords: ["拾取", "提示", "通知", "pickup", "notice", "notification"] # 搜索此分类时匹配的关键词列表
+    Layout: ["拾取提示", "说明", "拾取", "资源包", "保存"] # 显示顺序；名称必须与下方 Icons 的项目名称一致
+    Icons: # 本页的文字、按钮和选项定义；每个项目名称需唯一
+      拾取提示:
+        Type: "toggle" # 二元开关
+        Style: "switch" # toggle 的外观：switch 为 On/Off 小开关，button 为宽按钮
+        Name: {zh_cn: "显示物品拾取提示", en_us: "Show pickup notices"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Bind: "pickup" # 演示绑定 ID，仅改变本次演示状态；不要改为显示文字
+        Description: {zh_cn: "预览拾取提示开关，不改变实际提示。", en_us: "Preview the pickup notice switch."} # 控件下方的说明文字，可用字符串、双语文本或最多 3 项的列表
+      说明:
+        Type: "heading" # 分区标题，自动布局时开始下方面板
+        Name: {zh_cn: "提示说明", en_us: "About pickup notices"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      拾取:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "关闭提示后仍然可以正常拾取物品。", en_us: "You can still pick up items with notices off."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      资源包:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "加载菜单资源包即可体验全部演示控件。", en_us: "All demo controls work with the menu resource pack."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      保存:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "重新打开演示后，选项恢复初始状态。", en_us: "Reopening the demo resets its choices."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+  loot:
+    # 掉落光柱：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 在本演示内模拟状态；修改后 /dmenu reload。
+    Title: {zh_cn: "掉落光柱", en_us: "Loot beams"} # 左侧分类名称与右侧页面标题
+    Icon: "loot-icon" # 左侧分类图标的内置贴图 ID
+    Keywords: ["掉落", "光柱", "掉落音效", "loot", "beam", "drop"] # 搜索此分类时匹配的关键词列表
+    Layout: ["光柱", "音效设置", "音效", "分别设置", "个人设置"] # 显示顺序；名称必须与下方 Icons 的项目名称一致
+    Icons: # 本页的文字、按钮和选项定义；每个项目名称需唯一
+      光柱:
+        Type: "toggle" # 二元开关
+        Style: "switch" # toggle 的外观：switch 为 On/Off 小开关，button 为宽按钮
+        Name: {zh_cn: "显示掉落光柱", en_us: "Show loot beams"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Bind: "loot-beams" # 演示绑定 ID，仅改变本次演示状态；不要改为显示文字
+        Description: {zh_cn: "预览光柱开关，不改变实际掉落效果。", en_us: "Preview the beam switch without changing effects."} # 控件下方的说明文字，可用字符串、双语文本或最多 3 项的列表
+      音效设置:
+        Type: "heading" # 分区标题，自动布局时开始下方面板
+        Name: {zh_cn: "掉落音效", en_us: "Loot sounds"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      音效:
+        Type: "toggle" # 二元开关
+        Style: "switch" # toggle 的外观：switch 为 On/Off 小开关，button 为宽按钮
+        Name: {zh_cn: "播放光柱音效", en_us: "Play loot sounds"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Bind: "loot-sounds" # 演示绑定 ID，仅改变本次演示状态；不要改为显示文字
+      分别设置:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "光柱与音效可以分别设置。", en_us: "Beams and sounds can be set separately."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      个人设置:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "仅影响你自己的画面与声音。", en_us: "Changes only your own view and sounds."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+  appearance:
+    # 界面与语言：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 在本演示内模拟状态；修改后 /dmenu reload。
+    Title: {zh_cn: "界面与语言", en_us: "Appearance"} # 左侧分类名称与右侧页面标题
+    Icon: "appearance-icon" # 左侧分类图标的内置贴图 ID
+    Keywords: ["界面", "语言", "主题", "亮色", "暗色", "language", "theme", "light", "dark"] # 搜索此分类时匹配的关键词列表
+    Layout: ["语言", "主题设置", "主题", "菜单缩放", "保存说明", "个人设置"] # 显示顺序；名称必须与下方 Icons 的项目名称一致
+    Icons: # 本页的文字、按钮和选项定义；每个项目名称需唯一
+      语言:
+        Type: "dropdown" # 竖向展开的下拉选择框，选项写在 Options 中
+        Name: {zh_cn: "菜单语言", en_us: "Menu language"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Bind: "language" # 演示绑定 ID，仅改变本次演示状态；不要改为显示文字
+        Description: {zh_cn: "仅切换此玩家菜单的语言。", en_us: "Applies to this player menu."} # 控件下方的说明文字，可用字符串、双语文本或最多 3 项的列表
+        Options: {zh_cn: "简体中文", en_us: "English"} # 选项值: 显示文字；按顺序排列，2–8 项；"off" 必须加引号
+      主题设置:
+        Type: "heading" # 分区标题，自动布局时开始下方面板
+        Name: {zh_cn: "界面主题", en_us: "Menu theme"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      主题:
+        Type: "dropdown" # 竖向展开的下拉选择框，选项写在 Options 中
+        Name: {zh_cn: "界面主题", en_us: "Menu theme"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+        Bind: "theme" # 演示绑定 ID，仅改变本次演示状态；不要改为显示文字
+        Options: # 选项值: 显示文字；按顺序排列，2–8 项；"off" 必须加引号
+          dark: {zh_cn: "暗色", en_us: "Dark"}
+          light: {zh_cn: "亮色", en_us: "Light"}
+      菜单缩放:
+        Type: "dropdown"
+        Name: {zh_cn: "菜单缩放", en_us: "Menu scale"}
+        Bind: "menu-scale" # 按玩家保存，所有 DialogMenu 画布菜单共用；不修改游戏全局 GUI 设置
+        Options: {"50": "50%", "75": "75%", "100": "100%"}
+      保存说明:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "语言、主题与缩放仅应用于本次演示。", en_us: "Language, theme and scale apply to this preview."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      个人设置:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "演示选项不会改变你的真实玩家设置。", en_us: "The demo leaves your real settings unchanged."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+  help:
+    # 使用帮助：Layout 决定显示顺序，Icons 定义每一项。
+    # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
+    # Bind 在本演示内模拟状态；修改后 /dmenu reload。
+    Title: {zh_cn: "使用帮助", en_us: "Help"} # 左侧分类名称与右侧页面标题
+    Icon: "loot-icon" # 左侧分类图标的内置贴图 ID
+    Keywords: ["帮助", "资源包", "缩放", "help", "resource", "scale"] # 搜索此分类时匹配的关键词列表
+    Layout: ["导航", "高亮", "资源包", "加载", "缩放", "关闭"] # 显示顺序；名称必须与下方 Icons 的项目名称一致
+    Icons: # 本页的文字、按钮和选项定义；每个项目名称需唯一
+      导航:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "点击左侧分类，查看并调整对应设置。", en_us: "Choose a category on the left to change settings."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      高亮:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "绿色按钮表示该设置当前已开启。", en_us: "Green buttons show the active selection."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      资源包:
+        Type: "heading" # 分区标题，自动布局时开始下方面板
+        Name: {zh_cn: "资源包与界面大小", en_us: "Resource pack and GUI scale"} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      加载:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "此界面需要服务器资源包。", en_us: "This menu needs the server resource pack."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      缩放:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "若界面显示不完整，请调低界面缩放。", en_us: "Lower GUI scale if the menu does not fit."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置
+      关闭:
+        Type: "text" # 纯文字
+        Name: {zh_cn: "按 Esc 关闭菜单。", en_us: "Press Esc to close the menu."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置

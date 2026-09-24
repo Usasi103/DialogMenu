@@ -1,7 +1,7 @@
 # 全局设置默认菜单和所需资源包；每个 menus/*.yml 都是一个完整菜单，自动加载。
 # 文件名就是菜单 ID，不需要另写注册列表。
 Version: 3
-DefaultMenu: settings
+DefaultMenu: demo-settings # 新装默认进入独立设置演示；服务器原有 config.yml 不会被覆盖
 
 # 所需文件：DialogMenu-resourcepack-0.1.21-SNAPSHOT.zip；本机素材版也可用（两者字体 ID 相同）。
 # 当前已合入 plugins/CraftEngine/resources/toranca_pack/resourcepack/，由下方 default 包发送。

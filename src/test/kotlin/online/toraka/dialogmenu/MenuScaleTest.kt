@@ -10,6 +10,37 @@ import org.junit.jupiter.api.Test
 
 class MenuScaleTest {
     @Test
+    fun `boss pages cap the rendered width without changing player preferences`() {
+        val catalog =
+            MenuCatalogParser.parse(
+                MenuRepository.resource("catalog/config.yml"),
+                CatalogRepository.defaults.associateWith {
+                    MenuRepository.resource("catalog/menus/$it.yml")
+                },
+            )
+        for (template in catalog.menus.getValue("demo-boss").canvas.values) {
+            val canvas =
+                TemplateRenderer.render(template, template.values(emptyMap()), { it }) {
+                    ClickEvent.custom(Key.key("test", it))
+                }
+            for (preference in MenuScale.entries) {
+                val scale = canvas.supportedScale(template.displayScale(preference))
+                assertTrue(scale.percent <= 75)
+                assertTrue(template.width * scale.factor <= 414f)
+                assertEquals(
+                    if (preference == MenuScale.SMALL) preference else MenuScale.MEDIUM,
+                    scale,
+                )
+                canvas.build(scale)
+            }
+        }
+        val source = MenuRepository.resource("templates/boss-intro.yml")
+        assertThrows(Exception::class.java) {
+            TemplateParser.parse("bad", source.replace("MaxScale: 75", "MaxScale: 80"))
+        }
+    }
+
+    @Test
     fun `text actions remain clickable and external fonts fall back without changing preference`() {
         val actions = mutableSetOf<String>()
         val canvas = DialogCanvas {
@@ -89,7 +120,7 @@ class MenuScaleTest {
                 index += "$id\t${scale.bodyWidth(width, hide)}\t${scale.rows(rows)}"
             }
         }
-        val menu = catalog.menus.getValue("settings").settings!!
+        val menu = catalog.menus.getValue("demo-settings").settings!!
         for (theme in MenuTheme.entries) for (language in MenuLanguage.entries) {
             for (page in menu.pages.values) {
                 val actions = linkedSetOf<String>()

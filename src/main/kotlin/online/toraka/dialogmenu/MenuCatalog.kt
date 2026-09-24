@@ -61,7 +61,8 @@ object MenuCatalogParser {
             require(root.get("Version") == 1) { "$path.Version: 必须为 1" }
             val pages = root.getConfigurationSection("Pages")!!
             when (root.getString("Type")) {
-                "settings" -> {
+                "settings",
+                "settings-demo" -> {
                     keys(
                         root,
                         setOf(
@@ -91,7 +92,9 @@ object MenuCatalogParser {
                         } catch (error: Exception) {
                             throw IllegalArgumentException("$path: ${error.message}", error)
                         }
-                    CatalogMenu(id, defaults.getValue(id), definition, emptyMap())
+                    val settings = definition.copy(demo = root.getString("Type") == "settings-demo")
+                    if (settings.demo) SettingsDemoSession.validate(settings)
+                    CatalogMenu(id, defaults.getValue(id), settings, emptyMap())
                 }
                 "canvas" -> {
                     keys(
@@ -168,7 +171,7 @@ object MenuCatalogParser {
                         }
                     CatalogMenu(id, defaults.getValue(id), null, templates)
                 }
-                else -> error("$path.Type: 使用 settings 或 canvas")
+                else -> error("$path.Type: 使用 settings、settings-demo 或 canvas")
             }
         }
         val default = config.getString("DefaultMenu") ?: "settings"
@@ -222,7 +225,7 @@ class CatalogRepository(private val directory: File) {
     }
 
     companion object {
-        val defaults = listOf("settings", "demo-dialogue", "demo-boss", "demo-quests")
+        val defaults = listOf("demo-settings", "demo-dialogue", "demo-boss", "demo-quests")
 
         fun selected(directory: File): Boolean {
             val file = File(directory, "config.yml")

@@ -35,12 +35,14 @@ DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 
 
 | 菜单 | 打开指令 | 用途 |
 | --- | --- | --- |
-| 玩家设置 | `/dmenu open settings` | 玩家信息、环境音效、粒子、拾取提示、掉落效果与界面偏好 |
+| 设置演示 | `/dmenu open demo-settings` | 与玩家设置相同的布局；开关、滑条和下拉框独立演示，无需业务插件 |
 | 对话演示 | `/dmenu open demo-dialogue` | NPC 对话和后续选项 |
 | 首领演示 | `/dmenu open demo-boss` | 首领介绍、难度选择与进入确认 |
 | 任务演示 | `/dmenu open demo-quests` | 任务分类、分页、详情与模拟领取 |
 
 这些示例都能复制、改名和修改。首领确认不会自动召唤首领；任务演示不读取真实任务进度，也不发放物品或货币奖励。实际玩法可以通过按钮动作接入自己的插件。
+
+`demo-settings` 的选项只在本次演示中生效，重新打开后重置；示例资产为固定数据。服务器已有的 `settings` 是真实玩家设置，继续使用原配置和入口。两者的状态彼此独立。[设置模板说明](docs/guides/SETTINGS-DEMO.md)。首领介绍与确认页默认最多显示为 75%（画布宽 414 GUI 像素），通过 `Canvas.MaxScale` 调整。
 
 ## 安装
 

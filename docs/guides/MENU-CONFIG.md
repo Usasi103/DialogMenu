@@ -4,7 +4,7 @@
 
 更换导航图标、任务图标或物品材质，以及 IA / Nexo / Oraxen 和非 CE 资源包的用法，见 [图标与材质](../wiki/icons.md)。
 
-`menus/settings.yml` 是完整的玩家设置菜单，个人信息、声音、粒子、拾取、掉落、语言等都在它的 `Pages` 内。
+新装的 `menus/demo-settings.yml` 是独立设置演示，个人信息、声音、粒子、拾取、掉落、语言等都在它的 `Pages` 内。服务器原有 `menus/settings.yml` 是真实设置，继续保留。
 `menus/demo-dialogue.yml` 是对话演示菜单；`menus/demo-boss.yml` 是首领演示菜单，包含介绍和确认两个子页。
 两个 demo 也是普通菜单，可复制、改名、改动作。确认只显示演示消息，不召唤首领、不扣物品。
 
@@ -12,7 +12,7 @@
 
 ```yaml
 Version: 3
-DefaultMenu: settings
+DefaultMenu: demo-settings # 已有服务器可继续使用 settings
 ```
 
 `menus` 下所有 `.yml` 自动加载，文件名就是菜单 ID，不用在另一个文件重复注册。
@@ -25,7 +25,8 @@ DefaultMenu: settings
 | 命令 | 用途 |
 | --- | --- |
 | `/dmenu`、`/settings` | 打开 DefaultMenu |
-| `/dmenu open settings` | 玩家设置默认页 |
+| `/dmenu open demo-settings` | 独立设置演示默认页 |
+| `/dmenu open settings` | 已有服务器的真实玩家设置 |
 | `/dmenu open settings appearance` | 玩家设置的语言/主题页 |
 | `/dmenu open demo-dialogue` | 对话演示 |
 | `/dmenu open demo-boss` | 首领介绍 |

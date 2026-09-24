@@ -242,7 +242,7 @@ Pages:
 
 | 文件 | 常见改动位置 |
 | --- | --- |
-| settings.yml | `Pages.<页>.Layout` 改排列；`Icons.<控件>.Name / Description` 改文案；Bind 连接内置设置 |
+| demo-settings.yml | `Pages.<页>.Layout` 改排列；`Icons.<控件>.Name / Description` 改文案；settings-demo 内 Bind 使用独立演示状态 |
 | demo-dialogue.yml | `Pages.main.Elements.dialogue.Text` 改正文；portrait 改立绘；continue 改后续跳转 |
 | demo-boss.yml | `Pages.intro` 改背景与建议；`Pages.confirm` 改难度说明与确认动作 |
 

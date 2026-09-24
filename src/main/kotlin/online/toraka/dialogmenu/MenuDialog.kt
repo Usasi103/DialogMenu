@@ -24,7 +24,12 @@ import org.bukkit.persistence.PersistentDataType
 object MenuDialog {
     data class View
     @JvmOverloads
-    constructor(val page: String, val dropdown: Int = -1, val menu: String = "settings") {
+    constructor(
+        val page: String,
+        val dropdown: Int = -1,
+        val menu: String = "settings",
+        val demo: SettingsDemoSession? = null,
+    ) {
         fun toggleDropdown(index: Int) = copy(dropdown = if (dropdown == index) -1 else index)
 
         fun collapsed() = copy(dropdown = -1)
@@ -58,7 +63,7 @@ object MenuDialog {
                 player.hasPermission("playersettings.use") &&
                     MenuRuntime.settings(view.menu) != null
             )
-                show(player, view.collapsed())
+                show(player, view.collapsed().copy(demo = newDemo(player, view.menu)))
             else player.closeDialog()
         }
     }
@@ -77,7 +82,7 @@ object MenuDialog {
         MenuResources.open(player) {
             player.closeInventory()
             TemplateDialog.forget(player.uniqueId)
-            show(player, View(page, menu = menuId))
+            show(player, View(page, menu = menuId, demo = newDemo(player, menuId)))
         }
     }
 
@@ -136,6 +141,14 @@ object MenuDialog {
 
     private fun execute(player: Player, view: View, id: String) {
         val definition = MenuRuntime.settings(view.menu)?.actions?.get(id) ?: return
+        if (
+            view.demo != null &&
+                (definition.permission.isEmpty() || player.hasPermission(definition.permission)) &&
+                view.demo.apply(id)
+        ) {
+            show(player, view)
+            return
+        }
         executeDefinition(player, view, definition)
     }
 
@@ -231,7 +244,8 @@ object MenuDialog {
         val view =
             if (requested.page in menu.pages) requested
             else requested.copy(page = menu.defaultPage, dropdown = -1)
-        val prefs = MenuPreferences.read(player.persistentDataContainer, menu)
+        val prefs =
+            view.demo?.preferences ?: MenuPreferences.read(player.persistentDataContainer, menu)
         val token = UUID.randomUUID().toString().replace("-", "")
         val actions = linkedSetOf<String>()
         fun click(action: String): ClickEvent<*> {
@@ -291,7 +305,11 @@ object MenuDialog {
                 view.page,
                 prefs.language,
                 prefs.theme,
-                { cache.getOrPut(it) { state(player, it, menu) } },
+                { id ->
+                    cache.getOrPut(id) {
+                        if (view.demo != null) view.demo.state(id) else state(player, id, menu)
+                    }
+                },
                 { expandText(player, it) },
                 ::click,
                 view.dropdown,
@@ -333,7 +351,9 @@ object MenuDialog {
         else DialogType.dialogList(RegistrySet.keySet(RegistryKey.DIALOG)).build()
 
     private fun searchDialog(player: Player, view: View) {
-        val language = MenuPreferences.read(player.persistentDataContainer).language
+        val language =
+            view.demo?.preferences?.language
+                ?: MenuPreferences.read(player.persistentDataContainer).language
         fun t(key: String) = MenuText.get(language, key)
         val token = UUID.randomUUID().toString().replace("-", "")
         sessions[player.uniqueId] =
@@ -371,6 +391,13 @@ object MenuDialog {
                     )
             }
         )
+    }
+
+    private fun newDemo(player: Player, menuId: String): SettingsDemoSession? {
+        val menu = MenuRuntime.settings(menuId) ?: return null
+        return if (menu.demo)
+            SettingsDemoSession(menu, MenuPreferences.read(player.persistentDataContainer, menu))
+        else null
     }
 
     private fun state(player: Player, id: String, menu: MenuDefinition): String? =

@@ -10,7 +10,7 @@ class MenuCatalogTest {
     private val config = MenuRepository.resource("catalog/config.yml")
 
     private fun defaults() =
-        CatalogRepository.defaults.associateWith {
+        (CatalogRepository.defaults + "settings").associateWith {
             MenuRepository.resource("catalog/menus/$it.yml")
         }
 
@@ -39,11 +39,13 @@ class MenuCatalogTest {
             ),
         )
         assertEquals(
-            setOf("settings", "demo-dialogue", "demo-boss", "demo-quests"),
+            setOf("settings", "demo-settings", "demo-dialogue", "demo-boss", "demo-quests"),
             catalog.menus.keys,
         )
         assertEquals(setOf("intro", "confirm"), catalog.menus.getValue("demo-boss").pages)
-        assertEquals("settings", catalog.defaultMenu)
+        assertFalse(current.demo)
+        assertTrue(catalog.menus.getValue("demo-settings").settings!!.demo)
+        assertEquals("demo-settings", catalog.defaultMenu)
     }
 
     @Test
@@ -126,6 +128,8 @@ class MenuCatalogTest {
         CatalogRepository.exportIfNew(directory.toFile())
         assertTrue(CatalogRepository.selected(directory.toFile()))
         assertEquals(4, directory.resolve("menus").toFile().listFiles()!!.size)
+        assertFalse(directory.resolve("menus/settings.yml").toFile().exists())
+        assertTrue(directory.resolve("menus/demo-settings.yml").toFile().exists())
         assertFalse(directory.resolve("templates").toFile().exists())
         val repository = CatalogRepository(directory.toFile())
         repository.install(repository.read())
@@ -169,7 +173,7 @@ class MenuCatalogTest {
         assertFalse(CatalogRepository.selected(directory.toFile()))
         assertThrows(Exception::class.java) {
             MenuCatalogParser.parse(
-                config.replace("DefaultMenu: settings", "DefaultMenu: missing"),
+                config.replace("DefaultMenu: demo-settings", "DefaultMenu: missing"),
                 defaults(),
             )
         }

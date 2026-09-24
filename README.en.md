@@ -35,12 +35,14 @@ Canvas menus support 50%, 75%, and 100% scaling. Choose Menu scale under Appeara
 
 | Menu | Command | Purpose |
 | --- | --- | --- |
-| Player settings | `/dmenu open settings` | Player information, ambient sounds, particles, pickup notices, loot effects, and appearance preferences |
+| Settings demo | `/dmenu open demo-settings` | The player settings layout with independent toggles, sliders, and dropdowns; no gameplay plugins required |
 | Conversation demo | `/dmenu open demo-dialogue` | NPC dialogue and follow-up choices |
 | Boss demo | `/dmenu open demo-boss` | Boss introduction, difficulty selection, and entry confirmation |
 | Quest demo | `/dmenu open demo-quests` | Categories, pagination, details, and simulated reward claims |
 
 You can copy, rename, and edit every example. Boss confirmation does not spawn a boss automatically. The quest demo does not track live quest progress or award items or currency. Connect your own gameplay plugins through button actions.
+
+Settings demo choices last for the current preview and reset when reopened. Balances are sample data. Existing server `settings` menus retain their real integrations, preferences, and default entry point. The boss introduction and confirmation pages default to a 75% maximum scale (414 GUI pixels wide), configurable through `Canvas.MaxScale`.
 
 ## Installation
 

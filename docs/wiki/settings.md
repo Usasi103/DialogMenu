@@ -2,12 +2,14 @@
 
 `Type: settings` 用于左侧导航、右侧控件的菜单。位置由插件安排，适合玩家设置与常用操作。完整示例见 [快速开始](quick-start.md)。
 
+新装附带的 `demo-settings.yml` 使用 `Type: settings-demo`，与真实设置采用相同布局。绑定控件使用本次演示内的独立状态，无需业务插件；语言、主题和缩放也只影响演示，重新打开重置。普通按钮只允许关闭、刷新、搜索与页内跳转。服务器已有 `settings.yml` 的真实功能与持久化选择不受影响。
+
 ## 菜单根字段
 
 | 字段 | 类型 | 默认值 / 要求 | 说明 |
 | --- | --- | --- | --- |
 | Version | 整数 | 必填 1 | 菜单格式版本 |
-| Type | 字符串 | 必填 settings | 菜单类型 |
+| Type | 字符串 | 必填 settings / settings-demo | 真实设置或独立演示 |
 | Title | 文本 / 双语映射 | 内置“玩家设置 / Player Settings” | 整个菜单的标题 |
 | DefaultPage | 字符串 | Pages 第一页 | 默认页，必须存在 |
 | Language | 字符串 | zh_cn | 新玩家默认语言：zh_cn / en_us |

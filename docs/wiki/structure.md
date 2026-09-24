@@ -6,7 +6,7 @@
 plugins/DialogMenu/
 ├── config.yml                # 全局入口与资源包
 └── menus/
-    ├── settings.yml          # 一个完整的 settings 菜单
+    ├── demo-settings.yml     # 独立设置模板；原有 settings.yml 继续用于真实设置
     │   └── Pages             # YAML 配置段，不是磁盘目录
     │       ├── profile
     │       ├── particles

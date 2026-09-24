@@ -86,6 +86,7 @@ data class MenuDefinition(
     val showFooter: Boolean = false,
     val navTextSize: Int = 8,
     val navBold: Boolean = false,
+    val demo: Boolean = false,
 ) {
     fun text(language: MenuLanguage, value: String): String =
         if (value.startsWith("$")) translations.getValue(language).getValue(value.drop(1))

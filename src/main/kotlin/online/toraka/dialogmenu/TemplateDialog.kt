@@ -79,7 +79,10 @@ object TemplateDialog {
                     ClickEvent.custom(Key.key("dialogmenu_dialogue", "$token/$action"))
                 },
             )
-        val scale = canvas.supportedScale(MenuPreferences.readScale(player.persistentDataContainer))
+        val scale =
+            canvas.supportedScale(
+                template.displayScale(MenuPreferences.readScale(player.persistentDataContainer))
+            )
         val content = canvas.build(scale)
         sessions[player.uniqueId] = Session(token, id, values, actions, System.currentTimeMillis())
         player.showDialog(
