@@ -9,7 +9,7 @@ import sys
 from PIL import Image
 
 project, scene, report = map(Path, sys.argv[1:])
-root = project / "resourcepack/assets/toraka_settings"
+root = project / "resourcepack/assets/dialogmenu_settings"
 metrics = dict(line.split("=", 1) for line in (project / "src/main/resources/ui-metrics.properties").read_text().splitlines())
 fonts = {}
 for name in ("button_cjk", "ui", "labels", "button_labels"):
@@ -18,7 +18,7 @@ for name in ("button_cjk", "ui", "labels", "button_labels"):
         if p["type"] == "space":
             for c, width in p["advances"].items():
                 glyphs[c] = (None, width, 0)
-        elif p["type"] == "reference" and p['id'].startswith('toraka_settings:'):
+        elif p["type"] == "reference" and p['id'].startswith('dialogmenu_settings:'):
             for c, glyph in fonts[p['id']].items():
                 glyphs.setdefault(c, glyph)
         elif p["type"] == "bitmap":
@@ -40,14 +40,14 @@ for name in ("button_cjk", "ui", "labels", "button_labels"):
                     assert expected == width, (name, c, width, expected)
                     tile = tile.resize((round(cellw * height / cellh), height), Image.Resampling.NEAREST)
                     glyphs[c] = (tile, width, 7 - p["ascent"])
-    fonts["toraka_settings:" + name] = glyphs
+    fonts["dialogmenu_settings:" + name] = glyphs
 
 # Body labels use vanilla Unihex at its normal baseline. The padded CJK bitmap
 # contains the same source ink; crop the transparent padding for preview only.
-for c, (tile, width, offset) in fonts['toraka_settings:button_cjk'].items():
-    fonts['toraka_settings:labels'].setdefault(c, (tile.crop((0, 0, tile.width, 8)), width, 0))
+for c, (tile, width, offset) in fonts['dialogmenu_settings:button_cjk'].items():
+    fonts['dialogmenu_settings:labels'].setdefault(c, (tile.crop((0, 0, tile.width, 8)), width, 0))
 
-button_font = fonts['toraka_settings:button_labels']
+button_font = fonts['dialogmenu_settings:button_labels']
 for c in '开关高中低':
     assert button_font[c][1] == 9, ('CJK advance', c, button_font[c][1])
     assert button_font[c][2] == button_font['T'][2] == -4, ('Mixed-label baseline', c)

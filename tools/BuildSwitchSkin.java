@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 /** Standalone compact switches; leaves the existing UI font and its metrics untouched. */
 public class BuildSwitchSkin {
     public static void main(String[] args) throws Exception {
-        Path root = Path.of(args[0]).resolve("resourcepack/assets/toraka_settings");
+        Path root = Path.of(args[0]).resolve("resourcepack/assets/dialogmenu_settings");
         List<String> providers = new ArrayList<>();
         for (int theme = 0; theme < 2; theme++) {
             for (int state = 0; state < 3; state++) {
@@ -42,7 +42,7 @@ public class BuildSwitchSkin {
                 String name = "switch_" + new String[] {"on", "off", "unavailable"}[state]
                         + (light ? "_light" : "");
                 ImageIO.write(image, "png", root.resolve("textures/ui/" + name + ".png").toFile());
-                providers.add("{\"type\":\"bitmap\",\"file\":\"toraka_settings:ui/" + name
+                providers.add("{\"type\":\"bitmap\",\"file\":\"dialogmenu_settings:ui/" + name
                         + ".png\",\"height\":18,\"ascent\":7,\"chars\":[\""
                         + String.format("\\u%04x", 0xE700 + theme * 3 + state) + "\"]}");
             }

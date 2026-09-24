@@ -448,7 +448,7 @@ object QuestDemoCompiler {
                 requireNotNull(icons.getProperty(raw)) { "$path: 未知图标 $raw" }
                     .split(',')
                     .map(String::toInt)
-            return Icon("toraka_dialogue:quest_items", data[0].toChar().toString(), 12, data[1])
+            return Icon("dialogmenu_dialogue:quest_items", data[0].toChar().toString(), 12, data[1])
         }
         val value = mapping(if (raw is ConfigurationSection) raw.getValues(false) else raw, path)
         require(value.keys.all { it in setOf("Font", "Glyph", "Width", "Advance") }) {

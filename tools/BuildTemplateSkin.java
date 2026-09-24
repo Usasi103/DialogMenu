@@ -17,7 +17,7 @@ public class BuildTemplateSkin {
     public static void main(String[] args) throws Exception {
         Path project = Path.of(args[0]);
         BufferedImage source = args.length > 1 ? ImageIO.read(Path.of(args[1]).toFile()) : null;
-        output = project.resolve("resourcepack/assets/toraka_dialogue");
+        output = project.resolve("resourcepack/assets/dialogmenu_dialogue");
         Files.createDirectories(output.resolve("textures/ui"));
         Files.createDirectories(output.resolve("font"));
         for (String theme : List.of("amethyst", "parchment")) {
@@ -128,7 +128,7 @@ public class BuildTemplateSkin {
             ImageIO.write(atlas, "png", output.resolve("textures/ui/" + name + ".png").toFile());
             Files.writeString(
                     output.resolve("font/" + name + ".json"),
-                    "{\"providers\":[{\"type\":\"bitmap\",\"file\":\"toraka_dialogue:ui/"
+                    "{\"providers\":[{\"type\":\"bitmap\",\"file\":\"dialogmenu_dialogue:ui/"
                             + name
                             + ".png\",\"height\":"
                             + (raised ? 12 : 8)
@@ -136,7 +136,7 @@ public class BuildTemplateSkin {
                             + (raised ? 11 : 7)
                             + ",\"chars\":[\""
                             + symbols
-                            + "\"]},{\"type\":\"reference\",\"id\":\"toraka_settings:"
+                            + "\"]},{\"type\":\"reference\",\"id\":\"dialogmenu_settings:"
                             + name
                             + "\"}]}\n");
         }
@@ -208,7 +208,7 @@ public class BuildTemplateSkin {
                 .append(String.join(",", advances))
                 .append('\n');
         providers.add(
-                "{\"type\":\"bitmap\",\"file\":\"toraka_dialogue:ui/"
+                "{\"type\":\"bitmap\",\"file\":\"dialogmenu_dialogue:ui/"
                         + name
                         + ".png\",\"height\":"
                         + image.getHeight()

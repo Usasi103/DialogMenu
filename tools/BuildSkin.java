@@ -20,7 +20,7 @@ public class BuildSkin {
 
     public static void main(String[] args) throws Exception {
         Path project = Path.of(args[0]);
-        root = project.resolve("resourcepack/assets/toraka_settings");
+        root = project.resolve("resourcepack/assets/dialogmenu_settings");
         Path source = project.resolve("design/hallow-source");
         tiles = ImageIO.read(source.resolve("tiles_16x9.png").toFile());
         frame = ImageIO.read(source.resolve("settings_toggle_enabled.png").toFile());
@@ -73,6 +73,7 @@ public class BuildSkin {
             if (value != -512) spaces.append(',');
             spaces.append('"').append(escape(0xEA00 + value)).append("\":").append(value);
         }
+        spaces.append(",\"\\ue7f0\":0.5,\"\\ue7f1\":-0.5");
         providers.add(spaces.append("}}").toString());
         Files.writeString(root.resolve("font/ui.json"),
                 "{\"providers\":[" + String.join(",", providers) + "]}\n", StandardCharsets.UTF_8);
@@ -103,9 +104,9 @@ public class BuildSkin {
         Files.writeString(root.resolve("font/button_labels.json"),
                 labelFont.replace("ui/ascii.png", "ui/ascii_raised.png")
                         .replace("\"ascent\": 7", "\"ascent\": 11, \"height\": 12")
-                        .replace("{\"type\": \"reference\", \"id\": \"minecraft:include/unifont\"}",
-                                "{\"type\":\"reference\",\"id\":\"toraka_settings:button_cjk\"},"
-                                + "{\"type\":\"reference\",\"id\":\"minecraft:include/unifont\"}"));
+                        .replace("{\"type\": \"reference\", \"id\": \"dialogmenu_settings:unifont\"}",
+                                "{\"type\":\"reference\",\"id\":\"dialogmenu_settings:button_cjk\"},"
+                                + "{\"type\":\"reference\",\"id\":\"dialogmenu_settings:unifont\"}"));
         Files.writeString(project.resolve("src/main/resources/ui-metrics.properties"), metrics, StandardCharsets.UTF_8);
         System.out.println("Compiled whole glyphs and measured advances: " + root);
     }
@@ -124,7 +125,8 @@ public class BuildSkin {
                     int colon = line.indexOf(':');
                     if (colon < 0) continue;
                     int cp = Integer.parseInt(line.substring(0, colon), 16);
-                    if ((cp >= 0x3001 && cp <= 0x9FFF) || (cp >= 0xF900 && cp <= 0xFAFF)) {
+                    if ((cp >= 0x3001 && cp <= 0x9FFF) || (cp >= 0xF900 && cp <= 0xFAFF)
+                            || (cp >= 0xFF01 && cp <= 0xFF5E) || (cp >= 0x20A0 && cp <= 0x20CF) || cp == 0x26C2) {
                         glyphs.add(new HexGlyph(cp, line.substring(colon + 1)));
                     }
                 }
@@ -163,7 +165,7 @@ public class BuildSkin {
             }
             String filename = "button_cjk_" + page + ".png";
             ImageIO.write(atlas, "png", root.resolve("textures/ui/" + filename).toFile());
-            cjkProviders.add("{\"type\":\"bitmap\",\"file\":\"toraka_settings:ui/" + filename
+            cjkProviders.add("{\"type\":\"bitmap\",\"file\":\"dialogmenu_settings:ui/" + filename
                     + "\",\"height\":12,\"ascent\":11,\"chars\":[" + String.join(",", chars) + "]}");
         }
         Files.writeString(root.resolve("font/button_cjk.json"), "{\"providers\":[" + String.join(",", cjkProviders) + "]}\n", StandardCharsets.UTF_8);
@@ -301,7 +303,7 @@ public class BuildSkin {
             metrics.append("glyph.").append(glyph + col).append('=')
                     .append(advance(image.getSubimage(col * width, 0, width, image.getHeight()), height)).append('\n');
         }
-        providers.add("{\"type\":\"bitmap\",\"file\":\"toraka_settings:ui/" + name
+        providers.add("{\"type\":\"bitmap\",\"file\":\"dialogmenu_settings:ui/" + name
                 + ".png\",\"height\":" + height + ",\"ascent\":" + (glyph >= 0xE090 && glyph <= 0xE099 ? 2 : 7)
                 + ",\"chars\":[\"" + chars + "\"]}");
     }

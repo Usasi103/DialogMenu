@@ -17,6 +17,11 @@ import taboolib.platform.util.sendLang
 )
 object MenuCommand {
     @CommandBody
+    val help = subCommand {
+        execute<CommandSender> { sender, _, _ -> showHelp(sender) }
+    }
+
+    @CommandBody
     val pack = subCommand {
         execute<Player> { player, _, _ -> MenuResources.send(player) }
     }
@@ -58,7 +63,14 @@ object MenuCommand {
     @CommandBody
     val main = mainCommand {
         execute<CommandSender> { sender, _, _ ->
-            if (sender is Player) MenuRuntime.open(sender) else sender.sendLang("player-only")
+            if (sender is Player) MenuRuntime.open(sender) else showHelp(sender)
         }
+    }
+
+    private fun showHelp(sender: CommandSender) {
+        sender.sendLang("command-help-title")
+        sender.sendLang("command-help-player")
+        if (sender.hasPermission("playersettings.admin")) sender.sendLang("command-help-admin")
+        sender.sendLang("command-help-aliases")
     }
 }

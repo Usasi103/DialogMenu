@@ -35,7 +35,7 @@
 # 新增页面示例见配置说明；此文件中的默认配置可自由修改，不会在重启时重置。
 version: 1
 title: "$menu.title"
-default-page: "particles"
+default-page: "profile"
 defaults:
   language: "zh_cn"
   theme: "dark"

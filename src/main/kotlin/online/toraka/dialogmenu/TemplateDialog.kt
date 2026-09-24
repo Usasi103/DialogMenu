@@ -76,7 +76,7 @@ object TemplateDialog {
                 { TemplateRenderer.expand(it, values, player.name, player.uniqueId.toString()) },
                 { action ->
                     actions += action
-                    ClickEvent.custom(Key.key("toraka_dialogue", "$token/$action"))
+                    ClickEvent.custom(Key.key("dialogmenu_dialogue", "$token/$action"))
                 },
             )
         val content = canvas.build()
@@ -117,7 +117,7 @@ object TemplateDialog {
 
     @taboolib.common.platform.event.SubscribeEvent
     fun clicked(event: PlayerCustomClickEvent) {
-        if (event.identifier.namespace() != "toraka_dialogue") return
+        if (event.identifier.namespace() != "dialogmenu_dialogue") return
         val player = (event.commonConnection as? PlayerGameConnection)?.player ?: return
         val route = event.identifier.value()
         taboolib.common.platform.function.submit {

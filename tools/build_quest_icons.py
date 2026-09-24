@@ -17,6 +17,6 @@ with zipfile.ZipFile(sys.argv[1]) as client:
         providers.append({'type': 'bitmap', 'file': f'minecraft:{texture}.png',
                           'height': 12, 'ascent': 4, 'chars': [chr(0xE000 + i)]})
         metrics.append(f'{name}={0xE000+i},{advance}\n')
-(project / 'resourcepack/assets/toraka_dialogue/font/quest_items.json').write_text(
+(project / 'resourcepack/assets/dialogmenu_dialogue/font/quest_items.json').write_text(
     json.dumps({'providers': providers}, indent=2) + '\n', encoding='utf-8')
 (project / 'src/main/resources/quest-icons.properties').write_text(''.join(metrics), encoding='utf-8')

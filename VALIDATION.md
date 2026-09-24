@@ -1,5 +1,16 @@
 # Validation Record
 
+## Unreleased (0.1.21-SNAPSHOT)
+
+- Standard TabooLib build and all 71 tests passed. New regressions cover the real eight-pixel coin glyph, fractional Unicode/bold advances, row origins, the profile default, and legacy sprite font IDs resolving to the new namespaces.
+- A separate Minecraft 26.2 client loaded the renamed pack and opened the profile with /settings. The profile's 3,030⛂ balance and the sound page keep the appearance category at the same horizontal origin. Both views were captured; no font-loading errors were reported.
+- The Paper fixture exercised dmenu help, bare console dmenu and settings help. Console administrators received validation/reload help; an ordinary player received the player commands without the admin entries.
+- Both README versions have valid local links and Bukkit-parsed YAML examples; the English introduction contains no Chinese text. Every bundled font reference resolves, and resourcepack/assets has no old resource namespace names.
+- Settings layout regressions verify explicit coordinates, label positions, title/category typography, rendered click regions, automatic row allocation, malformed fields and overlap rejection. A real client rendered moved 12px bold profile text, centered 10px bold navigation and switch labels; clicking the moved navigation opened the expected page.
+- The actual Minecraft 26.2 Unihex provider verified all 114,265 fallback glyph advances and bold offsets, including blank Unicode glyphs; its SpaceProvider verified the bold-space advance. CraftEngine generation/validation/PackSquash/upload completed, and all 435 menu assets were read back from the hosted pack with the new namespaces.
+- This is a development build. Source changes accumulate on main; no tag or GitHub Release is created for this batch.
+
+
 ## 0.1.20
 
 - Standard TabooLib build, formatting and all 65 DialogMenu tests passed. Tests cover opt-in and legacy defaults, built-in/custom action identity, invalid styles, all three states, both languages/themes, measured line width and clicks on painted glyphs/status text. Settings consolidation preserves every prior action and translation with only eight style changes.
@@ -159,7 +170,7 @@
 - Three `DialogCanvasTest` tests passed: click regions, dropdown overlap, and text clipping.
 - The DialogCanvas unit suite covers click regions, dropdown overlap, and text clipping; the previous independent Paper smoke probe also covered the six-page codec and redraw flow before the TabooLib lifecycle migration.
 - The deployed JAR SHA-256 is `8786da13d6d8148ab0afeef1b420beccf489fc3fc393b23ac5dd5f437d1c1f8a`.
-- CraftEngine workflow `default` completed successfully after the generated `.ce-packsquash` cache was cleared. The generated ZIP contains `assets/toraka_settings/font/ui.json` and all eight custom UI textures.
+- CraftEngine workflow `default` completed successfully after the generated `.ce-packsquash` cache was cleared. The generated ZIP contains `assets/dialogmenu_settings/font/ui.json` and all eight custom UI textures.
 - The final test server starts with `PlayerSettings v0.1.1` and `enable-rcon=false`.
 
 ## Client verification

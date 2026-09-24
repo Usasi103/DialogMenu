@@ -39,6 +39,9 @@ data class MenuWidget(
     val selected: String,
     val options: List<MenuOption>,
     val toggleStyle: ToggleStyle = ToggleStyle.BUTTON,
+    val textSize: Int = 8,
+    val bold: Boolean = false,
+    val labelRow: Int = row + 1,
 )
 
 data class MenuAction(
@@ -81,6 +84,8 @@ data class MenuDefinition(
     val pages: Map<String, MenuPage>,
     val translations: Map<MenuLanguage, Map<String, String>>,
     val showFooter: Boolean = false,
+    val navTextSize: Int = 8,
+    val navBold: Boolean = false,
 ) {
     fun text(language: MenuLanguage, value: String): String =
         if (value.startsWith("$")) translations.getValue(language).getValue(value.drop(1))
@@ -310,6 +315,9 @@ object MenuConfigParser {
                         "selected",
                         "options",
                         "toggle-style",
+                        "font-size",
+                        "bold",
+                        "label-row",
                     ),
                     at,
                 )
@@ -343,6 +351,16 @@ object MenuConfigParser {
                 val x = number(conf, "x", defaultX, at)
                 val row = number(conf, "row", null, at)
                 val labelX = number(conf, "label-x", 123, at)
+                val textSize = number(conf, "font-size", 8, at)
+                require(textSize in 6..24) { "$at.font-size: 使用 6–24" }
+                require(kind in setOf(WidgetKind.TEXT, WidgetKind.HEADING) || textSize <= 12) {
+                    "$at.font-size: 固定高度按钮、开关、滑条与下拉框支持 6–12；纯文字支持 6–24"
+                }
+                require(!conf.contains("bold") || conf.isBoolean("bold")) {
+                    "$at.bold: 需要 true / false"
+                }
+                val bold = conf.getBoolean("bold", false)
+                val labelRow = number(conf, "label-row", row + if (textSize == 8) 1 else 0, at)
                 val skin =
                     conf.getString(
                         "skin",
@@ -365,7 +383,7 @@ object MenuConfigParser {
                 val height =
                     when (kind) {
                         WidgetKind.TEXT,
-                        WidgetKind.HEADING -> 1
+                        WidgetKind.HEADING -> TitleFont.lineRows(textSize)
                         WidgetKind.SPRITE -> sprite.rows
                         else -> 2
                     }
@@ -380,7 +398,12 @@ object MenuConfigParser {
                 }
                 val label = text(conf.getString("label", "")!!, at)
                 if (label.isNotEmpty())
-                    require(labelX >= 0 && labelX < x - if (kind == WidgetKind.SLIDER) 60 else 6) {
+                    require(
+                        labelX >= 0 &&
+                            labelRow >= 0 &&
+                            labelRow + TitleFont.lineRows(textSize) <= DialogCanvas.ROWS &&
+                            labelX < x - if (kind == WidgetKind.SLIDER) 60 else 6
+                    ) {
                         "$at.label-x: 左侧标签空间不足"
                     }
                 if (kind == WidgetKind.SLIDER) require(x >= 60) { "$at.x: 滑条左侧需要 60 像素显示当前值" }
@@ -448,6 +471,9 @@ object MenuConfigParser {
                     conf.getString("selected", "")!!,
                     options,
                     toggleStyle,
+                    textSize,
+                    bold,
+                    labelRow,
                 )
             }
         }
@@ -482,10 +508,15 @@ object MenuConfigParser {
         }
         val common = widgets(root, "common")
         val navigation = section(root, "navigation")
-        keys(navigation, setOf("x", "row", "step"), "navigation")
+        keys(navigation, setOf("x", "row", "step", "font-size", "bold"), "navigation")
         val navX = number(navigation, "x", 0, "navigation")
         val navRow = number(navigation, "row", 3, "navigation")
         val navStep = number(navigation, "step", 2, "navigation")
+        val navTextSize = number(navigation, "font-size", 8, "navigation")
+        require(navTextSize in 6..12) { "navigation.font-size: 使用 6–12" }
+        require(!navigation.contains("bold") || navigation.isBoolean("bold")) {
+            "navigation.bold: 需要 true / false"
+        }
         require(
             navX >= 0 &&
                 navX + 102 <= DialogCanvas.WIDTH &&
@@ -513,7 +544,8 @@ object MenuConfigParser {
                                 it.row,
                                 it.width,
                                 if (it.kind == WidgetKind.SPRITE) skins.getValue(it.skin).rows
-                                else if (it.kind in setOf(WidgetKind.TEXT, WidgetKind.HEADING)) 1
+                                else if (it.kind in setOf(WidgetKind.TEXT, WidgetKind.HEADING))
+                                    TitleFont.lineRows(it.textSize)
                                 else 2,
                             )
                         }
@@ -564,6 +596,8 @@ object MenuConfigParser {
             pages,
             translations,
             footer.getBoolean("enabled", false),
+            navTextSize,
+            navigation.getBoolean("bold", false),
         )
     }
 

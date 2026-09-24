@@ -1,6 +1,7 @@
 package online.toraka.dialogmenu
 
 import java.util.Properties
+import kotlin.math.ceil
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
@@ -30,7 +31,7 @@ class DialogCanvas(
     private data class Sprite(val x: Int, val row: Int, val skin: Skin, val action: String? = null)
 
     private data class Label(
-        val x: Int,
+        val x: Float,
         val row: Int,
         val text: String,
         val color: Int,
@@ -63,7 +64,7 @@ class DialogCanvas(
     ) {
         labels +=
             Label(
-                x,
+                x.toFloat(),
                 row,
                 if (textSize != 8) TitleFont.normalize(text) else text,
                 color,
@@ -74,7 +75,16 @@ class DialogCanvas(
             )
     }
 
-    fun button(x: Int, row: Int, skin: Skin, label: String, action: String, rightInset: Int = 6) {
+    fun button(
+        x: Int,
+        row: Int,
+        skin: Skin,
+        label: String,
+        action: String,
+        rightInset: Int = 6,
+        textSize: Int = 8,
+        bold: Boolean = false,
+    ) {
         // Keep the click event on the visual glyphs and label as well as on the
         // invisible hit grid.  Some clients resolve a Dialog body's hit style
         // from the painted glyph instead of the preceding spacing component.
@@ -83,20 +93,36 @@ class DialogCanvas(
         val inset = if (skin == NAV || skin == SELECTED_NAV || skin == SEARCH) 20 else 6
         labels +=
             Label(
-                x + inset,
-                row + 1,
-                fit(label, skin.width - inset - rightInset),
+                (x + inset).toFloat(),
+                row + if (textSize == 8) 1 else 0,
+                fit(
+                    if (textSize != 8) TitleFont.normalize(label) else label,
+                    skin.width - inset - rightInset,
+                    textSize,
+                    bold,
+                    buttonLabelFont,
+                ),
                 if (skin == SELECTED_NAV || skin == SELECTED_CONTROL) 0x122408 else theme.text,
                 action,
                 true,
+                textSize,
+                bold,
             )
     }
 
     /** The status and both switch halves share the existing toggle action. */
-    fun toggleSwitch(x: Int, row: Int, on: Boolean?, valueLabel: String, action: String) {
+    fun toggleSwitch(
+        x: Int,
+        row: Int,
+        on: Boolean?,
+        valueLabel: String,
+        action: String,
+        textSize: Int = 8,
+        bold: Boolean = false,
+    ) {
         val switchX = x + 78
-        val label = fit(valueLabel, 72)
-        val labelX = switchX - 6 - textWidth(label)
+        val label = fit(valueLabel, 72, textSize, bold, buttonLabelFont)
+        val labelX = switchX - 6 - textWidth(label, textSize, bold, buttonLabelFont)
         val state =
             when (on) {
                 true -> 0
@@ -106,7 +132,16 @@ class DialogCanvas(
         val glyph = 0xE700 + state + if (theme == MenuTheme.LIGHT) 3 else 0
         sprite(switchX, row, Skin(glyph, 36, 2, SWITCH_FONT, listOf(37)), action)
         hits += Hit(labelX, row, switchX - labelX, 2, action)
-        text(labelX, row + 1, label, theme.muted, action, raised = true)
+        text(
+            labelX,
+            row + if (textSize == 8) 1 else 0,
+            label,
+            theme.muted,
+            action,
+            raised = true,
+            textSize = textSize,
+            bold = bold,
+        )
     }
 
     /** Clip covered text before painting a popup, including labels on the next text row. */
@@ -127,7 +162,7 @@ class DialogCanvas(
         labels.removeAll { label ->
             covered.any {
                 label.action == it.action &&
-                    label.x in it.x until it.x + it.skin.width &&
+                    (label.x >= it.x && label.x < it.x + it.skin.width) &&
                     label.row in it.row until it.row + it.skin.rows
             }
         }
@@ -138,8 +173,9 @@ class DialogCanvas(
                 var cursor = label.x
                 var start = cursor
                 var run = ""
-                for (character in label.text) {
-                    val advance = textWidth(character.toString(), label.textSize, label.bold)
+                for (codepoint in label.text.codePoints().toArray()) {
+                    val character = String(Character.toChars(codepoint))
+                    val advance = labelAdvance(character, label.textSize, label.bold, label.raised)
                     if (cursor + advance <= x || cursor >= x + width) {
                         if (run.isEmpty()) start = cursor
                         run += character
@@ -156,6 +192,10 @@ class DialogCanvas(
         labels.clear()
         labels.addAll(clipped)
     }
+
+    private fun labelAdvance(text: String, size: Int, bold: Boolean, raised: Boolean): Float =
+        if (size != 8) textWidth(text, size, bold).toFloat()
+        else LabelMetrics.width(text, if (raised) buttonLabelFont else labelFont, bold)
 
     fun build(): Component {
         val result = Component.text()
@@ -210,13 +250,15 @@ class DialogCanvas(
                     var label: Component =
                         Component.text(it.text, TextColor.color(it.color))
                             .font(
-                                if (it.textSize != 8) TitleFont.font(it.textSize)
+                                if (it.textSize != 8) TitleFont.font(it.textSize, it.raised)
                                 else if (it.raised) buttonLabelFont else labelFont
                             )
                     label = label.decoration(TextDecoration.BOLD, it.bold)
                     if (it.action != null) label = label.clickEvent(click(it.action))
                     result.append(label)
-                    result.append(space(-it.x - textWidth(it.text, it.textSize, it.bold)))
+                    result.append(
+                        space(-it.x - labelAdvance(it.text, it.textSize, it.bold, it.raised))
+                    )
                 }
             result.append(space(lineWidth))
             if (row < rows - 1) result.append(Component.newline())
@@ -235,10 +277,25 @@ class DialogCanvas(
         )
     }
 
-    fun slider(x: Int, row: Int, selected: Int, valueLabel: String, actions: List<String>) {
+    fun slider(
+        x: Int,
+        row: Int,
+        selected: Int,
+        valueLabel: String,
+        actions: List<String>,
+        textSize: Int = 8,
+        bold: Boolean = false,
+    ) {
         require(actions.size in 2..8)
-        val label = fit(valueLabel, 52)
-        text(x - 8 - textWidth(label), row + 1, label, raised = true)
+        val label = fit(valueLabel, 52, textSize, bold, buttonLabelFont)
+        text(
+            x - 8 - textWidth(label, textSize, bold, buttonLabelFont),
+            row + if (textSize == 8) 1 else 0,
+            label,
+            raised = true,
+            textSize = textSize,
+            bold = bold,
+        )
         val previous = if (selected in 1 until actions.size) actions[selected - 1] else null
         val next = if (selected in 0 until actions.lastIndex) actions[selected + 1] else null
         sprite(x, row, Skin(if (previous == null) 0xE222 else 0xE220, 18, 2), previous)
@@ -275,10 +332,10 @@ class DialogCanvas(
         // Opt-in geometry used by the scoped GUI shader. Ordinary dialogs retain
         // their native width. Keep in sync with the resource-pack selector.
         const val FRAMELESS_BODY_WIDTH = BODY_WIDTH + 14
-        val FONT = Key.key("toraka_settings:ui")
-        val SWITCH_FONT = Key.key("toraka_settings:switches")
-        val LABEL_FONT = Key.key("toraka_settings:labels")
-        val BUTTON_LABEL_FONT = Key.key("toraka_settings:button_labels")
+        val FONT = Key.key("dialogmenu_settings:ui")
+        val SWITCH_FONT = Key.key("dialogmenu_settings:switches")
+        val LABEL_FONT = Key.key("dialogmenu_settings:labels")
+        val BUTTON_LABEL_FONT = Key.key("dialogmenu_settings:button_labels")
         private val metrics =
             Properties().apply {
                 DialogCanvas::class.java.getResourceAsStream("/ui-metrics.properties").use {
@@ -301,6 +358,16 @@ class DialogCanvas(
         val DROPDOWN_DOWN = Skin(0xE098, 9, 1)
         val DROPDOWN_UP = Skin(0xE099, 9, 1)
 
+        fun space(width: Float): Component {
+            require(width.isFinite() && width * 2 == (width * 2).toInt().toFloat())
+            val whole = width.toInt()
+            val fraction = width - whole
+            val result = space(whole)
+            if (fraction == 0f) return result
+            val glyph = if (fraction > 0) "\uE7F0" else "\uE7F1"
+            return result.append(Component.text(glyph).font(FONT))
+        }
+
         fun space(width: Int): Component {
             require(width in -4096..4096)
             if (width !in -512..512) {
@@ -312,18 +379,27 @@ class DialogCanvas(
 
         // ASCII metrics come from the bundled menu font, independent of GUI
         // scale, Force Unicode Font, or another pack's minecraft:default.
-        fun textWidth(text: String, textSize: Int = 8, bold: Boolean = false): Int =
-            (if (textSize != 8) TitleFont.width(text, textSize)
-            else
-                text.sumOf { c ->
-                    metrics.getProperty("label.${c.code}")?.toInt() ?: 9
-                }) + if (bold) text.length else 0
+        fun textWidth(
+            text: String,
+            textSize: Int = 8,
+            bold: Boolean = false,
+            font: Key = LABEL_FONT,
+        ): Int =
+            if (textSize != 8) TitleFont.width(text, textSize) + if (bold) text.length else 0
+            else ceil(LabelMetrics.width(text, font, bold)).toInt()
 
-        fun fit(text: String, pixels: Int, textSize: Int = 8, bold: Boolean = false): String {
+        fun fit(
+            text: String,
+            pixels: Int,
+            textSize: Int = 8,
+            bold: Boolean = false,
+            font: Key = LABEL_FONT,
+        ): String {
             var result = ""
-            for (c in text) {
-                if (textWidth(result + c, textSize, bold) > pixels) break
-                result += c
+            for (codepoint in text.codePoints().toArray()) {
+                val character = String(Character.toChars(codepoint))
+                if (textWidth(result + character, textSize, bold, font) > pixels) break
+                result += character
             }
             return result
         }

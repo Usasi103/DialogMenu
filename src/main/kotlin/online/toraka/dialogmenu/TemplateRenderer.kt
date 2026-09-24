@@ -43,8 +43,8 @@ object TemplateRenderer {
                 MenuTheme.DARK,
                 template.width,
                 template.rows,
-                net.kyori.adventure.key.Key.key("toraka_dialogue:labels"),
-                net.kyori.adventure.key.Key.key("toraka_dialogue:button_labels"),
+                net.kyori.adventure.key.Key.key("dialogmenu_dialogue:labels"),
+                net.kyori.adventure.key.Key.key("dialogmenu_dialogue:button_labels"),
                 click,
             )
         template.background?.let { canvas.sprite(0, 0, it) }

@@ -8,7 +8,7 @@ import java.util.List;
 public class BuildQuestSkin {
     public static void main(String[] args) throws Exception {
         Path project = Path.of(args[0]);
-        BuildTemplateSkin.output = project.resolve("resourcepack/assets/toraka_dialogue");
+        BuildTemplateSkin.output = project.resolve("resourcepack/assets/dialogmenu_dialogue");
         Files.createDirectories(BuildTemplateSkin.output.resolve("textures/ui"));
         Files.createDirectories(BuildTemplateSkin.output.resolve("font"));
         for (String theme : List.of("amethyst", "parchment")) {

@@ -38,17 +38,17 @@ class MenuConfigTest {
         assertSame(original, repository.current)
         assertEquals("pages: [\n", menuFile.readText())
         menuFile.writeText(
-            source.replace("default-page: \"particles\"", "default-page: \"profile\"")
+            source.replace("default-page: \"profile\"", "default-page: \"particles\"")
         )
         repository.reload()
-        assertEquals("profile", repository.current.defaultPage)
+        assertEquals("particles", repository.current.defaultPage)
         assertEquals("我的菜单", repository.current.text(MenuLanguage.CHINESE, "$" + "menu.title"))
         val next = MenuRepository(directory.toFile())
         next.initialize()
-        assertEquals("profile", next.current.defaultPage)
+        assertEquals("particles", next.current.defaultPage)
         assertEquals(
             menuFile.readText(),
-            source.replace("default-page: \"particles\"", "default-page: \"profile\""),
+            source.replace("default-page: \"profile\"", "default-page: \"particles\""),
         )
     }
 

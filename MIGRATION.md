@@ -1,5 +1,11 @@
 # PlayerSettings → DialogMenu
 
+## 当前开发版资源命名调整
+
+资源目录与字体 ID 改为 `dialogmenu_settings`、`dialogmenu_dialogue`。升级时须同时更换插件和配套资源包，重建合并包并让客户端重新加载。
+旧 YAML 的 `toraka_settings:*` / `toraka_dialogue:*` 自定义 sprite 字体仍会在读取时映射到新名称；以后编写菜单请使用新名称。其他插件引用这些字体时，也应同步更新。
+
+
 从 0.1.14 起，插件名、JAR、源码工程、主指令和 GitHub 仓库统一为 DialogMenu。
 插件支持多页 Dialog 菜单；附带的玩家设置菜单只是其中一个用途。
 
@@ -22,7 +28,7 @@
 - 旧 /playersettings、/settings、/player-settings 及其 open/check/reload 子命令继续可用。
 - 权限仍为 playersettings.use、playersettings.admin，原权限配置无需调整。
 - 玩家语言/主题仍读写 playersettings:menu_language、playersettings:menu_theme。
-- 资源包字体命名空间 toraka_settings、点击事件和着色器保持不变；无需因改名重新生成资源。
+- 资源包字体命名空间 dialogmenu_settings、点击事件和着色器保持不变；无需因改名重新生成资源。
 - 内置 ItemBridge 和五种可选物品源沿用 0.1.13 的实现。
 - 自定义菜单标题、按钮文字不会因为插件更名被强行改写。
 

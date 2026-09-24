@@ -2,3 +2,15 @@ player-only: '&7请在游戏内打开玩家设置。'
 pack-required: '&e请先加载服务器资源包，再打开玩家设置。'
 search-empty: '&7未找到相关设置，可搜索：粒子、声音、玩家、拾取或光柱。'
 setting-unavailable: '&c这项设置暂时不可用。'
+
+command-help-title: '&8[&bDialogMenu&8] &f指令帮助'
+command-help-player:
+  - '&b/dmenu help &8- &7查看指令帮助'
+  - '&b/dmenu &8- &7打开默认菜单（游戏内）'
+  - '&b/dmenu open <菜单> [页面] &8- &7打开指定菜单或子页面'
+  - '&b/dmenu pack &8- &7获取所需资源包或查看发送方'
+  - '&b/dmenu template <模板> &8- &7打开旧版模板（兼容入口）'
+command-help-admin:
+  - '&b/dmenu check &8- &7检查配置，不应用修改'
+  - '&b/dmenu reload &8- &7重载配置并刷新已打开的菜单'
+command-help-aliases: '&7别名：&f/dialogmenu &8/ &f/settings &8/ &f/playersettings &8/ &f/player-settings'

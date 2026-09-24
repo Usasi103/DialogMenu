@@ -1,30 +1,45 @@
+# 自定义排版（所有字段可省略，省略时保持自动排版）：
+# Position: [X, Y]：X 为像素，Y 为行号（每行 9 像素），不是屏幕坐标。
+# text / heading 的 Position 移动文字；按钮/开关/滑条/下拉框的 Position 移动整个控件。
+# LabelPosition: [X, Y]：单独移动开关/滑条/下拉框左侧的 Name；省略时跟随控件移动。
+# FontSize: 8、Bold: false：字号与加粗；文字/标题支持 6–24，固定高度控件支持 6–12。
+# Width、Color 仅用于 text / heading；Color 可用 text / muted / heading 或 '#RRGGBB'。
+# TitleStyle 设置右侧页面标题；Navigation 设置左侧分类。字号改变后先 /dmenu check 检查布局。
 # toggle 的 Style: switch 显示状态文字与小开关；button 恢复宽按钮（省略默认 button）。
 # 玩家设置是一个菜单；Pages 内每项是它的子页面，顺序也是导航顺序。
 # /dmenu open settings；修改后 /dmenu check，再 /dmenu reload。
 Version: 1
 Type: settings
 Title: {zh_cn: "玩家设置", en_us: "Player Settings"}
-DefaultPage: "particles"
+DefaultPage: "profile"
 Language: "zh_cn"
 Theme: "dark"
 HideFocusOutline: true
 # 是否显示底部原生“返回游戏”按钮；默认隐藏，可用 Esc 关闭。
 ShowFooter: false
 MainMenu: ["close", "command: menu"]
+# 左侧分类：位置、行距、字号、加粗；行距至少 2。
+Navigation: {Position: [0, 3], Step: 2, FontSize: 8, Bold: false}
 
 Pages:
   profile:
     # 玩家信息：Layout 决定显示顺序，Icons 定义每一项。
     # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
-    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
     # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
     Title: {zh_cn: "玩家信息", en_us: "Profile"}
+    TitleStyle: {Position: [122, 1], FontSize: 8, Bold: false}
     Icon: "profile-icon"
     Keywords: ["玩家", "信息", "等级", "金币", "余额", "图鉴", "player", "level", "coin"]
     Layout: ["玩家", "等级", "资产", "金币", "余额", "鱼币", "图鉴", "世界"]
     Icons:
       玩家:
         Type: "text"
+        Position: [123, 3] # 修改这里即可移动“玩家”这行文字
+        FontSize: 8 # 可改为 6–24；放大后可调整后续文字的位置
+        Bold: false
+        Width: 316
+        Color: muted
         Name: {zh_cn: "玩家：{player}", en_us: "Player: {player}"}
       等级:
         Type: "text"
@@ -50,7 +65,7 @@ Pages:
   sound:
     # 环境音效：Layout 决定显示顺序，Icons 定义每一项。
     # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
-    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
     # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
     Title: {zh_cn: "环境音效", en_us: "Sounds"}
     Icon: "sound-icon"
@@ -59,6 +74,10 @@ Pages:
     Icons:
       音效:
         Type: "toggle"
+        Position: [330, 3] # 右侧开关的位置
+        LabelPosition: [123, 4] # 左侧“鸟鸣、风声与自然音效”的位置
+        FontSize: 8 # 控件名称与当前值的字号，支持 6–12
+        Bold: false
         Style: "switch"
         Name: {zh_cn: "鸟鸣、风声与自然音效", en_us: "Birds, wind and nature"}
         Bind: "sounds"
@@ -78,7 +97,7 @@ Pages:
   particles:
     # 环境粒子：Layout 决定显示顺序，Icons 定义每一项。
     # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
-    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
     # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
     Title: {zh_cn: "环境粒子", en_us: "Particles"}
     Icon: "particles-icon"
@@ -124,7 +143,7 @@ Pages:
   notices:
     # 拾取提示：Layout 决定显示顺序，Icons 定义每一项。
     # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
-    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
     # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
     Title: {zh_cn: "拾取提示", en_us: "Pickup notices"}
     Icon: "notices-icon"
@@ -152,7 +171,7 @@ Pages:
   loot:
     # 掉落光柱：Layout 决定显示顺序，Icons 定义每一项。
     # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
-    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
     # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
     Title: {zh_cn: "掉落光柱", en_us: "Loot beams"}
     Icon: "loot-icon"
@@ -182,7 +201,7 @@ Pages:
   appearance:
     # 界面与语言：Layout 决定显示顺序，Icons 定义每一项。
     # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
-    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
     # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
     Title: {zh_cn: "界面与语言", en_us: "Appearance"}
     Icon: "appearance-icon"
@@ -214,7 +233,7 @@ Pages:
   help:
     # 使用帮助：Layout 决定显示顺序，Icons 定义每一项。
     # Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。
-    # 位置自动计算。heading 开始下方面板；未列入 Layout 的项目不显示。
+    # 默认位置自动计算，可用 Position 覆盖；heading 开始下方面板；未列入 Layout 的项目不显示。
     # Bind 自动读取和保存设置；修改后 /dialogmenu reload。
     Title: {zh_cn: "使用帮助", en_us: "Help"}
     Icon: "loot-icon"

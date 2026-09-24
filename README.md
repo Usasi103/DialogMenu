@@ -1,52 +1,112 @@
-# DialogMenu
+# DialogMenu · Minecraft 对话菜单
 
-0.1.17 consolidates ItemBridge detection into one console line showing all 39 supported sources separately from the currently connected plugin count/list. Unchanged results are not repeated during rechecks/reloads. Plugin-owned menu/source/configuration messages use a cyan DialogMenu tag; Paper and TabooLib lifecycle/download logs remain native.
+**简体中文** · [English](README.en.md)
 
-0.1.16 uses one file per menu: `menus/settings.yml`, `menus/demo-dialogue.yml`, `menus/demo-boss.yml`. Each contains its own `Pages`; boss introduction and confirmation are two pages of the same demo menu. Use `/dmenu open <menu> [page]`. Chinese configuration guide: [MENU-CONFIG.md](MENU-CONFIG.md). Legacy formats remain supported.
+DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 制作玩家设置、NPC 对话、首领介绍和确认界面，把文字、图标与交互按钮放进同一套菜单中。
 
-The native bottom close button is removed from canvas menus; use × or ESC. Settings also hide the native footer by default (`ShowFooter: false`); ESC still closes every settings page. The boss demo now displays amethyst shard, nether star and diamond chestplate icons using the new `toraka_dialogue:rewards` font. Update the resource pack when upgrading to 0.1.17. `config.yml.ResourcePack` selects a CraftEngine pack ID, a downloadable URL, or an externally sent UUID; only the required pack loading successfully unlocks menus. `/dmenu pack` sends a configured URL pack or identifies its external sender. All 39 ItemBridge 1.0.32 plugin adapters are now supported: [ITEM-SOURCES.md](ITEM-SOURCES.md).
+一个文件就是一个完整菜单，相关子页面统一写在 `Pages` 下。简单的设置界面按顺序排列控件，需要自己设计版式时则使用画布坐标。插件附带可直接修改的示例，方便从现有菜单开始制作。
 
-Paper 26.2 configurable Dialog menus with YAML pages, optional item sources, Simplified Chinese / English, Dark / Light themes, and the supplied HallowPrison widget skin. The bundled player settings menu is one example. Whole bitmap panels, measured glyph advances, fixed coordinates, and Paper custom-click events keep the artwork and controls aligned after each action.
+[下载插件与资源包](https://github.com/Usasi103/DialogMenu/releases/latest) · [配置指南](MENU-CONFIG.md) · [更新日志](CHANGELOG.md)
 
-Use `/dialogmenu` or `/dmenu`. Existing `/playersettings`, `/settings` and `/player-settings` commands remain aliases. Permission: `playersettings.use` (allowed by default); `playersettings.admin` controls check/reload.
+## 可以制作什么
 
-Version 0.1.14 renames PlayerSettings to DialogMenu. Remove the old JAR before installing DialogMenu; do not run both. On startup, if the new directory has no config.yml/menu.yml, the plugin imports the old plugins/PlayerSettings directory into plugins/DialogMenu and preserves the originals. Existing new configuration takes precedence. Conflicting files stop migration instead of overwriting edits. See [MIGRATION.md](MIGRATION.md). Existing player preferences and the toraka_settings resource namespace remain compatible.
+| 场景 | 功能 |
+| --- | --- |
+| 玩家设置 | 开关、按钮、档位滑条、下拉选择框、搜索与分类导航 |
+| 对话与确认 | 多页跳转、条件显示、选项状态、玩家指令与控制台指令 |
+| 自定义画布 | 调整元素位置、文字宽度、颜色与贴图；文字支持 6–24 号字体和加粗 |
+| 物品展示 | 显示原版或其他插件的真实物品，保留模型及悬停提示 |
+| 任务列表演示 | 每页最多 5 项，包含分类、详情、进度、奖励图标和“已完成”分类 |
 
-Open **界面与语言 / Appearance** in the left navigation to choose a menu language and theme from dropdowns styled after the supplied Chat Flag reference. Click a value or arrow to expand, select the green-highlighted current item or another choice, and the menu applies the choice and collapses. Only one dropdown opens at a time. New players default to Simplified Chinese and the dark theme. Preferences survive reconnects and restarts under the existing PDC keys `playersettings:menu_language` and `playersettings:menu_theme`. This changes this player menu; Minecraft and other plugins keep their own language settings.
+设置菜单支持简体中文、英文以及暗色、亮色主题，玩家的语言与主题选择会保存。二元选项可使用绿色开启、灰色关闭的小开关，也可以保留宽按钮。档位滑条通过点击刻度或两侧箭头切换。
 
-Version 2 used one file per page. Version 3 keeps the default menu in `config.yml` and one complete menu per file under `menus/`, with pages nested under `Pages`. `Title`, `Layout` and `Icons` organize each page: rearrange names in `Layout`, write labels beside controls, and put click actions directly in `Actions`. Coordinates, state IDs and separate action definitions are handled internally. Chinese comments and the exported `配置说明.md` include ready-to-use examples; see [the configuration guide](MENU-CONFIG.md).
+## 自带菜单
 
-Run `/dialogmenu check` to validate without applying, then `/dialogmenu reload` to apply the main configuration and every enabled page together. Both require `playersettings.admin` (OP by default); the `/settings` aliases also work. Invalid files retain the previous valid snapshot and operator files. Existing v1 `menu.yml` installations remain supported when `config.yml` is absent; see [legacy configuration](LEGACY-CONFIG.md). New installations export the consolidated format. Existing files are never overwritten on startup, and missing referenced pages are reported rather than silently recreated.
+| 菜单 | 打开指令 | 用途 |
+| --- | --- | --- |
+| 玩家设置 | `/dmenu open settings` | 玩家信息、环境音效、粒子、拾取提示、掉落效果与界面偏好 |
+| 对话演示 | `/dmenu open demo-dialogue` | NPC 对话和后续选项 |
+| 首领演示 | `/dmenu open demo-boss` | 首领介绍、难度选择与进入确认 |
+| 任务演示 | `/dmenu open demo-quests` | 任务分类、分页、详情与模拟领取 |
 
-`Name` and `Description` accept plain text or an inline `{zh_cn: ..., en_us: ...}` translation map. `Bind: language`, `theme`, `particle-density` and the documented toggle bindings connect existing settings without extra commands. Custom integrations use inline `State` and per-option `Actions`. Ordered player/console commands retain their identity and optional permission/plugin checks; `close` can precede commands, while navigation/search/refresh can end a sequence. Commands accept `{player}` and `{uuid}`; a failed command stops later actions without undoing commands already executed. Controls flow automatically through the two panels; `heading` starts the lower panel, and overflow fails validation. Popups suppress covered controls until collapsed.
+这些示例都能复制、改名和修改。首领确认不会自动召唤首领；任务演示不读取真实任务进度，也不发放物品或货币奖励。实际玩法可以通过按钮动作接入自己的插件。
 
-Both palettes use the same geometry and font metrics. `tools/BuildSkin.java` compiles the palettes and configurable slider variants into private-use glyphs, so switching themes needs no resource-pack reload. Version 0.1.9 uses the same resource assets as 0.1.8; deploy its matching pack if upgrading from an earlier version.
+## 安装
 
-The server resource pack must contain `toraka_settings:ui`. Copy `resourcepack/assets/toraka_settings` and the two owned `assets/minecraft/shaders/core/gui.*` files into the CraftEngine resource source, then run `/ce workflow default` to generate and send the pack. Existing GUI shaders require a compatibility merge rather than an overwrite.
+已验证环境：**Paper 26.2、Java 25、Minecraft 26.2 客户端**。菜单皮肤需要配套资源包，玩家使用原版客户端即可。
 
-The screen includes player information, Ambience sound and particle controls, category toggles, horizontal density slider, pickup notices, LootBeam settings, search, and navigation back to the main menu. Existing TrMenu menus remain available as `/settings-classic` and `/player-settings-classic`.
+1. 从下载页获取同一版本的插件 JAR 和 `DialogMenu-resourcepack-<版本>.zip`，将 JAR 放入服务器的 `plugins` 目录。
+2. 将配套资源合入服务器资源包。使用 CraftEngine 时放入其资源包源目录，再执行 `/ce workflow default`。已有 GUI 着色器需要合并处理。
+   CraftEngine 的 `exclude-file-extensions` 不能包含 `zip`，否则会漏掉 `assets/dialogmenu_settings/font/unifont.zip` 字体档案。
+3. 启动服务器，在 `plugins/DialogMenu/config.yml` 的 `ResourcePack` 中指定发送方式及所需资源包。支持 CraftEngine 包 ID、ZIP 直链和外部发送的资源包 UUID；默认使用 CraftEngine 的 `default` 包。
+4. 玩家加载资源包后，用 `/dmenu` 或 `/settings` 打开默认菜单。
 
-The source artwork used for this requested adaptation is recorded in `design/hallow-source` with its original license. It is not an import of the full HallowPrison pack or its shaders. The font namespace is isolated from other server fonts.
+首次安装会生成默认配置和四个示例菜单。已有配置会保留，修改后可用 `/dmenu check` 检查，再用 `/dmenu reload` 应用；检查失败时继续使用上一份有效配置。
 
-To rebuild the skin from the project root, run `java tools/BuildSkin.java .`, then use the workspace's `tools/format_selfdev.py` and `tools/build_selfdev.py` for formatting, tests and the native TabooLib JAR. The generator updates both bitmap fonts and `src/main/resources/ui-metrics.properties`; deploy those matching outputs together. `resourcepack/pack.mcmeta` targets the 26.2 resource format (88).
+## 写一个菜单
 
-After `/ce workflow default`, verify `plugins/CraftEngine/cache/hosted/default/resource_pack.zip`, not only `generated/resource_pack.zip`. Both must contain the new whole-glyph providers (`panel_top` height 81, `panel_bottom` height 126), `labels.json`, and `button_labels.json`. Rejoin and load the offered pack before testing `/settings`.
+将下面的内容保存为 `plugins/DialogMenu/menus/my-menu.yml`，执行检查与重载后，用 `/dmenu open my-menu` 打开。文件名就是菜单 ID，无需额外注册。
 
-Dialog width includes the vanilla widget's four-pixel padding on each side. The 450-pixel artwork occupies a 452-pixel measured line inside a 460-pixel body. Preserve that line-end slack: the widget recalculates height at the measured text width. `ClientLayoutProbe.java` consumes the JUnit fixture's `layout.properties` and checks the actual client widget, including both wrapping passes.
+```yaml
+Version: 1
+Type: settings
+Title: "我的菜单"
+DefaultPage: appearance
+Language: zh_cn
+Theme: dark
+MainMenu: [close]
 
-The settings screen opts into `FRAMELESS_BODY_WIDTH` (474 pixels) while ordinary dialogs retain their normal widths. The two `assets/minecraft/shaders/core/gui.*` files suppress white edge pixels matching the reserved settings-body geometry and native Dialog placement. This preserves normal dialogs and the search input's focus border, including their keyboard feedback. Do not overwrite another pack's GUI shaders without merging and retesting them.
+Pages:
+  appearance:
+    Title: "界面设置"
+    Layout: [主题]
+    Icons:
+      主题:
+        Type: dropdown
+        Name: "菜单主题"
+        Bind: theme
+        Options:
+          dark: "暗色"
+          light: "亮色"
+```
 
-This is a geometry selector: a resource-pack shader cannot read `/settings` or a dialog identifier. Other white lines at the same selected coordinates and dimensions can also match. The opt-in layout is 29 lines / 269 pixels tall; keep the shader constants synchronized if its layout changes. Suppression is disabled when the GUI is narrower than the reserved width, where the fixed menu itself is clipped. Verified on Minecraft 26.2 OpenGL; other rendering backends and game versions require separate validation.
+`Layout` 决定控件顺序，`Icons` 定义内容与动作。名称和说明可以直接写中文，也可写 `{zh_cn: 中文, en_us: English}` 提供两种语言。需要移动每个元素或更换画布样式时，使用 `Type: canvas`，详见配置指南。
 
-Button labels raise both ASCII and full-width CJK text by four pixels. `button_cjk` uses the matching vanilla GNU Unifont glyphs, with padded bitmap cells and a preserved nine-pixel advance. `design/minecraft-font` contains the input font and its license; the runtime pack also retains that license. Rebuild and deliver the matching font assets when changing these labels.
+## 插件联动
 
-The density slider follows the supplied Background Opacity reference: blue arrows, seven tick marks and a pale rectangular thumb. The current value appears before the left arrow. Click the rail to choose off / low / medium / high, or use the arrows to move one step; end arrows disable. This custom Dialog text canvas supports click steps, not continuous dragging. In Ambience YAML, quote the key `'off'` under `particles.density`; an unquoted key can be parsed as `false` and make the off command unavailable.
+所有联动均为可选依赖，按菜单需要安装。
 
-## 0.1.12 — 物品源
+| 联动 | 用途 |
+| --- | --- |
+| PlaceholderAPI | 在文字中显示变量，或读取自定义开关和选项状态 |
+| Ambience | 连接默认菜单中的环境音效、粒子及其整合的掉落、拾取设置；旧独立 LootBeam / PickupNotifier 也保留兼容 |
+| CraftEngine | 提供自定义物品，并可负责资源包的构建与发送 |
+| ItemBridge 物品源 | 支持内置 ItemBridge 版本的全部 39 种插件适配器，包括 Oraxen、ItemsAdder、SX-Item、NeigeItems、CraftEngine、MMOItems、Nexo 等；无需另装 ItemBridge |
 
-支持 `Display.Material: "source:CE:命名空间:物品ID"`（`CRAFTENGINE` 同义）和 `minecraft:diamond` 原版物品。CE 为软依赖，通过其公开 API 构造真实物品，保留模型和物品提示。中文配置与边界见 [ITEM-SOURCES.md](ITEM-SOURCES.md)，完整样例在 `src/main/resources/examples/items.yml`，插件会导出到 `examples/items.yml`。
+物品源通过 `Display.Material: "source:插件ID:物品ID"` 配置。真实物品使用原生 Dialog 物品页面，物品模型需要对应插件的资源包。自由画布中的图标使用字体贴图，两者的配置方式见物品源指南。
 
-带 Material 的页面自动使用原生物品布局，名称/下方按钮处理操作；既有字体画布页面继续保留。原生页面不使用画布皮肤、主题和隐藏焦点功能，不支持自由坐标。使用 `/dialogmenu open <页面ID>` 打开指定已启用页面，`check` / `reload` 同时验证物品源；无有效物品时停用动作。
+## 常用指令
 
+| 指令 | 说明 |
+| --- | --- |
+| `/dmenu help` | 查看帮助，管理员可见检查与重载指令 |
+| `/dmenu`、`/settings` | 打开配置中的默认菜单 |
+| `/dmenu open <菜单> [页面]` | 打开指定菜单或子页面 |
+| `/dmenu check` | 检查配置，不应用修改 |
+| `/dmenu reload` | 应用通过检查的配置，刷新已打开的菜单 |
+| `/dmenu pack` | 发送配置的 URL 资源包，或提示资源包的发送方 |
 
-0.1.16 使用内置 ItemBridge 1.0.32 的全部 39 种自定义物品适配器，并保留原版物品。已有 CE 配置无需修改。详见 [物品源配置](ITEM-SOURCES.md)。
+主命令是 `/dialogmenu`，也可使用 `/dmenu`。权限 `playersettings.use` 默认向所有玩家开放；`playersettings.admin` 用于检查与重载，默认 OP 拥有。权限名沿用旧版本，已有权限配置可继续使用。
+
+## 进一步了解
+
+- [settings 坐标、字号与加粗](SETTINGS-LAYOUT.md)
+
+- [菜单配置与画布布局](MENU-CONFIG.md)
+- [On/Off 开关样式](SWITCHES.md)
+- [对话、首领模板与字体设置](TEMPLATES.md)
+- [任务列表演示](QUEST-DEMO.md)
+- [物品源与物品页面](ITEM-SOURCES.md)
+- [从 PlayerSettings 迁移](MIGRATION.md)
+- [资源素材与使用范围](TEMPLATE-ASSETS.md)
+- [验证记录](VALIDATION.md)与[更新日志](CHANGELOG.md)

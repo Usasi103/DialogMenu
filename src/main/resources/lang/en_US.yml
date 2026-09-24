@@ -2,3 +2,15 @@ player-only: '&7Open player settings in game.'
 pack-required: '&eLoad the server resource pack before opening settings.'
 search-empty: '&7No matching setting. Try particles, sound, profile, loot or pickup.'
 setting-unavailable: '&cThis setting is currently unavailable.'
+
+command-help-title: '&8[&bDialogMenu&8] &fCommand help'
+command-help-player:
+  - '&b/dmenu help &8- &7Show command help'
+  - '&b/dmenu &8- &7Open the default menu (in game)'
+  - '&b/dmenu open <menu> [page] &8- &7Open a menu or page'
+  - '&b/dmenu pack &8- &7Get the required resource pack or identify its sender'
+  - '&b/dmenu template <template> &8- &7Open a legacy template'
+command-help-admin:
+  - '&b/dmenu check &8- &7Validate configuration without applying changes'
+  - '&b/dmenu reload &8- &7Reload configuration and refresh open menus'
+command-help-aliases: '&7Aliases: &f/dialogmenu &8/ &f/settings &8/ &f/playersettings &8/ &f/player-settings'

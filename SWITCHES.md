@@ -39,8 +39,8 @@
 
 插件与 `DialogMenu-resourcepack-0.1.20.zip` 一起更新。合入 CraftEngine 的新文件为：
 
-- `assets/toraka_settings/font/switches.json`
-- `assets/toraka_settings/textures/ui/switch_*.png`（六张）
+- `assets/dialogmenu_settings/font/switches.json`
+- `assets/dialogmenu_settings/textures/ui/switch_*.png`（六张）
 
 合并到已有资源包后执行 `/ce workflow default`，等待生成、上传完成并让客户端加载新包。
 仅修改 YAML 样式时只需重载 DialogMenu。图元可通过

@@ -76,29 +76,29 @@ Pages:
         Type: sprite
         Position: [228, 16]
         Sprite: reward
-      # 碎片：紫水晶碎片；字体定义见资源包 assets/toraka_dialogue/font/rewards.json。
+      # 碎片：紫水晶碎片；字体定义见资源包 assets/dialogmenu_dialogue/font/rewards.json。
       shard-icon:
         Type: sprite
         Position: [161, 16]
-        Font: "toraka_dialogue:rewards"
+        Font: "dialogmenu_dialogue:rewards"
         Glyph: "\uE000"
         Width: 16
         Rows: 3
         Advance: 15
-      # 印记：下界之星；字体定义见资源包 assets/toraka_dialogue/font/rewards.json。
+      # 印记：下界之星；字体定义见资源包 assets/dialogmenu_dialogue/font/rewards.json。
       mark-icon:
         Type: sprite
         Position: [197, 16]
-        Font: "toraka_dialogue:rewards"
+        Font: "dialogmenu_dialogue:rewards"
         Glyph: "\uE001"
         Width: 16
         Rows: 3
         Advance: 16
-      # 装备：钻石胸甲；字体定义见资源包 assets/toraka_dialogue/font/rewards.json。
+      # 装备：钻石胸甲；字体定义见资源包 assets/dialogmenu_dialogue/font/rewards.json。
       gear-icon:
         Type: sprite
         Position: [233, 16]
-        Font: "toraka_dialogue:rewards"
+        Font: "dialogmenu_dialogue:rewards"
         Glyph: "\uE002"
         Width: 16
         Rows: 3

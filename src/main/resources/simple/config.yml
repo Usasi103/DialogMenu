@@ -5,7 +5,7 @@
 # 修改后 /dialogmenu check 检查，/dialogmenu reload 应用（OP 或 playersettings.admin）。
 Version: 2
 Title: {zh_cn: "玩家设置", en_us: "Player Settings"}
-DefaultPage: "particles"
+DefaultPage: "profile"
 Language: "zh_cn"
 Theme: "dark"
 HideFocusOutline: true

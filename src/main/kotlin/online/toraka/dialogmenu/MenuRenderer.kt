@@ -34,15 +34,25 @@ object MenuRenderer {
             if (widget.label.isNotEmpty()) {
                 val room =
                     widget.x - widget.labelX - if (widget.kind == WidgetKind.SLIDER) 60 else 6
+                val raised =
+                    widget.textSize != 8 ||
+                        widget.kind == WidgetKind.SLIDER ||
+                        (widget.kind == WidgetKind.TOGGLE &&
+                            widget.toggleStyle == ToggleStyle.SWITCH)
                 canvas.text(
                     widget.labelX,
-                    widget.row + 1,
-                    DialogCanvas.fit(text(widget.label), room),
+                    widget.labelRow,
+                    DialogCanvas.fit(
+                        text(widget.label),
+                        room,
+                        widget.textSize,
+                        widget.bold,
+                        if (raised) DialogCanvas.BUTTON_LABEL_FONT else DialogCanvas.LABEL_FONT,
+                    ),
                     theme.text,
-                    raised =
-                        widget.kind == WidgetKind.SLIDER ||
-                            (widget.kind == WidgetKind.TOGGLE &&
-                                widget.toggleStyle == ToggleStyle.SWITCH),
+                    raised = raised,
+                    textSize = widget.textSize,
+                    bold = widget.bold,
                 )
             }
             when (widget.kind) {
@@ -51,9 +61,16 @@ object MenuRenderer {
                     canvas.text(
                         widget.x,
                         widget.row,
-                        DialogCanvas.fit(text(widget.text), widget.width),
+                        DialogCanvas.fit(
+                            text(widget.text),
+                            widget.width,
+                            widget.textSize,
+                            widget.bold,
+                        ),
                         color(widget.color),
                         action(widget.action),
+                        textSize = widget.textSize,
+                        bold = widget.bold,
                     )
                 WidgetKind.SPRITE ->
                     canvas.sprite(
@@ -76,6 +93,8 @@ object MenuRenderer {
                         skin,
                         text(widget.text),
                         "action/${widget.action}",
+                        textSize = widget.textSize,
+                        bold = widget.bold,
                     )
                 }
                 WidgetKind.TOGGLE -> {
@@ -97,6 +116,8 @@ object MenuRenderer {
                             on,
                             label,
                             "action/${widget.action}",
+                            textSize = widget.textSize,
+                            bold = widget.bold,
                         )
                     } else {
                         canvas.button(
@@ -105,6 +126,8 @@ object MenuRenderer {
                             if (on == true) DialogCanvas.SELECTED_CONTROL else DialogCanvas.CONTROL,
                             label,
                             "action/${widget.action}",
+                            textSize = widget.textSize,
+                            bold = widget.bold,
                         )
                     }
                 }
@@ -119,6 +142,8 @@ object MenuRenderer {
                         index,
                         label,
                         widget.options.map { "action/${it.action}" },
+                        textSize = widget.textSize,
+                        bold = widget.bold,
                     )
                 }
                 WidgetKind.DROPDOWN -> {
@@ -128,7 +153,16 @@ object MenuRenderer {
                         widget.options
                             .firstOrNull { it.value.equals(current, true) }
                             ?.let { text(it.label) } ?: menu.text(language, "$" + "unavailable")
-                    canvas.button(widget.x, widget.row, DialogCanvas.CONTROL, label, route, 22)
+                    canvas.button(
+                        widget.x,
+                        widget.row,
+                        DialogCanvas.CONTROL,
+                        label,
+                        route,
+                        22,
+                        widget.textSize,
+                        widget.bold,
+                    )
                     canvas.sprite(
                         widget.x + 98,
                         widget.row,
@@ -148,6 +182,8 @@ object MenuRenderer {
                 if (page.id == pageId) DialogCanvas.SELECTED_NAV else DialogCanvas.NAV,
                 text(page.label),
                 "page/${page.id}",
+                textSize = menu.navTextSize,
+                bold = menu.navBold,
             )
             if (page.icon.isNotEmpty())
                 canvas.sprite(
@@ -169,6 +205,8 @@ object MenuRenderer {
                     else DialogCanvas.CONTROL,
                     text(option.label),
                     "action/${option.action}",
+                    textSize = widget.textSize,
+                    bold = widget.bold,
                 )
             }
         }

@@ -73,6 +73,7 @@ object MenuCatalogParser {
                             "Theme",
                             "HideFocusOutline",
                             "ShowFooter",
+                            "Navigation",
                             "MainMenu",
                             "Pages",
                         ),

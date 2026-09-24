@@ -1,5 +1,16 @@
 # Changelog
 
+## 未发布
+
+- settings 新增 Position、LabelPosition、FontSize、Bold、Width、Color；页面标题支持 TitleStyle，分类支持 Navigation。默认仍为自动布局，大字自动预留行高，配置检查会拒绝越界、重叠点击区与不支持的字段。附中文配置说明与现用配置示例。
+
+- settings 默认打开“玩家信息”；修复金币符号等 Unicode 文字宽度估算错误造成的同排分类偏移，准确保留半像素字宽和粗体间距。
+- 资源包命名空间统一由 toraka_settings / toraka_dialogue 改为 dialogmenu_settings / dialogmenu_dialogue；字体、贴图、菜单配置和生成工具同步更新。升级需同步新资源包与自定义菜单中的字体引用。
+
+- README 改为介绍插件用途、功能、安装与入门的中文首页，新增独立英文版，保持语言内容分离。
+- 新增 `/dmenu help`；玩家与控制台均可查看，管理员显示检查/重载指令。主命令在控制台执行时展示帮助，别名同样支持。
+- 帮助文字使用 TabooLib 中英文语言文件，可自定义；日常改动累计到源码分支，本次不新增标签或 GitHub Release。
+
 ## [0.1.20] - 2026-09-24
 
 - settings 的八个二元选项改为紧凑 On/Off 开关：左侧本地化状态文字，右侧绿色开启／灰色关闭；不可用时显示独立双横线皮肤。
@@ -28,7 +39,7 @@
 
 ## [0.1.17] - 2026-09-24
 
-- 首领 demo 的“碎 / 印 / 装”占位文字换为紫水晶碎片、下界之星、钻石胸甲图标；新增 toraka_dialogue:rewards 字体，直接引用客户端原版纹理，保留坐标、字形和 advance 配置。升级需更新资源包。
+- 首领 demo 的“碎 / 印 / 装”占位文字换为紫水晶碎片、下界之星、钻石胸甲图标；新增 dialogmenu_dialogue:rewards 字体，直接引用客户端原版纹理，保留坐标、字形和 advance 配置。升级需更新资源包。
 - settings 默认隐藏底部“返回游戏”按钮，保留 ESC、导航和搜索；新增按菜单 ShowFooter 开关，旧版配置对应 footer.enabled。帮助文案同步修正。
 - ItemBridge 成功接入提示改为一行汇总，分别列出支持总数、当前接入数量和插件名单；相同接入结果在启动重检及重载时不重复打印，接入变化后重新报告。
 - 菜单加载、物品源状态及配置检查/重载的控制台提示采用青色 DialogMenu 前缀、分类标签和分隔线；警告/错误使用红色分类，玩家消息不加控制台样式。
@@ -58,7 +69,7 @@
 - PlayerSettings 正式更名为 DialogMenu，明确插件用于配置多页 Dialog 菜单；更新源码包名、构建产物、日志和更新检查仓库。
 - 主指令改为 /dialogmenu，新增 /dmenu；保留 /playersettings、/settings、/player-settings 及原有子命令。
 - 新配置目录为 plugins/DialogMenu，首次安装自动导入旧 PlayerSettings 配置并保留原文件；已有新配置优先，冲突停止导入，中断可重试。
-- 保留 playersettings.use/admin 权限、玩家语言/主题 PDC 键及 toraka_settings 资源命名空间；菜单和资源包无需因改名重做。
+- 保留 playersettings.use/admin 权限、玩家语言/主题 PDC 键及 dialogmenu_settings 资源命名空间；菜单和资源包无需因改名重做。
 - 更新中文迁移说明、配置文档和五种物品源示例；延续旧版本 GitHub 提交、标签和 Releases。
 
 ## [0.1.13] - 2026-09-24

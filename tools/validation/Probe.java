@@ -86,7 +86,7 @@ public class Probe extends JavaPlugin {
         }
     }
     private class Click extends PlayerCustomClickEvent {
-        Click(String route) { super(Key.key("toraka_settings", route), (PlayerGameConnection)proxy(PlayerGameConnection.class)); }
+        Click(String route) { super(Key.key("dialogmenu_settings", route), (PlayerGameConnection)proxy(PlayerGameConnection.class)); }
         public BinaryTagHolder getTag() { return null; }
         public DialogResponseView getDialogResponseView() { return null; }
     }

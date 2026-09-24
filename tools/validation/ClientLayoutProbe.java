@@ -40,7 +40,7 @@ public class ClientLayoutProbe {
         }
         StringSplitter splitter = new StringSplitter((cp, style) -> {
             if (style.getFont() instanceof FontDescription.Resource font
-                    && font.id().toString().equals("toraka_settings:ui")) {
+                    && font.id().toString().equals("dialogmenu_settings:ui")) {
                 if (cp >= 0xE800 && cp <= 0xEC00) return cp - 0xEA00;
                 return Integer.parseInt(metrics.getProperty("glyph." + cp));
             }

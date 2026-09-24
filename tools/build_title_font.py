@@ -10,9 +10,9 @@ load = lambda name: json.loads((assets / name).read_text(encoding='utf-8'))['pro
 providers = []
 metrics = {32: (0, 0, 0)}
 for source, height in [
-    ('toraka_dialogue/font/labels.json', 16),
-    ('toraka_settings/font/labels.json', 16),
-    ('toraka_settings/font/button_cjk.json', 24),
+    ('dialogmenu_dialogue/font/labels.json', 16),
+    ('dialogmenu_settings/font/labels.json', 16),
+    ('dialogmenu_settings/font/button_cjk.json', 24),
 ]:
     for original in load(source):
         if original['type'] != 'bitmap':
@@ -39,7 +39,11 @@ for size in range(6, 25):
     # Bitmap ascent must not exceed height, including the smallest supported size.
     scaled += [provider | {'height': (size * 3 + 1) // 2 if padded else size,
                            'ascent': min(7, size)} for provider, padded in providers]
-    (assets / f'toraka_dialogue/font/text_{size}.json').write_text(json.dumps({'providers': scaled}, ensure_ascii=True, separators=(',', ':')) + '\n', encoding='utf-8')
-(assets / 'toraka_dialogue/font/title.json').write_text('{"providers":[{"type":"reference","id":"toraka_dialogue:text_16"}]}\n', encoding='utf-8')
+    (assets / f'dialogmenu_dialogue/font/text_{size}.json').write_text(json.dumps({'providers': scaled}, ensure_ascii=True, separators=(',', ':')) + '\n', encoding='utf-8')
+    if size <= 12:
+        # Center a single text line inside the fixed 18px controls without moving their hit rows.
+        button = [p | {'ascent': 7 - (18-size)//2} if p['type'] == 'bitmap' else p for p in scaled]
+        (assets / f'dialogmenu_dialogue/font/text_{size}_button.json').write_text(json.dumps({'providers': button}, ensure_ascii=True, separators=(',', ':')) + '\n', encoding='utf-8')
+(assets / 'dialogmenu_dialogue/font/title.json').write_text('{"providers":[{"type":"reference","id":"dialogmenu_dialogue:text_16"}]}\n', encoding='utf-8')
 (project / 'src/main/resources/title-metrics.properties').write_text(''.join(f'{code}={values[0]},{values[1]},{values[2]}\n' for code, values in sorted(metrics.items())), encoding='utf-8')
 print('Configurable font sizes 6-24:', len(metrics), 'measured characters; reuses existing raster atlases.')

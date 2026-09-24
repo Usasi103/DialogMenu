@@ -22,7 +22,8 @@ object TitleFont {
                 key.toString().toInt() to Glyph(parts[0], parts[1], parts[2] == 1)
             }
 
-    fun font(size: Int): Key = Key.key("toraka_dialogue:text_$size")
+    fun font(size: Int, raised: Boolean = false): Key =
+        Key.key("dialogmenu_dialogue:text_$size" + if (raised && size <= 12) "_button" else "")
 
     fun lineRows(size: Int): Int = if (size == 8) 1 else ((size * 3 + 1) / 2 + 8) / 9
 

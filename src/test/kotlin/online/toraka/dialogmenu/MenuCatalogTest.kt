@@ -22,6 +22,7 @@ class MenuCatalogTest {
                 MenuRepository.resource("simple/menus/$it.yml")
             }
         val current = catalog.menus.getValue("settings").settings!!
+        assertEquals("profile", current.defaultPage)
         val switches =
             current.pages.values.flatMap { it.widgets }.filter { it.kind == WidgetKind.TOGGLE }
         assertEquals(8, switches.size)

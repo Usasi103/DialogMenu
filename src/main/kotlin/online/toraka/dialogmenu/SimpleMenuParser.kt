@@ -51,6 +51,7 @@ object SimpleMenuParser {
                 "Theme",
                 "HideFocusOutline",
                 "ShowFooter",
+                "Navigation",
                 "Pages",
                 "MainMenu",
             ),
@@ -238,12 +239,28 @@ object SimpleMenuParser {
             common.first { it["action"] == "main" }["action"] = action
             compiled.set("common", common)
         }
+        if (config.contains("Navigation")) {
+            val navigation = section(config, "Navigation", "config.yml")
+            keys(navigation, setOf("Position", "Step", "FontSize", "Bold"), "Navigation")
+            position(navigation, "Position", "Navigation")?.let {
+                compiled.set("navigation.x", it.first)
+                compiled.set("navigation.row", it.second)
+            }
+            for ((from, to) in
+                mapOf("Step" to "step", "FontSize" to "font-size", "Bold" to "bold")) {
+                if (navigation.contains(from)) compiled.set("navigation.$to", navigation.get(from))
+            }
+        }
         compiled.set("pages", null)
         ids.forEach { id ->
             val file = "menus/$id.yml"
             val page = MenuConfigParser.yaml(readPage(id), file)
             try {
-                keys(page, setOf("Title", "Icon", "Keywords", "Layout", "Icons", "Renderer"), file)
+                keys(
+                    page,
+                    setOf("Title", "TitleStyle", "Icon", "Keywords", "Layout", "Icons", "Renderer"),
+                    file,
+                )
                 val title = label(page.get("Title"), "$file.Title")
                 val layout = strings(page.get("Layout"), "$file.Layout")
                 require(layout.size in 1..30 && layout.distinct().size == layout.size) {
@@ -258,6 +275,7 @@ object SimpleMenuParser {
                     }
                 }
                 if (ItemMenuPage.usesItems(page, layout, file)) {
+                    require(!page.contains("TitleStyle")) { "$file.TitleStyle: 原生物品页不使用画布标题样式" }
                     itemPages[id] = ItemMenuPage.parse(icons, layout, file, ::label, ::actions)
                     compiled.set(
                         "pages.$id",
@@ -277,7 +295,23 @@ object SimpleMenuParser {
                     mutableListOf<Map<String, Any>>(
                         mapOf("type" to "heading", "row" to 1, "text" to title)
                     )
-                var row = 3
+                if (page.contains("TitleStyle")) {
+                    val titleStyle = section(page, "TitleStyle", file)
+                    keys(
+                        titleStyle,
+                        setOf("Position", "FontSize", "Bold", "Width", "Color"),
+                        "$file.TitleStyle",
+                    )
+                    val heading = widgets[0].toMutableMap()
+                    appearance(titleStyle, heading, "$file.TitleStyle")
+                    widgets[0] = heading
+                }
+                var row =
+                    maxOf(
+                        3,
+                        (widgets[0]["row"] as Int) +
+                            TitleFont.lineRows((widgets[0]["font-size"] as? Int) ?: 8),
+                    )
                 var lower = false
                 fun lowerPanel(heading: String) {
                     require(!lower) { "$file.Layout: 内容超出两个面板，请减少说明、拆分页面或调整顺序" }
@@ -306,6 +340,12 @@ object SimpleMenuParser {
                             "Actions",
                             "Permission",
                             "RequiresPlugin",
+                            "Position",
+                            "LabelPosition",
+                            "FontSize",
+                            "Bold",
+                            "Width",
+                            "Color",
                         ),
                         at,
                     )
@@ -321,6 +361,15 @@ object SimpleMenuParser {
                             "$at.Style: 仅 toggle 可使用 button / switch"
                         }
                     }
+                    val position = position(icon, "Position", at)
+                    val fontSize =
+                        if (icon.contains("FontSize")) {
+                            require(icon.isInt("FontSize") && icon.getInt("FontSize") in 6..24) {
+                                "$at.FontSize: 使用 6–24 的整数"
+                            }
+                            icon.getInt("FontSize")
+                        } else 8
+                    val textRows = TitleFont.lineRows(fontSize)
                     val text = label(icon.get("Name") ?: name, "$at.Name")
                     val descriptions =
                         when (val value = icon.get("Description")) {
@@ -335,23 +384,61 @@ object SimpleMenuParser {
                     if (type == "heading") {
                         require(
                             descriptions.isEmpty() &&
-                                icon.getKeys(false).all { it in setOf("Type", "Name") }
+                                icon.getKeys(false).all {
+                                    it in
+                                        setOf(
+                                            "Type",
+                                            "Name",
+                                            "Position",
+                                            "FontSize",
+                                            "Bold",
+                                            "Width",
+                                            "Color",
+                                        )
+                                }
                         ) {
-                            "$at: heading 只使用 Type 和 Name"
+                            "$at: heading 支持 Type、Name、Position、FontSize、Bold、Width、Color"
                         }
                         lowerPanel(text)
+                        val heading = widgets.last().toMutableMap()
+                        appearance(icon, heading, at)
+                        widgets[widgets.lastIndex] = heading
+                        row = maxOf(13, (heading["row"] as Int) + textRows)
                     } else {
-                        val height = 2 + descriptions.size
+                        val height = maxOf(2, textRows) + descriptions.size * textRows
                         // Popup rows align with the lower panel's first row so its
                         // whole bitmap never paints over half an expanded option.
-                        if (type == "dropdown" && row % 2 != 0) row++
-                        if (!lower && row + height > 9) lowerPanel(text)
-                        if (type == "dropdown" && row % 2 != 0) row++
-                        require(row + height <= 24) { "$at: 面板已放不下此控件，请减少说明或拆分页面" }
+                        if (position == null && type == "dropdown" && row % 2 != 0) row++
+                        if (position == null && !lower && row + height > 9) lowerPanel(text)
+                        if (position != null) row = position.second
+                        if (position == null && type == "dropdown" && row % 2 != 0) row++
+                        require(row + height <= if (position != null) DialogCanvas.ROWS else 24) {
+                            "$at: 面板已放不下此控件，请减少说明或拆分页面"
+                        }
                         val widget = linkedMapOf<String, Any>("type" to type, "row" to row)
                         widget[
                             if (type in setOf("dropdown", "slider", "toggle")) "label"
                             else "text"] = text
+                        appearance(icon, widget, at)
+                        val originalX =
+                            when (type) {
+                                "text" -> 123
+                                "slider" -> 280
+                                else -> 330
+                            }
+                        val deltaX = (position?.first ?: originalX) - originalX
+                        if (type in setOf("toggle", "slider", "dropdown")) {
+                            val labelPosition = position(icon, "LabelPosition", at)
+                            widget["label-x"] = labelPosition?.first ?: (123 + deltaX)
+                            widget["label-row"] =
+                                labelPosition?.second ?: (row + if (fontSize == 8) 1 else 0)
+                        } else
+                            require(!icon.contains("LabelPosition")) {
+                                "$at.LabelPosition: 仅用于开关、滑条、下拉框左侧的 Name"
+                            }
+                        require(type == "text" || !icon.contains("Color")) {
+                            "$at.Color: 仅用于 text / heading"
+                        }
                         if (style.isNotEmpty()) widget["toggle-style"] = style
                         val bind = optionalString(icon, "Bind", at)
                         val binding =
@@ -362,10 +449,20 @@ object SimpleMenuParser {
                         if (type == "text")
                             require(
                                 icon.getKeys(false).all {
-                                    it in setOf("Type", "Name", "Description")
+                                    it in
+                                        setOf(
+                                            "Type",
+                                            "Name",
+                                            "Description",
+                                            "Position",
+                                            "FontSize",
+                                            "Bold",
+                                            "Width",
+                                            "Color",
+                                        )
                                 }
                             ) {
-                                "$at: text 只使用 Type、Name、Description"
+                                "$at: text 支持 Name、Description、Position、FontSize、Bold、Width、Color"
                             }
                         if (binding != null) {
                             require(
@@ -454,8 +551,16 @@ object SimpleMenuParser {
                             widgets +=
                                 mapOf(
                                     "type" to "text",
-                                    "row" to row + 2 + index,
+                                    "x" to 123 + deltaX,
+                                    "row" to row + maxOf(2, textRows) + index * textRows,
+                                    "width" to
+                                        minOf(
+                                            (widget["width"] as? Int) ?: 316,
+                                            DialogCanvas.WIDTH - 123 - deltaX,
+                                        ),
                                     "text" to description,
+                                    "font-size" to fontSize,
+                                    "bold" to icon.getBoolean("Bold", false),
                                 )
                         }
                         row += height
@@ -496,6 +601,39 @@ object SimpleMenuParser {
                     } ?: action
                 },
         )
+    }
+
+    private fun position(
+        section: ConfigurationSection,
+        key: String,
+        path: String,
+    ): Pair<Int, Int>? {
+        if (!section.contains(key)) return null
+        val values = section.getList(key)
+        require(values != null && values.size == 2 && values.all { it is Int && it >= 0 }) {
+            "$path.$key: 使用 [X 像素, Y 行号]，每行 9 像素"
+        }
+        return (values[0] as Int) to (values[1] as Int)
+    }
+
+    private fun appearance(
+        source: ConfigurationSection,
+        target: MutableMap<String, Any>,
+        path: String,
+    ) {
+        position(source, "Position", path)?.let {
+            target["x"] = it.first
+            target["row"] = it.second
+        }
+        for ((from, to) in
+            mapOf(
+                "FontSize" to "font-size",
+                "Bold" to "bold",
+                "Width" to "width",
+                "Color" to "color",
+            )) {
+            if (source.contains(from)) target[to] = requireNotNull(source.get(from))
+        }
     }
 
     private fun keys(section: ConfigurationSection, allowed: Set<String>, path: String) {

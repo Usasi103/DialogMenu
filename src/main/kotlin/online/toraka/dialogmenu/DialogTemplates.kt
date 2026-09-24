@@ -54,7 +54,7 @@ object TemplateSkins {
                     load(it)
                 }
         }
-    val font = Key.key("toraka_dialogue:ui")
+    val font = Key.key("dialogmenu_dialogue:ui")
 
     fun get(theme: String, name: String): DialogCanvas.Skin {
         val quest = name.startsWith("quest-")
@@ -68,7 +68,7 @@ object TemplateSkins {
             parts[0],
             parts[1],
             parts[2],
-            if (quest) Key.key("toraka_dialogue:quest_ui") else font,
+            if (quest) Key.key("dialogmenu_dialogue:quest_ui") else font,
             parts.drop(4),
             parts[3],
         )
@@ -205,7 +205,7 @@ object TemplateParser {
                             glyph[0].code,
                             spriteWidth,
                             spriteRows,
-                            Key.key(customFont),
+                            resourceFont(customFont),
                             listOf(integer(conf, "Advance", spriteWidth + 1, 0..1024, location)),
                             1,
                         )

@@ -88,7 +88,7 @@ object MenuDialog {
 
     @taboolib.common.platform.event.SubscribeEvent
     fun clicked(event: PlayerCustomClickEvent) {
-        if (event.identifier.namespace() != "toraka_settings") return
+        if (event.identifier.namespace() != "dialogmenu_settings") return
         val player = (event.commonConnection as? PlayerGameConnection)?.player ?: return
         val route = event.identifier.value()
         val query = event.dialogResponseView?.getText("query")?.take(48)
@@ -232,7 +232,7 @@ object MenuDialog {
         val actions = linkedSetOf<String>()
         fun click(action: String): ClickEvent<*> {
             actions += action
-            return ClickEvent.custom(Key.key("toraka_settings", "$token/$action"))
+            return ClickEvent.custom(Key.key("dialogmenu_settings", "$token/$action"))
         }
         val close =
             if (menu.showFooter)
@@ -339,7 +339,7 @@ object MenuDialog {
                 Component.text(label),
                 null,
                 140,
-                DialogAction.customClick(Key.key("toraka_settings", "$token/$action"), null),
+                DialogAction.customClick(Key.key("dialogmenu_settings", "$token/$action"), null),
             )
         player.showDialog(
             Dialog.create { factory ->
