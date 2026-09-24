@@ -6,6 +6,24 @@ DefaultMenu: settings
 # 所需文件：DialogMenu-resourcepack-0.1.21-SNAPSHOT.zip；本机素材版也可用（两者字体 ID 相同）。
 # 当前已合入 plugins/CraftEngine/resources/toranca_pack/resourcepack/，由下方 default 包发送。
 # 指定本插件所需资源包。CraftEngine 模式的 Pack 对应其 resource-pack.packs 下的 ID。
+# 不用 CraftEngine 时无需改菜单的字体 ID；客户端仍须加载完整 DialogMenu 资源和自定义物品资源。
+# 下列二选一，用对应内容替换整个 ResourcePack 段（不要保留两份同名配置段）：
+# 方式一：DialogMenu 发送 ZIP 直链；example.com 须替换成真实下载地址。
+# ResourcePack:
+#   Name: "菜单资源包"
+#   Provider: URL
+#   URL: "https://example.com/server-pack.zip"
+#   UUID: "" # 留空按 URL 生成
+#   SHA1: "" # 更新同一地址的包内容时，填写新文件的 40 位 SHA-1
+#   RequireLoaded: true
+# 方式二：IA / Nexo / Oraxen 等其他插件或 server.properties 已负责发送合并资源包。
+# ResourcePack:
+#   Name: "外部合并资源包"
+#   Provider: External
+#   UUID: "12345678-1234-1234-1234-123456789abc" # 必须替换成发送方实际使用的 UUID
+#   RequireLoaded: true
+# 修改后 /dmenu check、/dmenu reload；URL 用 /dmenu pack 接收，External 由原发送方重新发送。
+# Provider 只控制检查/发送，不会自动合并资源、生成字体或转换物品图标；RequireLoaded: false 也不会补齐资源。
 ResourcePack:
   Name: "DialogMenu 菜单资源（CraftEngine 合并包）"
   Provider: CraftEngine # CraftEngine / URL / External

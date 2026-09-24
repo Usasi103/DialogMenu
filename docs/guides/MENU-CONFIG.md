@@ -1,5 +1,9 @@
 # 一个菜单一个文件（0.1.17）
 
+详细中文 Wiki：[开始阅读](../wiki/README.md) · [完整目录](../wiki/SUMMARY.md) · [完整示例](../wiki/examples.md) · [离线网页版](../wiki/index.html)。本文保留为简明入口。
+
+更换导航图标、任务图标或物品材质，以及 IA / Nexo / Oraxen 和非 CE 资源包的用法，见 [图标与材质](../wiki/icons.md)。
+
 `menus/settings.yml` 是完整的玩家设置菜单，个人信息、声音、粒子、拾取、掉落、语言等都在它的 `Pages` 内。
 `menus/demo-dialogue.yml` 是对话演示菜单；`menus/demo-boss.yml` 是首领演示菜单，包含介绍和确认两个子页。
 两个 demo 也是普通菜单，可复制、改名、改动作。确认只显示演示消息，不召唤首领、不扣物品。

@@ -66,6 +66,14 @@ Icon: {Font: "my_pack:icons", Glyph: "\uE001", Width: 12, Advance: 13}
 
 原版默认显示高 12、ascent 4。自定义图片应放在 18 像素高的条目内；`Width` 1–18，`Advance` 必须与实际字形一致，避免画布横向漂移。奖励同样支持该写法。图标是画布贴图；实际 ItemBridge 物品展示仍使用 settings 物品子页的 `Display.Material`。
 
+## 更换图标与非 CE 用法
+
+Icon 是字体字形，不支持任意原版材质名，也不能填写 `source:CE:...`、`source:IA:...`、`source:Nexo:...` 等物品 ID。真实物品及模型展示使用 settings 子页的 `Display.Material`；它与任务图标分别配置。
+
+不依赖 CE 的自定义图标：在资源包中准备 PNG，并在 `assets/my_pack/font/icons.json` 中用 bitmap provider 引用该图片和 `\uE001` 字符，再在菜单填写 `Font: "my_pack:icons"` 与 `Glyph: "\uE001"`。字体必须存在于客户端实际加载的包内，只有 YAML 不会生成图片。Width 是占位，不是缩放；Advance 使用实际字形指标，不能一律照抄 13。
+
+不用 CE 时，全局 config.yml 的 ResourcePack 可选 `Provider: URL` 加真实 ZIP 直链（用 `/dmenu pack` 发送），或 `Provider: External` 加其他插件 / server.properties 发送时实际使用的 UUID。先合入 DialogMenu 配套资源，再由发送方构建并发送；Provider 不会自动合并资源。完整可复制示例已写在 config.yml 注释中，源码 Wiki 的 `docs/wiki/icons.md` 提供 PNG 字体步骤。
+
 ## 部署
 
 新增 `menus/demo-quests.yml` 和 0.1.18 JAR；保留自己的旧菜单。已有配置不会被自动覆盖或强行新增 demo，新装默认会导出四个完整菜单。

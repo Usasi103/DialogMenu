@@ -1,0 +1,74 @@
+Version: 1
+Type: canvas
+DefaultPage: main
+Skin: parchment
+Canvas:
+  Width: 552
+  Rows: 20
+  Background: panel
+  HideFocusOutline: true
+Pages:
+  main:
+    Title: 守门人的委托
+    Elements:
+      portrait:
+        Type: sprite
+        Position: [24, 3]
+        Sprite: emblem
+      name:
+        Position: [156, 3]
+        Width: 330
+        Text: 守门人 · 艾琳
+        Color: "#f0d8b9"
+      dialogue:
+        Position: [156, 7]
+        Width: 348
+        Rows: 5
+        Text:
+          - "你好，{player}。"
+          - 古堡里的灯又亮了。你愿意听听那里的故事吗？
+      continue:
+        Type: button
+        Position: [156, 16]
+        Sprite: wide-button
+        Text: 继续
+        Actions: ["page: story"]
+      leave:
+        Type: button
+        Position: [312, 16]
+        Sprite: wide-button
+        Text: 稍后再来
+        Actions: [close]
+      close:
+        Type: button
+        Position: [516, 2]
+        Sprite: close
+        Text: "×"
+        Actions: [close]
+  story:
+    Title: 古堡的故事
+    Elements:
+      title:
+        Position: [30, 3]
+        Width: 480
+        Text: 消失的巡夜人
+        Color: "#f0d8b9"
+      story:
+        Position: [30, 6]
+        Width: 480
+        Rows: 7
+        Text:
+          - 很久以前，巡夜人每晚都会点亮高塔。
+          - 如果你在古堡遇到他，请替我问一句好。
+      accept:
+        Type: button
+        Position: [156, 16]
+        Sprite: wide-button
+        Text: 我记住了
+        Actions: ["message: 艾琳：祝你旅途平安。", close]
+      back:
+        Type: button
+        Position: [312, 16]
+        Sprite: wide-button
+        Text: 返回
+        Actions: ["page: main"]

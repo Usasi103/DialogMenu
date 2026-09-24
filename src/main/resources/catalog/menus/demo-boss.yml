@@ -103,6 +103,11 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
         Type: sprite # 资源包贴图或字体图标
         Position: [228, 16] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Sprite: reward # 内置贴图 ID，决定按钮或图标的形状与尺寸
+      # 这里的奖励图标是字体贴图，不是物品源；不能把 Font 改成 source:IA:... 等物品 ID。
+      # 更换图片：在资源包定义自有字体/字形，再填写 Font、Glyph、Width、Rows、Advance。
+      # Font: my_pack:icons 对应 assets/my_pack/font/icons.json；PNG 由该字体 JSON 的 bitmap provider 引用。
+      # Width / Rows 是占位，Advance 是实际字形步进；修改它们不会自动缩放图片。
+      # 不依赖 CE；其他插件发送资源包时用全局 ResourcePack.Provider: External，或用 URL 直链。
       # 碎片：紫水晶碎片；字体定义见资源包 assets/dialogmenu_dialogue/font/rewards.json。
       shard-icon:
         Type: sprite # 资源包贴图或字体图标

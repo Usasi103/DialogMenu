@@ -102,6 +102,8 @@ Pages:
 
 [文档目录](docs/README.md)：配置指南、旧版迁移资料与开发记录统一收录在 `docs/`。
 
+中文详细 Wiki：[阅读手册](docs/wiki/README.md) · [离线网页版（下载后打开）](docs/wiki/index.html) · [完整目录](docs/wiki/SUMMARY.md)。覆盖新版 menus 的两类菜单、配置字段、动作、变量、物品源、资源包与可复制示例。
+
 - [settings 坐标、字号与加粗](docs/guides/SETTINGS-LAYOUT.md)
 
 - [菜单配置与画布布局](docs/guides/MENU-CONFIG.md)

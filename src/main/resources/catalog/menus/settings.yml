@@ -1,3 +1,14 @@
+# 图标与材质：Icon（单数）是左侧分类字体贴图；Icons（复数）是本页控件集合。
+# 左侧 Icon 可选 profile-icon / sound-icon / particles-icon / notices-icon / loot-icon / appearance-icon。
+# Icon 不能填 DIAMOND、source:IA:... 或 Font/Glyph 配置段；换图片需改资源包对应的 9 像素贴图。
+# 真实物品写在 Pages.<页>.Icons.<控件>.Display.Material；原版可写 DIAMOND 或 minecraft:diamond。
+# 不用 CE 也能用：source:IA:my_pack:sword、source:Nexo:my_sword、source:Oraxen:my_sword、source:NI:物品ID。
+# IA 是 ItemsAdder 的别名；安装实际使用的物品插件并填写真实 ID，无需另外安装 ItemBridge。
+# Display.Material 会让整页使用原生物品布局，不能与 toggle / slider / dropdown 同页混用。
+# 字体画布的装饰图标请用 sprite 的 Font/Glyph；任务菜单用 Icon 的 Font/Glyph/Width/Advance。
+# 自定义物品模型和字体图标都需要客户端加载相应资源；发送方式见全局 config.yml 的 ResourcePack。
+# Wiki：docs/wiki/icons.md（图标与材质）、items.md（物品源）、resource-pack.md（非 CE 资源包）。
+
 # 排版字段说明（可省略；省略时使用默认样式和自动排版）：
 # Position: [X, Y]：相对菜单画布的位置；X 是像素，Y 是从 0 开始的行号，每行 9 像素。
 # 例如 [123, 3] 表示向右 123 像素、从第 3 行开始；不是屏幕坐标，也不是 Y=3 像素。

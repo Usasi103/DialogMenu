@@ -1,0 +1,26 @@
+Version: 1
+Type: settings
+Title: 物品预览
+DefaultPage: main
+MainMenu: [close]
+Pages:
+  main:
+    Title: 展示柜
+    Renderer: items
+    Layout: [说明, 钻石, 返回]
+    Icons:
+      说明:
+        Type: text
+        Name: 将鼠标移到物品上查看原版提示。
+      钻石:
+        Type: item
+        Display:
+          Material: minecraft:diamond
+          Amount: 3
+          Name: 钻石展示
+          Lore:
+            - 这里只展示物品副本。
+            - 不会把钻石放入背包。
+      返回:
+        Name: 关闭预览
+        Actions: [close]

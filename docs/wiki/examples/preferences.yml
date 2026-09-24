@@ -1,0 +1,31 @@
+Version: 1
+Type: settings
+Title: 我的偏好
+DefaultPage: appearance
+Language: zh_cn
+Theme: dark
+MainMenu: [close]
+Pages:
+  appearance:
+    Title: 界面与语言
+    Icon: appearance-icon
+    Keywords: [语言, 主题, appearance]
+    Layout: [语言, 主题, 关闭]
+    Icons:
+      语言:
+        Type: dropdown
+        Name: {zh_cn: 菜单语言, en_us: Menu language}
+        Bind: language
+        Options:
+          zh_cn: 简体中文
+          en_us: English
+      主题:
+        Type: dropdown
+        Name: {zh_cn: 界面主题, en_us: Menu theme}
+        Bind: theme
+        Options:
+          dark: {zh_cn: 暗色, en_us: Dark}
+          light: {zh_cn: 亮色, en_us: Light}
+      关闭:
+        Name: {zh_cn: 关闭, en_us: Close}
+        Actions: [close]

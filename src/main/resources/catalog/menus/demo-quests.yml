@@ -27,7 +27,13 @@ Layout: # 各区域的起点；[X 像素, Y 行号]，每行 9 像素
 
 # 1–15 个任务，按书写顺序排列。Progress: [当前进度, 目标数量]。
 # 进度达到目标后可模拟领取；Claimed: true 表示示例初始为已领取。
-# Icon 是资源包字体图标，不是 ItemBridge 物品发放。
+# Icon 是资源包字体图标；与 settings 物品页的 Display.Material 不同。
+# 不能写 source:CE:... / source:IA:... / source:Nexo:...，也不会自动把物品模型转换成图标。
+# 下方内置名称只代表已有字体字形，并不支持任意 Minecraft 材质名。
+# 不用 CE 时仍可用自定义字体：先在资源包定义 Font 对应的字体 JSON、Glyph 字符及 PNG。
+# Font: my_pack:icons 对应 assets/my_pack/font/icons.json；Glyph 的 Unicode 转义必须放双引号中。
+# Width 只定义占位，不缩放图片；Advance 要填实际字形步进，不能把示例值用于所有图片。
+# 任务及 Rewards 的 Icon 均支持此写法；资源包可用全局 config.yml 的 URL / External 方式发送。
 # 可用图标：iron_sword、fishing_rod、nether_star、book、iron_ingot、gold_ingot、
 # experience_bottle、amethyst_shard、cod、diamond_chestplate、bread、oak_sapling、compass。
 # 自定义示例：Icon: {Font: "my_pack:icons", Glyph: "\uE001", Width: 12, Advance: 13}

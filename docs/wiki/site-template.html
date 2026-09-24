@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>DialogMenu · 中文 Wiki</title>
+<style>
+:root{--bg:#fff;--panel:#f7f8fa;--ink:#253044;--muted:#64748b;--line:#e5e9ef;--accent:#6046c9;--soft:#eeeafb;--code:#f5f6f9}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.85 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}
+body.dark{--bg:#151923;--panel:#1c212d;--ink:#e1e6ef;--muted:#a6b2c5;--line:#303747;--accent:#b9a5ff;--soft:#302846;--code:#202635}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+header{height:68px;position:sticky;top:0;z-index:4;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 30px}
+.brand{font-size:20px;font-weight:750;letter-spacing:-.5px;color:var(--ink)}.logo{width:30px;height:30px;border:2px solid var(--accent);border-radius:8px;display:grid;place-items:center;color:var(--accent);font-weight:800}
+.badge{font-size:11px;background:var(--soft);color:var(--accent);padding:2px 9px;border-radius:20px}.header-right{margin-left:auto;display:flex;align-items:center;gap:18px;font-size:12px;color:var(--muted)}
+.ghost{color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:7px;padding:4px 10px}
+.shell{max-width:1560px;margin:auto;display:grid;grid-template-columns:258px minmax(0,1fr) 204px}
+aside{position:sticky;top:68px;height:calc(100vh - 68px);overflow:auto;padding:26px 20px;border-right:1px solid var(--line);background:var(--panel)}
+.search-box{position:relative}#search{width:100%;padding:9px 12px;background:var(--bg);border:1px solid var(--line);border-radius:7px;color:var(--ink);font-size:13px}
+.nav-label{font-size:11px;color:var(--muted);letter-spacing:1px;margin:25px 10px 8px}nav a{display:block;padding:7px 11px;margin:2px 0;border-radius:6px;font-size:13px;color:var(--muted);line-height:1.65}nav a.active{background:var(--soft);color:var(--accent);font-weight:650}nav a:hover{text-decoration:none;background:var(--soft)}
+main{padding:44px 48px 72px;min-width:0;max-width:1000px}.eyebrow{font-size:11px;letter-spacing:1.5px;color:var(--accent);font-weight:700}.meta{color:var(--muted);font-size:12px;margin-bottom:24px}.meta a{margin-left:12px}
+article h1{font-size:32px;line-height:1.35;font-weight:720;letter-spacing:-.6px;margin:12px 0 20px}article h2{font-size:21px;margin:42px 0 14px;padding-top:4px;scroll-margin-top:90px}article h3{font-size:17px;margin:28px 0 10px;scroll-margin-top:90px}article p{margin:14px 0}article ul,article ol{padding-left:24px}article li{margin:7px 0}article strong{font-weight:650}
+code{font:12.5px/1.7 Consolas,"Cascadia Code",monospace;background:var(--code);border-radius:4px;padding:2px 5px;overflow-wrap:anywhere}
+pre{position:relative;background:var(--code);border:1px solid var(--line);border-radius:9px;padding:44px 20px 20px;overflow:auto;line-height:1.75;margin:20px 0}pre code{padding:0;background:none;white-space:pre;overflow-wrap:normal;font-size:13px}.copy{position:absolute;right:10px;top:8px;font-size:11px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--muted);padding:2px 9px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;margin:20px 0}table{border-collapse:collapse;width:100%;font-size:13px}th{text-align:left;font-weight:650;background:var(--panel)}td,th{padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top;min-width:95px}tr:last-child td{border-bottom:0}td code{font-size:12px}blockquote{border-left:3px solid var(--accent);padding:4px 18px;background:var(--panel);margin:20px 0}
+.toc{position:sticky;top:68px;height:calc(100vh - 68px);overflow:auto;padding:45px 20px 24px;font-size:12px}.toc-title{font-weight:650;color:var(--ink);margin-bottom:12px}.toc a{display:block;padding:5px 0 5px 12px;border-left:1px solid var(--line);color:var(--muted);line-height:1.6}.toc a:hover{color:var(--accent)}
+.pager{display:flex;gap:15px;margin-top:50px;border-top:1px solid var(--line);padding-top:24px}.pager a{flex:1;border:1px solid var(--line);padding:12px 16px;border-radius:7px;font-size:13px}.pager a:last-child{text-align:right}.pager small{display:block;color:var(--muted);font-size:11px}
+.result{display:block;border:1px solid var(--line);border-radius:9px;padding:18px 20px;margin:14px 0}.result:hover{text-decoration:none;border-color:var(--accent)}.result h2{font-size:17px;margin:0 0 8px}.result p{color:var(--muted);font-size:13px;margin:0}
+.mobile-menu{display:none}.foot{color:var(--muted);font-size:11px;margin-top:30px}.empty{padding:30px 0;color:var(--muted)}
+@media(min-width:1450px){main{padding-left:64px;padding-right:64px}}@media(max-width:1150px){.shell{grid-template-columns:235px minmax(0,1fr)}.toc{display:none}main{padding:32px}}@media(max-width:720px){header{padding:0 16px;height:60px}.header-right span{display:none}.badge{display:none}.mobile-menu{display:block}.shell{display:block}aside{display:none;position:fixed;top:60px;z-index:3;width:280px;height:calc(100vh - 60px);box-shadow:10px 0 35px #0002}body.menu-open aside{display:block}main{padding:26px 19px 48px}article h1{font-size:27px}article h2{font-size:20px}.pager{flex-direction:column}.meta{line-height:2}}
+@media print{header,aside,.toc,.pager,.copy,.meta,.eyebrow{display:none!important}.shell{display:block}main{max-width:none;padding:0}body{background:white;color:black}pre{white-space:pre-wrap}a{color:inherit}}
+</style>
+</head>
+<body>
+<header>
+<button class="ghost mobile-menu" id="menu-toggle" aria-label="展开章节目录">☰</button>
+<span class="logo" aria-hidden="true">D</span>
+<a class="brand" href="#readme">DialogMenu</a><span class="badge">中文 Wiki</span>
+<div class="header-right"><span>配置参考 · 0.1.16–0.1.17</span><button class="ghost" id="theme" aria-label="切换深浅配色">深色</button></div>
+</header>
+<div class="shell">
+<aside aria-label="文档导航">
+<div class="search-box"><input id="search" type="search" placeholder="搜索字段、动作、问题…" aria-label="搜索全部文档"></div>
+<div class="nav-label">使用手册 / DOCUMENTATION</div>
+<nav id="nav"></nav>
+<p class="foot">本地源码核对 · 2026-09-24<br>所有内容均可离线阅读</p>
+</aside>
+<main id="main">
+<div class="eyebrow">DIALOGMENU / DOCUMENTATION</div>
+<div class="meta" id="meta"></div>
+<article id="article"></article>
+<div class="pager" id="pager"></div>
+<noscript>请启用 JavaScript 阅读离线网页，或直接打开同目录的 README.md 和 SUMMARY.md。</noscript>
+</main>
+<div class="toc" aria-label="本页目录"><div class="toc-title">本页内容</div><div id="toc"></div></div>
+</div>
+<script id="wiki-data" type="application/json">__WIKI_PAGES__</script>
+<script>
+"use strict";
+const pages = JSON.parse(document.getElementById("wiki-data").textContent);
+const byId = new Map(pages.map(p => [p.id, p]));
+const article = document.getElementById("article");
+const toc = document.getElementById("toc");
+const pager = document.getElementById("pager");
+const search = document.getElementById("search");
+const nav = document.getElementById("nav");
+const meta = document.getElementById("meta");
+let current = pages[0];
+function node(tag, text, cls) { const el = document.createElement(tag); if (text != null) el.textContent = text; if (cls) el.className = cls; return el; }
+pages.filter(p => p.id !== "summary").forEach(p => { const a = node("a", p.title); a.href = "#" + p.id; a.dataset.id = p.id; nav.append(a); });
+function updateActive() { nav.querySelectorAll("a").forEach(a => { const active = a.dataset.id === current.id; a.classList.toggle("active", active); if(active) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); }); }
+async function copyCode(button, text) {
+  try {
+    if(navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(text);
+    else { const area = node("textarea"); area.value = text; area.style.position = "fixed"; area.style.top = "-10000px"; document.body.append(area); area.select(); const ok = document.execCommand("copy"); area.remove(); if(!ok) throw new Error("copy"); }
+    button.textContent = "已复制";
+  } catch { button.textContent = "请选中代码复制"; }
+  setTimeout(() => { button.textContent = "复制"; }, 1800);
+}
+function drawPage() {
+  const route = location.hash.slice(1).split("/");
+  current = byId.get(route[0]) || pages[0];
+  search.value = "";
+  article.innerHTML = current.html;
+  document.title = current.title + " · DialogMenu Wiki";
+  meta.replaceChildren(node("span", "菜单格式 v3 · 中文配置手册"));
+  const source = node("a", "Markdown 源文件"); source.href = current.file; meta.append(source);
+  article.querySelectorAll("pre").forEach(pre => { const code = pre.querySelector("code"); if(!code) return; const button = node("button","复制","copy"); button.type="button"; button.setAttribute("aria-label","复制代码"); button.addEventListener("click",()=>copyCode(button,code.textContent)); pre.append(button); });
+  article.querySelectorAll("table").forEach(table => { const wrap = node("div",null,"table-wrap"); table.before(wrap); wrap.append(table); });
+  toc.replaceChildren();
+  article.querySelectorAll("h2,h3").forEach(h => { const a = node("a",h.textContent); a.href="#"+current.id+"/"+encodeURIComponent(h.id); if(h.tagName==="H3") a.style.paddingLeft="24px"; toc.append(a); });
+  const chapters = pages.filter(p => p.id !== "summary");
+  const at = chapters.findIndex(p => p.id === current.id);
+  pager.replaceChildren();
+  if(at >= 0) [[chapters[at-1],"上一页"],[chapters[at+1],"下一页"]].forEach(([p,label])=>{ if(!p) return; const a=node("a"); a.href="#"+p.id; a.append(node("small",label),node("span",p.title)); pager.append(a); });
+  updateActive(); document.body.classList.remove("menu-open");
+  if(route[1]) { let id; try{id=decodeURIComponent(route[1]);}catch{id="";} requestAnimationFrame(()=>{const target=document.getElementById(id); if(target && article.contains(target)) target.scrollIntoView();}); }
+  else window.scrollTo(0,0);
+}
+search.addEventListener("input",()=>{
+  const query=search.value.trim().toLocaleLowerCase();
+  if(!query){drawPage();return;}
+  article.replaceChildren(node("h1","搜索文档"));
+  toc.replaceChildren(); pager.replaceChildren(); meta.textContent="全文搜索 · 输入字段名或自然语言关键词";
+  const terms=query.split(/\s+/);
+  const results=pages.filter(p=>p.id!=="summary" && terms.every(t=>p.text.toLocaleLowerCase().includes(t)));
+  article.append(node("p","找到 "+results.length+" 个相关章节"));
+  results.forEach(p=>{const a=node("a",null,"result");a.href="#"+p.id;const start=Math.max(0,p.text.toLocaleLowerCase().indexOf(terms[0])-45);a.append(node("h2",p.title),node("p",(start?"…":"")+p.text.slice(start,start+160)+"…"));a.addEventListener("click",()=>{if(location.hash==="#"+p.id) drawPage();});article.append(a);});
+  if(!results.length) article.append(node("p","试试 Pages、close、物品、资源包，或缩短搜索词。","empty"));
+});
+document.getElementById("theme").addEventListener("click",()=>{
+  const dark=document.body.classList.toggle("dark");document.getElementById("theme").textContent=dark?"浅色":"深色";
+  try{localStorage.setItem("dialogmenu-wiki-theme",dark?"dark":"light");}catch{}
+});
+try{if(localStorage.getItem("dialogmenu-wiki-theme")==="dark"){document.body.classList.add("dark");document.getElementById("theme").textContent="浅色";}}catch{}
+document.getElementById("menu-toggle").addEventListener("click",()=>document.body.classList.toggle("menu-open"));
+window.addEventListener("hashchange",drawPage);
+document.addEventListener("click",e=>{const a=e.target.closest("a");if(a && a.getAttribute("href")===location.hash && search.value)drawPage();});
+document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="k"){e.preventDefault();document.body.classList.add("menu-open");search.focus();}});
+drawPage();
+</script>
+</body>
+</html>

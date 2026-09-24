@@ -27,7 +27,11 @@
 # YAML 中 # 会开始注释，因此十六进制颜色必须加引号，例如 Color: '#55FF55'。
 
 # 单页片段：放入 menus/settings.yml 的 Pages.items 下；需同菜单存在 profile 页。
-# 支持 ItemBridge 全部 39 种物品插件；完整 ID 见 ITEM-SOURCES.md。
+# 支持 ItemBridge 全部 39 种物品插件；完整 ID 见 docs/guides/ITEM-SOURCES.md。
+# Material 可改为原版 DIAMOND / minecraft:diamond，也可使用下面任一已安装的物品源：
+# source:IA:my_pack:sword（ItemsAdder）；source:Nexo:my_sword；source:Oraxen:my_sword；source:NI:物品ID。
+# 自定义 ID 均为示例，须换成实际物品 ID；IA / CE 要求完整的小写 namespace:id。
+# 无需额外安装 ItemBridge；自定义模型仍需对应资源包，字体画布 Icon 不接受这些 Material 写法。
 # /dmenu check、/dmenu reload、/dmenu open settings items。
 Title: {zh_cn: "物品源示例", en_us: "Item sources"} # 左侧分类名称与右侧页面标题
 Renderer: items # items 使用原生物品布局，展示真实物品模型与悬浮提示

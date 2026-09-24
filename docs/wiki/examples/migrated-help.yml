@@ -1,0 +1,12 @@
+Version: 1
+Type: settings
+Title: 玩家设置
+DefaultPage: help
+MainMenu: [close]
+Pages:
+  help:
+    Title: 帮助
+    Layout: [关闭]
+    Icons:
+      关闭:
+        Actions: [close]

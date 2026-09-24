@@ -1,0 +1,28 @@
+Version: 1
+Type: settings
+Title: 我的第一个菜单
+DefaultPage: main
+MainMenu: [close]
+Pages:
+  main:
+    Title: 欢迎
+    Layout: [问候, 帮助, 关闭]
+    Icons:
+      问候:
+        Type: text
+        Name: "你好，{player}！"
+        Description: "这是用 DialogMenu 制作的菜单。"
+      帮助:
+        Name: 查看帮助
+        Actions: ["page: help"]
+      关闭:
+        Actions: [close]
+  help:
+    Title: 使用帮助
+    Layout: [说明, 返回]
+    Icons:
+      说明:
+        Type: text
+        Name: 修改文字后检查并重载即可。
+      返回:
+        Actions: ["page: main"]

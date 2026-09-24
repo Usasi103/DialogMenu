@@ -1,0 +1,67 @@
+Version: 1
+Type: canvas
+DefaultPage: choose
+Skin: amethyst
+Variables:
+  difficulty: [normal, hard]
+Pages:
+  choose:
+    Title: 选择试炼
+    Elements:
+      title:
+        Position: [30, 3]
+        Width: 480
+        Text: 请选择难度
+      normal:
+        Type: button
+        Position: [30, 7]
+        Text: 普通
+        SelectedWhen: difficulty=normal
+        SelectedSprite: selected
+        Actions: ["set: difficulty=normal", refresh]
+      hard:
+        Type: button
+        Position: [150, 7]
+        Text: 困难
+        SelectedWhen: difficulty=hard
+        SelectedSprite: selected
+        Actions: ["set: difficulty=hard", refresh]
+      normal-info:
+        Position: [30, 11]
+        Width: 480
+        Rows: 3
+        VisibleWhen: difficulty=normal
+        Text: 普通模式，适合初次挑战。
+      hard-info:
+        Position: [30, 11]
+        Width: 480
+        Rows: 3
+        VisibleWhen: difficulty=hard
+        Text: 困难模式，需要熟悉机制。
+      next:
+        Type: button
+        Position: [210, 16]
+        Sprite: wide-button
+        Text: 下一步
+        Actions: ["page: confirm"]
+  confirm:
+    Title: 确认试炼
+    Elements:
+      summary:
+        Position: [30, 4]
+        Width: 480
+        Rows: 4
+        Text:
+          - "玩家：{player}"
+          - "选择的难度：{difficulty}"
+          - 这是演示，不消耗物品，也不召唤首领。
+      confirm:
+        Type: button
+        Position: [156, 16]
+        Text: 确认
+        Actions: ["message: 你选择了 {difficulty} 难度。", close]
+      back:
+        Type: button
+        Position: [282, 16]
+        Text: 返回选择
+        Actions: ["page: choose"]

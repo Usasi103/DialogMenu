@@ -9,6 +9,8 @@
 | 文档 | 内容 |
 | --- | --- |
 | [菜单配置入门](guides/MENU-CONFIG.md) | 一个菜单一个文件、子页面、动作与资源包 |
+| [图标与材质](wiki/icons.md) | 区分 Icon / Icons / Material，使用 IA / Nexo / Oraxen、自定义 PNG 与非 CE 资源包 |
+| [中文详细 Wiki](wiki/README.md) | 字段参考、完整示例和可搜索的离线网页 |
 | [settings 布局与字体](guides/SETTINGS-LAYOUT.md) | 坐标、文字宽度、颜色、字号与加粗 |
 | [On/Off 开关](guides/SWITCHES.md) | 小开关和宽按钮的样式选择 |
 | [对话与首领模板](guides/TEMPLATES.md) | 画布菜单和字体图标 |
