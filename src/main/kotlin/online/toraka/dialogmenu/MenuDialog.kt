@@ -36,6 +36,10 @@ object MenuDialog {
 
     private val sessions = mutableMapOf<UUID, Session>()
 
+    fun forget(uuid: UUID) {
+        sessions.remove(uuid)
+    }
+
     fun shutdown() {
         sessions.keys.toList().forEach { Bukkit.getPlayer(it)?.closeDialog() }
         sessions.clear()
@@ -65,6 +69,7 @@ object MenuDialog {
             return
         }
         player.closeInventory()
+        TemplateDialog.forget(player.uniqueId)
         show(player, View(page))
     }
 

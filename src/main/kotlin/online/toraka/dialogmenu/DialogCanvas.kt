@@ -11,9 +11,20 @@ import net.kyori.adventure.text.format.TextColor
 /** Whole sprites share an origin with the nine-pixel click grid. */
 class DialogCanvas(
     private val theme: MenuTheme = MenuTheme.DARK,
+    private val width: Int = WIDTH,
+    private val rows: Int = ROWS,
+    private val labelFont: Key = LABEL_FONT,
+    private val buttonLabelFont: Key = BUTTON_LABEL_FONT,
     private val click: (String) -> ClickEvent<*>,
 ) {
-    data class Skin(val glyph: Int, val width: Int, val rows: Int)
+    data class Skin(
+        val glyph: Int,
+        val width: Int,
+        val rows: Int,
+        val font: Key = FONT,
+        val advances: List<Int> = emptyList(),
+        val columns: Int = if (width > 256) 2 else 1,
+    )
 
     private data class Sprite(val x: Int, val row: Int, val skin: Skin, val action: String? = null)
 
@@ -116,10 +127,11 @@ class DialogCanvas(
 
     fun build(): Component {
         val result = Component.text()
-        for (row in 0 until ROWS) {
+        val lineWidth = width + WRAP_SLACK
+        for (row in 0 until rows) {
             // Hit advances come first so getStyleAtWidth sees a positive, monotonic click grid.
             // Following negative advances paint the visual layers on the same coordinates.
-            val cuts = sortedSetOf(0, LINE_WIDTH)
+            val cuts = sortedSetOf(0, lineWidth)
             hits
                 .filter { row in it.row until it.row + it.rows }
                 .forEach {
@@ -134,23 +146,27 @@ class DialogCanvas(
                 if (hit != null) region = region.clickEvent(click(hit.action))
                 result.append(region)
             }
-            result.append(space(-LINE_WIDTH))
+            result.append(space(-lineWidth))
             sprites
                 .filter { row == it.row }
                 .forEach {
                     result.append(space(it.x))
-                    val columns = if (it.skin.width > 256) 2 else 1
+                    val columns = it.skin.columns
                     repeat(columns) { column ->
                         var glyph: Component =
                             Component.text((it.skin.glyph + column).toChar().toString())
-                                .font(FONT)
+                                .font(it.skin.font)
                                 .color(NamedTextColor.WHITE)
                         if (it.action != null) glyph = glyph.clickEvent(click(it.action))
                         result.append(glyph)
                         // Bitmap advances trim transparent right edges. Restore the
                         // texture cell width using the compiled, measured advance.
                         result.append(
-                            space(it.skin.width / columns - glyphWidth(it.skin.glyph + column))
+                            space(
+                                it.skin.width / columns -
+                                    (it.skin.advances.getOrNull(column)
+                                        ?: glyphWidth(it.skin.glyph + column))
+                            )
                         )
                     }
                     result.append(space(-it.x - it.skin.width))
@@ -161,13 +177,13 @@ class DialogCanvas(
                     result.append(space(it.x))
                     var label: Component =
                         Component.text(it.text, TextColor.color(it.color))
-                            .font(if (it.raised) BUTTON_LABEL_FONT else LABEL_FONT)
+                            .font(if (it.raised) buttonLabelFont else labelFont)
                     if (it.action != null) label = label.clickEvent(click(it.action))
                     result.append(label)
                     result.append(space(-it.x - textWidth(it.text)))
                 }
-            result.append(space(LINE_WIDTH))
-            if (row < ROWS - 1) result.append(Component.newline())
+            result.append(space(lineWidth))
+            if (row < rows - 1) result.append(Component.newline())
         }
         return result.build().shadowColor(ShadowColor.none())
     }
@@ -249,7 +265,11 @@ class DialogCanvas(
         val DROPDOWN_UP = Skin(0xE099, 9, 1)
 
         fun space(width: Int): Component {
-            require(width in -512..512)
+            require(width in -4096..4096)
+            if (width !in -512..512) {
+                val step = width.coerceIn(-512, 512)
+                return space(step).append(space(width - step))
+            }
             return Component.text((0xE800 + width + 512).toChar().toString()).font(FONT)
         }
 

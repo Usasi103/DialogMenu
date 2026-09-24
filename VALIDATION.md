@@ -1,5 +1,15 @@
 # Validation Record
 
+## 0.1.15
+
+- Native TabooLib build, formatting and all 41 JUnit tests passed. New tests cover template references, all difficulty values and visible controls, coordinates, overlapping buttons, command-variable validation, independent defaults, failed-reload preservation and restart.
+- Real Paper 26.2 and Minecraft 26.2 OpenGL exercised the complete intro → confirm → difficulty → cancel → confirm flow. Cancel retains difficulty, confirmation emits the explicit demo message and closes; it does not start a dungeon or consume an item.
+- The local downloaded-sheet skin and distributable original geometric skin were both rendered in the real client. Body panels remain whole and CJK labels align. Template-specific fixed-width glyphs for middle dot and multiplication sign correct observed row-centering drift.
+- Clicking blank NPC content shows the native white outline with HideFocusOutline=false and suppresses it with true; the native bottom close button still works. Shader selection remains geometry-based, now with 576×188 and existing 474×269 shapes. Other client versions/backends and automatic full-screen scaling are not claimed.
+- Invalid template targets fail reload without replacing the running configuration; the previous NPC page can still navigate. Final JAR startup confirmed three templates and the separate builtin/close route.
+- test_server received the exact tested JAR, three YAML templates, the Chinese guide and local customized CraftEngine resource source. All existing menu YAML bytes were preserved and backups are outside the server. Production remains stopped; its hosted ZIP still needs the normal CraftEngine workflow after startup.
+- GitHub resource/source archives use only original geometric skins. User-supplied sprite-derived assets remain in the local installation/personal bundle; no original sheet or derived PNGs are uploaded. Both palettes have byte-identical font metrics.
+
 ## 0.1.14
 
 - Native TabooLib build, format checks and all 37 JUnit tests passed. Migration tests cover exact bytes, original-file preservation, existing-new-config precedence, conflict refusal, generated language files and interrupted-copy retry. Old player PDC keys are independently seeded/read/written.

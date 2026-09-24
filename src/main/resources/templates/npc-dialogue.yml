@@ -1,0 +1,63 @@
+# /dmenu template npc-dialogue
+# 独立对话模板，不占用 config.yml 的 Pages。修改后 /dmenu check、/dmenu reload。
+# Position: [X 像素, Row 行号]，Row 每格 9 像素；按钮尺寸由 Sprite 决定。
+# parchment 使用本地 UI_Sprite.png 编译的框与按钮；仅改文字和位置无需重做资源包。
+Version: 1
+Title: "守门人的委托"
+Skin: parchment
+Canvas:
+  Width: 552
+  Rows: 20
+  Background: panel
+  HideFocusOutline: true
+Elements:
+  portrait:
+    Type: sprite
+    Position: [24, 3]
+    Sprite: emblem
+    # 这是可替换图标，并非角色模型。已有字体立绘时可改为：
+    # Font: "my_pack:portraits"
+    # Glyph: "\uE001"
+    # Width: 108
+    # Rows: 12
+    # Advance: 109
+  name:
+    Position: [156, 3]
+    Width: 330
+    Text: "守门人 · 艾琳"
+    Color: "#f0d8b9"
+  subtitle:
+    Position: [156, 5]
+    Width: 330
+    Text: "古堡入口 / 初次相遇"
+    Color: "#bda58d"
+  divider:
+    Type: sprite
+    Position: [156, 6]
+    Sprite: divider
+  dialogue:
+    Position: [156, 8]
+    Width: 348
+    Rows: 5
+    Text:
+      - "你好，{player}。高塔里的灯又亮了。"
+      - "如果你愿意帮忙，请先了解守卫的故事，再决定是否进入试炼。"
+      - "你准备好了吗？"
+  continue:
+    Type: button
+    Position: [156, 16]
+    Sprite: wide-button
+    Text: "了解试炼"
+    Actions: ["template: boss-intro"]
+  leave:
+    Type: button
+    Position: [312, 16]
+    Sprite: wide-button
+    Text: "稍后再来"
+    Actions: ["close"]
+  close:
+    Type: button
+    Position: [516, 2]
+    Sprite: close
+    Text: "×"
+    Actions: ["close"]

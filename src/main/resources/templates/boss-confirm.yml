@@ -1,0 +1,92 @@
+# 参考图的难度确认页。选择仅改变本次对话的变量，不直接启动副本/扣物品。
+# /dmenu template boss-confirm
+# Variables 每项第一值为默认值；在 template: 跳转中保留相同的合法变量。
+Version: 1
+Title: "开启挑战"
+Skin: amethyst
+Canvas: {Width: 552, Rows: 20, Background: panel, HideFocusOutline: true}
+Variables:
+  difficulty: [normal, hard, overload]
+Elements:
+  title:
+    Position: [240, 2]
+    Width: 130
+    Text: "开启挑战"
+    Color: "#d9bfef"
+  requirement:
+    Position: [192, 4]
+    Width: 250
+    Text: "所需物品：虚空钥匙 × 1"
+    Color: "#bca4d0"
+  divider:
+    Type: sprite
+    Position: [102, 5]
+    Sprite: divider
+  question:
+    Position: [177, 7]
+    Width: 300
+    Text: "您确定要开始这场战斗吗？"
+  normal:
+    Type: button
+    Position: [144, 9]
+    Text: "普通"
+    SelectedWhen: difficulty=normal
+    SelectedSprite: selected
+    Actions: ["set: difficulty=normal", "refresh"]
+  hard:
+    Type: button
+    Position: [144, 11]
+    Text: "困难"
+    SelectedWhen: difficulty=hard
+    SelectedSprite: selected
+    Actions: ["set: difficulty=hard", "refresh"]
+  overload:
+    Type: button
+    Position: [144, 13]
+    Text: "过量"
+    SelectedWhen: difficulty=overload
+    SelectedSprite: selected
+    Actions: ["set: difficulty=overload", "refresh"]
+  modifier-heading:
+    Position: [282, 9]
+    Width: 222
+    Text: "难度修正"
+    Color: "#ba98d6"
+  normal-description:
+    Position: [282, 11]
+    Width: 222
+    Rows: 4
+    VisibleWhen: difficulty=normal
+    Text: ["· 无属性加成", "· 默认奖励和经验倍率"]
+  hard-description:
+    Position: [282, 11]
+    Width: 222
+    Rows: 4
+    VisibleWhen: difficulty=hard
+    Text: ["· 更高生命与攻击", "· 适合熟悉机制的队伍"]
+  overload-description:
+    Position: [282, 11]
+    Width: 222
+    Rows: 4
+    VisibleWhen: difficulty=overload
+    Text: ["· 极限挑战", "· 请按实际副本配置奖励"]
+  confirm:
+    Type: button
+    Position: [162, 17]
+    Text: "确认"
+    # 演示动作不会扣物品或召唤首领。接入真实插件时在此替换为：
+    # Actions: ["console: yourdungeon join {player} {difficulty}", "close"]
+    # 物品消耗、次数限制和奖励由副本插件检查，不应依赖菜单文字。
+    # Permission: "yourdungeon.enter"
+    Actions: ["message: 已选择难度 {difficulty}；当前为演示模板，尚未连接副本。", "close"]
+  cancel:
+    Type: button
+    Position: [282, 17]
+    Text: "取消"
+    Actions: ["template: boss-intro"]
+  close:
+    Type: button
+    Position: [522, 1]
+    Sprite: close
+    Text: "×"
+    Actions: ["close"]

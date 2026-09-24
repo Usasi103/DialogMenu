@@ -1,5 +1,7 @@
 # DialogMenu
 
+0.1.15 adds standalone dialogue and boss templates: /dmenu template npc-dialogue, /dmenu template boss-intro, /dmenu template boss-confirm. Edit plugins/DialogMenu/templates/*.yml; see [TEMPLATES.md](TEMPLATES.md) for positions, skins, conditions and actions. The original settings menu remains available.
+
 Paper 26.2 configurable Dialog menus with YAML pages, optional item sources, Simplified Chinese / English, Dark / Light themes, and the supplied HallowPrison widget skin. The bundled player settings menu is one example. Whole bitmap panels, measured glyph advances, fixed coordinates, and Paper custom-click events keep the artwork and controls aligned after each action.
 
 Use `/dialogmenu` or `/dmenu`. Existing `/playersettings`, `/settings` and `/player-settings` commands remain aliases. Permission: `playersettings.use` (allowed by default); `playersettings.admin` controls check/reload.

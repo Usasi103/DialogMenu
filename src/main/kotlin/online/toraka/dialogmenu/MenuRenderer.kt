@@ -13,7 +13,7 @@ object MenuRenderer {
         click: (String) -> ClickEvent<*>,
         dropdown: Int = -1,
     ): DialogCanvas {
-        val canvas = DialogCanvas(theme, click)
+        val canvas = DialogCanvas(theme, click = click)
         fun text(value: String) =
             expand(menu.text(language, value))
                 .map { if (it.isISOControl()) ' ' else it }

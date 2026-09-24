@@ -17,6 +17,14 @@ import taboolib.platform.util.sendLang
 )
 object MenuCommand {
     @CommandBody
+    val template = subCommand {
+        dynamic("template") {
+            suggestion<CommandSender> { _, _ -> MenuRuntime.templates.keys.toList() }
+            execute<Player> { player, _, argument -> TemplateDialog.open(player, argument) }
+        }
+    }
+
+    @CommandBody
     val open = subCommand {
         dynamic("page") {
             suggestion<CommandSender> { _, _ -> MenuRuntime.current.pages.keys.toList() }
