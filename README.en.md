@@ -8,6 +8,22 @@ Each file defines a complete menu, with related pages grouped under `Pages`. Arr
 
 [Download the plugin and resource pack](https://github.com/Usasi103/DialogMenu/releases/latest) · [Configuration guide (Chinese)](docs/guides/MENU-CONFIG.md) · [Changelog (Chinese)](CHANGELOG.md)
 
+## Screenshots
+
+In-game screenshots of the bundled quest, conversation, and boss menus. These examples use Chinese menu text.
+
+**Quest list**: Categories, pagination, quest progress, and reward icons.
+
+![DialogMenu quest list with category filters, quest details, progress, and rewards](docs/images/quest-menu.jpg)
+
+**NPC conversation**: A parchment-style interface with a character icon and dialogue choices.
+
+![DialogMenu NPC conversation with the gatekeeper and trial dialogue choices](docs/images/npc-dialogue.jpg)
+
+**Boss introduction**: Background story, combat tips, reward previews, and action buttons.
+
+![DialogMenu boss introduction with background story, combat tips, and rewards](docs/images/boss-menu.jpg)
+
 ## What you can build
 
 | Use case | Features |
