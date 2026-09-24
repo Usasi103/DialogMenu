@@ -5,6 +5,7 @@ setting-unavailable: '&c这项设置暂时不可用。'
 
 command-help-title: '&8[&bDialogMenu&8] &f指令帮助'
 command-help-player:
+  - '&b/dmenu scale [50|75|100] &8- &7查看或调整全部菜单的缩放，自动保存'
   - '&b/dmenu help &8- &7查看指令帮助'
   - '&b/dmenu &8- &7打开默认菜单（游戏内）'
   - '&b/dmenu open <菜单> [页面] &8- &7打开指定菜单或子页面'
@@ -14,3 +15,6 @@ command-help-admin:
   - '&b/dmenu check &8- &7检查配置，不应用修改'
   - '&b/dmenu reload &8- &7重载配置并刷新已打开的菜单'
 command-help-aliases: '&7别名：&f/dialogmenu &8/ &f/settings &8/ &f/playersettings &8/ &f/player-settings'
+menu-scale-current: '&7当前菜单缩放：&f{0}%&7。使用 &f/dmenu scale 50|75|100 &7调整。'
+menu-scale-invalid: '&c菜单缩放可选 50、75 或 100。'
+menu-scale-saved: '&7菜单缩放已保存为 &f{0}%&7，适用于设置、任务与对话菜单。'

@@ -12,6 +12,24 @@ import org.junit.jupiter.api.Test
 
 class MenuPreferencesTest {
     @Test
+    fun `menu scale persists separately for each player and survives theme changes`() {
+        val first = container()
+        val other = container()
+        assertEquals(MenuScale.NORMAL, MenuPreferences.readScale(first))
+        MenuPreferences.saveScale(first, MenuScale.SMALL)
+        assertEquals(MenuScale.SMALL, MenuPreferences.read(first).scale)
+        assertEquals(MenuScale.NORMAL, MenuPreferences.readScale(other))
+        MenuPreferences.read(first)
+            .copy(theme = MenuTheme.LIGHT, language = MenuLanguage.ENGLISH)
+            .save(first)
+        assertEquals(MenuScale.SMALL, MenuPreferences.readScale(first))
+        MenuPreferences.saveScale(first, MenuScale.MEDIUM)
+        assertEquals(MenuTheme.LIGHT, MenuPreferences.read(first).theme)
+        first.set(NamespacedKey("dialogmenu", "menu_scale"), PersistentDataType.STRING, "17")
+        assertEquals(MenuScale.NORMAL, MenuPreferences.readScale(first))
+    }
+
+    @Test
     fun readsPreferencesSavedByPlayerSettings() {
         val data = container()
         data.set(

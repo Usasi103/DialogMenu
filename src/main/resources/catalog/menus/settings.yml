@@ -245,7 +245,7 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
     Title: {zh_cn: "界面与语言", en_us: "Appearance"} # 左侧分类名称与右侧页面标题
     Icon: "appearance-icon" # 左侧分类图标的内置贴图 ID
     Keywords: ["界面", "语言", "主题", "亮色", "暗色", "language", "theme", "light", "dark"] # 搜索此分类时匹配的关键词列表
-    Layout: ["语言", "主题设置", "主题", "保存说明", "个人设置"] # 显示顺序；名称必须与下方 Icons 的项目名称一致
+    Layout: ["语言", "主题设置", "主题", "菜单缩放", "保存说明", "个人设置"] # 显示顺序；名称必须与下方 Icons 的项目名称一致
     Icons: # 本页的文字、按钮和选项定义；每个项目名称需唯一
       语言:
         Type: "dropdown" # 竖向展开的下拉选择框，选项写在 Options 中
@@ -263,6 +263,11 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
         Options: # 选项值: 显示文字；按顺序排列，2–8 项；"off" 必须加引号
           dark: {zh_cn: "暗色", en_us: "Dark"}
           light: {zh_cn: "亮色", en_us: "Light"}
+      菜单缩放:
+        Type: "dropdown"
+        Name: {zh_cn: "菜单缩放", en_us: "Menu scale"}
+        Bind: "menu-scale" # 按玩家保存，所有 DialogMenu 画布菜单共用；不修改游戏全局 GUI 设置
+        Options: {"50": "50%", "75": "75%", "100": "100%"}
       保存说明:
         Type: "text" # 纯文字
         Name: {zh_cn: "选择会自动保存，下次打开继续使用。", en_us: "Your choices are saved for your next visit."} # 显示文字，可用单个字符串或 zh_cn / en_us 双语配置

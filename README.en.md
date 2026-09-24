@@ -29,6 +29,8 @@ In-game screenshots with Chinese menu text. Click an image to view the original.
 
 Settings menus support English and Simplified Chinese, with dark and light themes. Each player's language and theme choices are saved. Boolean options can use compact green/gray On/Off switches or full-width buttons. Stepped sliders accept clicks on the track and arrow buttons.
 
+Canvas menus support 50%, 75%, and 100% scaling. Choose Menu scale under Appearance to save a preference shared by settings, quests, and conversations. If a menu is too large to reach the setting, use `/dmenu scale 50`. Updating requires the matching resource pack; existing layout coordinates remain unchanged. Native item pages and input widgets retain Minecraft's GUI scale.
+
 ## Included menus
 
 | Menu | Command | Purpose |

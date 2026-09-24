@@ -12,6 +12,7 @@
 | [图标与材质](wiki/icons.md) | 区分 Icon / Icons / Material，使用 IA / Nexo / Oraxen、自定义 PNG 与非 CE 资源包 |
 | [中文详细 Wiki](wiki/README.md) | 字段参考、完整示例和可搜索的离线网页 |
 | [settings 布局与字体](guides/SETTINGS-LAYOUT.md) | 坐标、文字宽度、颜色、字号与加粗 |
+| [菜单整体缩放](guides/MENU-SCALE.md) | 50% / 75% / 100%、玩家偏好保存与旧配置升级 |
 | [On/Off 开关](guides/SWITCHES.md) | 小开关和宽按钮的样式选择 |
 | [对话与首领模板](guides/TEMPLATES.md) | 画布菜单和字体图标 |
 | [任务列表 demo](guides/QUEST-DEMO.md) | 分类、分页、进度和演示奖励 |

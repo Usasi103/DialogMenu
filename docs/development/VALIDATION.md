@@ -1,5 +1,14 @@
 # Validation Record
 
+## Canvas scale (0.1.21-scale.1-SNAPSHOT, unreleased)
+
+- Standard TabooLib build, formatting and all 75 tests passed. Coverage includes player preference isolation, preservation of language/theme data, corrupt-value fallback, binding validation, text-only actions and safe fallback for external fonts.
+- The actual Minecraft 26.2 BitmapProvider, FocusableTextWidget and ClickableStyleFinder checked 116 scaled canvases and 11,230 click points, including expanded dropdowns, both themes/languages and generated quest pages. No unintended wrapping or click mismatch remained; measured bitmap advances matched the exported components.
+- A separate Paper/vanilla 26.2 session clicked 100% → 75% → 50%, navigated quest pages and exercised `/dmenu scale 75`. Settings, quests and NPC dialogue rendered in small windows (640 × 479 at GUI 1 and 700 × 539 at GUI 2); the 75% choice survived fixture restarts and reconnects. Native screenshots were requested on the render thread because Windows window capture returned blank frames during the final run.
+- Initial duplicated, full-resolution font providers exhausted native memory in the disposable client. Final assets share providers, crop unused atlas space and preserve extra samples for small text; the final client loaded the pack without font or memory errors. The font pack remains substantial: final isolated client working set was about 6–7 GB with a 3 GB Java heap and the complete pack loaded. This is not a low-memory client certification. At 50%, dense Chinese text is naturally less legible than at 75% or 100%.
+- Sprite variants reference original textures, preserving server-customized skins. Only dense font atlases are compiled into compact images. All verification tools, temporary servers, captures and backups live outside `test_server`.
+- Development changes accumulate on `main`; this batch creates no tag or GitHub Release.
+
 ## Configuration comments and documentation organization (unreleased)
 
 - Parsed all 19 edited YAML files with SnakeYAML and compared their values, scalar types and ordering against the originals; no configuration values changed. The four deployed menus keep their existing settings and the additional item-source page.

@@ -27,6 +27,28 @@ object MenuCommand {
     }
 
     @CommandBody
+    val scale = subCommand {
+        execute<Player> { player, _, _ ->
+            player.sendLang(
+                "menu-scale-current",
+                MenuPreferences.readScale(player.persistentDataContainer).id,
+            )
+        }
+        dynamic("percent") {
+            suggestion<CommandSender> { _, _ -> MenuScale.entries.map { it.id } }
+            execute<Player> { player, _, argument ->
+                val selected = MenuScale.entries.firstOrNull { it.id == argument }
+                if (selected == null) player.sendLang("menu-scale-invalid")
+                else {
+                    MenuPreferences.saveScale(player.persistentDataContainer, selected)
+                    player.sendLang("menu-scale-saved", selected.id)
+                    MenuRuntime.open(player)
+                }
+            }
+        }
+    }
+
+    @CommandBody
     val template = subCommand {
         dynamic("template") {
             suggestion<CommandSender>(uncheck = true) { _, _ ->

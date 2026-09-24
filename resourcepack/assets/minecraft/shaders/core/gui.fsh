@@ -49,6 +49,10 @@ void main() {
     vec4 color = vertexColor;
     // Reserved opt-in settings canvas and dialogue template geometries only.
     if (color.a == 0.0 || dialogFocusOutline(color, 474.0, 269.0)
-        || dialogFocusOutline(color, 576.0, 188.0)) discard;
+        || dialogFocusOutline(color, 576.0, 188.0)
+        || dialogFocusOutline(color, 249.0, 143.0)
+        || dialogFocusOutline(color, 362.0, 215.0)
+        || dialogFocusOutline(color, 300.0, 107.0)
+        || dialogFocusOutline(color, 438.0, 152.0)) discard;
     fragColor = color * ColorModulator;
 }

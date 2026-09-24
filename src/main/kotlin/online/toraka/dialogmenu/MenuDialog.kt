@@ -167,9 +167,13 @@ object MenuDialog {
                         )
                     val value = definition.value.substringAfter(':')
                     val next =
-                        if (definition.value.startsWith("language:"))
-                            prefs.copy(language = MenuLanguage.parse(value))
-                        else prefs.copy(theme = MenuTheme.parse(value))
+                        when {
+                            definition.value.startsWith("language:") ->
+                                prefs.copy(language = MenuLanguage.parse(value))
+                            definition.value.startsWith("menu-scale:") ->
+                                prefs.copy(scale = MenuScale.parse(value))
+                            else -> prefs.copy(theme = MenuTheme.parse(value))
+                        }
                     next.save(player.persistentDataContainer)
                     show(player, view)
                 }
@@ -292,7 +296,8 @@ object MenuDialog {
                 ::click,
                 view.dropdown,
             )
-        val component = canvas.build()
+        val scale = canvas.supportedScale(prefs.scale)
+        val component = canvas.build(scale)
         sessions[player.uniqueId] =
             Session(token, view, actions.toSet(), System.currentTimeMillis())
         player.showDialog(
@@ -312,8 +317,7 @@ object MenuDialog {
                                 listOf(
                                     DialogBody.plainMessage(
                                         component,
-                                        if (menu.hideFocus) DialogCanvas.FRAMELESS_BODY_WIDTH
-                                        else DialogCanvas.BODY_WIDTH,
+                                        scale.bodyWidth(DialogCanvas.WIDTH, menu.hideFocus),
                                     )
                                 )
                             )
@@ -373,6 +377,7 @@ object MenuDialog {
         when (val binding = menu.states.getValue(id)) {
             "language" -> MenuPreferences.read(player.persistentDataContainer, menu).language.id
             "theme" -> MenuPreferences.read(player.persistentDataContainer, menu).theme.id
+            "menu-scale" -> MenuPreferences.readScale(player.persistentDataContainer).id
             "pickup" ->
                 if (EffectPlugins.provider("PickupNotifier") != null)
                     (!player.persistentDataContainer.has(

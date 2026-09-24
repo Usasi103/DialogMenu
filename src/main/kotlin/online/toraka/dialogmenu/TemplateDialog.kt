@@ -79,7 +79,8 @@ object TemplateDialog {
                     ClickEvent.custom(Key.key("dialogmenu_dialogue", "$token/$action"))
                 },
             )
-        val content = canvas.build()
+        val scale = canvas.supportedScale(MenuPreferences.readScale(player.persistentDataContainer))
+        val content = canvas.build(scale)
         sessions[player.uniqueId] = Session(token, id, values, actions, System.currentTimeMillis())
         player.showDialog(
             Dialog.create { factory ->
@@ -95,7 +96,7 @@ object TemplateDialog {
                                 listOf(
                                     DialogBody.plainMessage(
                                         content,
-                                        template.width + if (template.hideFocus) 24 else 10,
+                                        scale.bodyWidth(template.width, template.hideFocus),
                                     )
                                 )
                             )
