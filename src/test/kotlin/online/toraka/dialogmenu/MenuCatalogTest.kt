@@ -22,7 +22,10 @@ class MenuCatalogTest {
                 MenuRepository.resource("simple/menus/$it.yml")
             }
         assertEquals(old, catalog.menus.getValue("settings").settings)
-        assertEquals(setOf("settings", "demo-dialogue", "demo-boss"), catalog.menus.keys)
+        assertEquals(
+            setOf("settings", "demo-dialogue", "demo-boss", "demo-quests"),
+            catalog.menus.keys,
+        )
         assertEquals(setOf("intro", "confirm"), catalog.menus.getValue("demo-boss").pages)
         assertEquals("settings", catalog.defaultMenu)
     }
@@ -103,10 +106,10 @@ class MenuCatalogTest {
     }
 
     @Test
-    fun `new installation creates three complete menus and preserves edits on restart`() {
+    fun `new installation creates four complete menus and preserves edits on restart`() {
         CatalogRepository.exportIfNew(directory.toFile())
         assertTrue(CatalogRepository.selected(directory.toFile()))
-        assertEquals(3, directory.resolve("menus").toFile().listFiles()!!.size)
+        assertEquals(4, directory.resolve("menus").toFile().listFiles()!!.size)
         assertFalse(directory.resolve("templates").toFile().exists())
         val repository = CatalogRepository(directory.toFile())
         repository.install(repository.read())

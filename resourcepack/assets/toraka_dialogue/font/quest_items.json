@@ -1,0 +1,121 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/iron_sword.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue000"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/fishing_rod.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue001"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/nether_star.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue002"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/book.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue003"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/iron_ingot.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue004"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/gold_ingot.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue005"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/experience_bottle.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue006"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/amethyst_shard.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue007"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/cod.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue008"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/diamond_chestplate.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue009"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/bread.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue00a"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:block/oak_sapling.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue00b"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/compass_16.png",
+      "height": 12,
+      "ascent": 4,
+      "chars": [
+        "\ue00c"
+      ]
+    }
+  ]
+}

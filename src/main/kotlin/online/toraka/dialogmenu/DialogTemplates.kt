@@ -38,6 +38,11 @@ data class DialogTemplate(
 }
 
 object TemplateSkins {
+    private val questMetrics =
+        Properties().apply {
+            requireNotNull(TemplateSkins::class.java.getResourceAsStream("/quest-skins.properties"))
+                .use { load(it) }
+        }
     private val metrics =
         Properties().apply {
             requireNotNull(
@@ -50,11 +55,21 @@ object TemplateSkins {
     val font = Key.key("toraka_dialogue:ui")
 
     fun get(theme: String, name: String): DialogCanvas.Skin {
+        val quest = name.startsWith("quest-")
         val parts =
-            requireNotNull(metrics.getProperty("$theme.$name")) { "未知贴图 $theme.$name" }
+            requireNotNull((if (quest) questMetrics else metrics).getProperty("$theme.$name")) {
+                    "未知贴图 $theme.$name"
+                }
                 .split(',')
                 .map(String::toInt)
-        return DialogCanvas.Skin(parts[0], parts[1], parts[2], font, parts.drop(4), parts[3])
+        return DialogCanvas.Skin(
+            parts[0],
+            parts[1],
+            parts[2],
+            if (quest) Key.key("toraka_dialogue:quest_ui") else font,
+            parts.drop(4),
+            parts[3],
+        )
     }
 }
 

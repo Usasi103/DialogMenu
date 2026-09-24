@@ -1,0 +1,74 @@
+# 任务列表 demo（0.1.18）
+
+打开：`/dmenu open demo-quests`。配置：`plugins/DialogMenu/menus/demo-quests.yml`。
+一个文件直接列出任务，插件自动生成分类、详情与分页；第一页 5 个，示例共 7 个任务。
+
+## 演示范围
+
+- 分类：全部、每日、每周、主线、已完成。点任务切换详情，上一页/下一页切换列表。
+- 进度达到目标的任务（待领取和已领取）自动进入“已完成”；每日/每周/主线只显示未完成任务，“全部”保留所有任务。
+- 进度不足时可追踪，按钮高亮，并出现“取消追踪”。
+- 进度达到目标时可模拟领取，随后显示“已领取奖励”；同一次打开中不会重复领取。
+- 分类、分页与正常重载保留合法的追踪/领取选择。重新用指令打开、退出服务器或重启会重置演示状态。
+- 进度是 YAML 示例值，不监听击杀或钓鱼；领取仅修改当前界面并输出演示消息，不发物品或金币，也不保存真实任务数据。
+- × 与 ESC 关闭，不添加底部原生关闭按钮，沿用已有画布焦点框处理。
+
+## 修改任务
+
+```yaml
+Version: 1
+Type: quest-demo
+Title: 任务列表
+Skin: amethyst
+HideFocusOutline: true
+PageSize: 5
+Categories:
+  daily: 每日
+Tasks:
+  mine:
+    Name: 矿洞清剿
+    Category: daily
+    Icon: iron_sword
+    Description: 清理旧矿洞里的亡灵，保护采矿队。
+    Objective: 击败矿洞亡灵
+    Progress: [8, 12]
+    Rewards:
+      - {Icon: gold_ingot, Text: "金币 × 300"}
+      - {Icon: experience_bottle, Text: "经验 × 120"}
+```
+
+`PageSize` 支持 1–5，当前默认 5。任务 1–15 个、命名分类 1–3 个，全部和已完成分类自动添加；任务书写顺序就是列表顺序。每项最多 3 个奖励，文字过长会截断。`Claimed: true` 可设置已经完成目标的任务初始为已领取。空分类显示提示，并保留分类导航。
+
+任务和分类 ID 使用小写英文、数字、`-`、`_`，最长 20 字符；保留分类 ID `all`、`completed` 和任务 ID `none`。修改后先 `/dmenu check`，再 `/dmenu reload`；错误配置会保留上一次有效菜单。
+
+## 布局与贴图
+
+```yaml
+Layout:
+  Categories: [16, 3]
+  List: [16, 6]
+  Detail: [222, 6]
+  Pagination: [16, 17]
+```
+
+坐标为 `[横向像素, 纵向行号]`，每行 9 像素。画布为 552×180；列表行宽 180、高 18，详情宽 312。修改整体区域位置会连同其控件移动；越界和按钮重叠会拒绝重载。需要完全自由的逐元素布局仍可使用 `Type: canvas`。
+
+`Skin: amethyst` 为紫色，`parchment` 为木色。任务控件使用独立的 `toraka_dialogue:quest_ui` 字体，原有首领和设置菜单字形未重编号。进度条显示 20 个视觉档位，同时保留精确进度数字。
+
+内置图标：iron_sword、fishing_rod、nether_star、book、iron_ingot、gold_ingot、experience_bottle、amethyst_shard、cod、diamond_chestplate、bread、oak_sapling、compass。
+这些图标由 `toraka_dialogue:quest_items` 引用客户端原版纹理；资源包不复制原版 PNG。
+
+自定义图标可直接改为：
+
+```yaml
+Icon: {Font: "my_pack:icons", Glyph: "\uE001", Width: 12, Advance: 13}
+```
+
+原版默认显示高 12、ascent 4。自定义图片应放在 18 像素高的条目内；`Width` 1–18，`Advance` 必须与实际字形一致，避免画布横向漂移。奖励同样支持该写法。图标是画布贴图；实际 ItemBridge 物品展示仍使用 settings 物品子页的 `Display.Material`。
+
+## 部署
+
+新增 `menus/demo-quests.yml` 和 0.1.18 JAR；保留自己的旧菜单。已有配置不会被自动覆盖或强行新增 demo，新装默认会导出四个完整菜单。
+合并本版资源包的 `quest_ui.json`、`quest_items.json` 和 `textures/ui/*_quest-*.png` 到 CraftEngine 资源源目录，运行 `/ce workflow default` 并让客户端接收新包。JAR 更新须正常重启；无需修改现有焦点着色器。
+
+需要重建几何素材时，用 JDK 编译 `tools/BuildTemplateSkin.java` 和 `tools/BuildQuestSkin.java` 后运行 `BuildQuestSkin <项目路径>`；`python -B tools/build_quest_icons.py <Minecraft客户端JAR>` 重建图标字体指标（需 Pillow，仅读取原版图片测量字宽）。输出只在项目资源目录内，开发类文件应放服务器外。

@@ -84,7 +84,7 @@ object MenuRuntime {
                 store.install(store.read())
                 MenuResources.install(store.current!!.resourcePack)
                 catalogRepository = store
-                for (name in listOf("配置说明.md", "examples/items.yml")) {
+                for (name in listOf("配置说明.md", "任务菜单说明.md", "examples/items.yml")) {
                     val file = File(directory, name)
                     if (!file.exists()) {
                         file.parentFile.mkdirs()

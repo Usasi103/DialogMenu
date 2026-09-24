@@ -37,7 +37,10 @@ object MenuCatalogParser {
         require(sources.size in 1..64) { "menus: 需要 1–64 个菜单文件" }
         val roots = sources.mapValues { (id, source) ->
             require(id.matches(identifier)) { "menus: 无效菜单文件名 $id" }
-            MenuConfigParser.yaml(source, "menus/$id.yml")
+            val path = "menus/$id.yml"
+            val root = MenuConfigParser.yaml(source, path)
+            if (root.getString("Type") == "quest-demo") QuestDemoCompiler.compile(root, path)
+            else root
         }
         val defaults = roots.mapValues { (id, root) ->
             val pages =
@@ -218,7 +221,7 @@ class CatalogRepository(private val directory: File) {
     }
 
     companion object {
-        val defaults = listOf("settings", "demo-dialogue", "demo-boss")
+        val defaults = listOf("settings", "demo-dialogue", "demo-boss", "demo-quests")
 
         fun selected(directory: File): Boolean {
             val file = File(directory, "config.yml")

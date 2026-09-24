@@ -1,5 +1,16 @@
 # Validation Record
 
+## 0.1.18
+
+- Native TabooLib packaging, formatting and all 61 JUnit tests passed. Quest tests cover five-entry paging, category routes, completion filtering, completed paging, empty categories, session state, both skins, generated hit regions and invalid progress/layout/icon rejection.
+- Real Minecraft/Paper 26.2 rendered the first five tasks and the remaining two on the next page. Clicks on task icons, previous/next, category tabs, tracking controls and simulated claim resolve to the expected canvas pages and actions. Claim remains unavailable after changing category and reloading; opening again restores the configured defaults. Canvas × and ESC close the menu; blank-area focus does not reveal a white outline.
+- The final fifth completed tab was clicked in Minecraft 26.2: both ready-to-claim and already-claimed tasks appear there, daily excludes them, and story becomes a usable empty page. Claim remains disabled after a category round-trip and reload. Completed paging with seven tasks is covered by JUnit; the real completed list contains two tasks.
+- The demo compiler uses ordinary validated canvas definitions and existing per-player session tokens. The bundled actions contain no player/console reward commands; task progress is configuration data and no real inventory, currency or quest system is modified.
+- CraftEngine generated, validated, optimized and uploaded the new pack. All 54 new UI/font resources were found in the hosted ZIP and both font JSON definitions matched the source. Existing glyphs and GUI shaders were not changed. Actual rendering used amethyst; both amethyst and parchment were covered by layout/render-model tests.
+- test_server was confirmed empty, stopped through its existing console, updated and restarted through the unchanged 启动.bat entry. It now runs the exact released 0.1.18 JAR and loads four menus. The obsolete installed 0.1.16 and pending 0.1.17 JARs were backed up outside the server and removed from active plugin/update paths.
+- The new CMD console is visible and interactive with UTF-8 input/output code pages (65001). dmenu check passed for all four menus; a Chinese invalid subcommand was correctly echoed. Production emits exactly one ItemBridge line listing its four connected plugins. The previous settings footer and coloured-log fixes are now active.
+- Scope limits: this is a quest-list demo with session-only track/claim state, not a quest engine. Reopening, disconnecting or restarting resets it. Minecraft/Paper versions other than 26.2 were not tested. All temporary clients, probes and build artifacts remain outside test_server.
+
 ## 0.1.17
 
 - Workspace formatting, native TabooLib packaging and all 54 JUnit tests passed. Footer validation covers omitted/false/true values and rejects string booleans. Final JAR identity, embedded defaults, all 39 optional providers and SHA-256 were checked.
