@@ -45,6 +45,8 @@ navigation:
   row: 3
   step: 2
 footer:
+  # 是否显示底部原生返回按钮；不写时也默认隐藏。
+  enabled: false
   label: "$close"
   action: "close"
 # 状态读取：左边是配置内部 ID，右边是数据来源。

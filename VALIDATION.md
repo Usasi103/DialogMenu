@@ -1,5 +1,15 @@
 # Validation Record
 
+## 0.1.17
+
+- Workspace formatting, native TabooLib packaging and all 54 JUnit tests passed. Footer validation covers omitted/false/true values and rejects string booleans. Final JAR identity, embedded defaults, all 39 optional providers and SHA-256 were checked.
+- Actual Paper 26.2 with CraftEngine and NeigeItems logged exactly one ItemBridge summary across startup, three source rechecks and two reloads. The console contains ANSI cyan styling; plugin-owned file logs contain neither ANSI escapes nor literal section-sign codes. The final distributed JAR passed this startup test.
+- Minecraft 26.2 OpenGL rendered the three boss rewards inside their frames with no row drift. Actual clicks exercised intro -> confirm -> hard -> cancel with the chosen difficulty retained. The font directly references original client textures; no vanilla PNG is redistributed.
+- Real settings canvas and native item pages have no bottom footer by default. Enabling ShowFooter and reloading restores the Chinese return button; disabling removes it. Language and theme dropdowns, navigation and ESC dismissal work. Clicking blank canvas did not produce a white focus outline. The item-page check targets footer behavior; its isolated fixture does not contain every production item texture.
+- test_server remained running on 0.1.16. The final JAR is staged in Paper plugins/update for the next normal visible-console restart; the new footer/logging code is not yet active there. Production boss YAML and the reward font are updated, unrelated settings preserved, and backups are outside the server directory.
+- The existing visible production CMD executed the CraftEngine workflow. Generation, validation, PackSquash and upload succeeded; the hosted default ZIP was read back and its three reward providers matched the source. The resource pack is ready for the next client download. Source/public ZIPs retain the distributable geometric skin; the user-supplied sprite-derived pack is only in the personal bundle.
+- Limits: real rendering coverage is Minecraft/Paper 26.2. These boss glyphs are display images, not ItemBridge items or reward delivery. No extra shader changes are needed for removing the footer; it is omitted by the server dialog definition.
+
 ## 0.1.16
 
 - Workspace formatting, native TabooLib packaging and all 53 JUnit tests passed. New coverage includes complete menu catalogs, local/cross-menu page references, legacy compatibility, all 39 ItemBridge provider IDs, resource-pack configuration validation and per-player/per-pack state isolation.

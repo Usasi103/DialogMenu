@@ -44,28 +44,38 @@ object ItemBridgeSources {
     }
 
     private var current: BukkitItemBridge? = null
+    private var reportedProviders: List<String>? = null
 
     fun reset() {
         current = null
     }
 
-    private fun bridge(): BukkitItemBridge =
-        current
-            ?: BukkitItemBridge.builder()
+    private fun bridge(): BukkitItemBridge {
+        current?.let {
+            return it
+        }
+        val connected = sortedSetOf<String>()
+        val next =
+            BukkitItemBridge.builder()
                 .detectSupportedPlugins(
-                    { plugin ->
-                        Bukkit.getLogger().info("[DialogMenu] ItemBridge 已接入 $plugin")
-                    },
+                    { plugin -> connected += plugin },
                     { plugin, error ->
-                        Bukkit.getLogger()
-                            .warning(
-                                "[DialogMenu] ItemBridge 无法接入 $plugin：${error.javaClass.simpleName}"
-                            )
+                        MenuLog.warning("ItemBridge 无法接入 $plugin：${error.javaClass.simpleName}")
                     },
                     { plugin -> plugin.isEnabled },
                 )
                 .build()
-                .also { current = it }
+        current = next
+        val providers = connected.toList()
+        if (providers != reportedProviders) {
+            reportedProviders = providers
+            MenuLog.info(
+                "ItemBridge：支持 ${plugins.size} 种物品源，当前已接入 ${providers.size} 种" +
+                    if (providers.isEmpty()) "。" else "：${providers.joinToString("、")}"
+            )
+        }
+        return next
+    }
 
     fun sources(): Map<String, MenuItemSource> = plugins.mapValues { (id, plugin) ->
         ItemBridgeSource(id, plugin, ::bridge) { Bukkit.getPluginManager().isPluginEnabled(plugin) }

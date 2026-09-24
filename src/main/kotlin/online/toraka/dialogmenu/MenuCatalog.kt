@@ -69,6 +69,7 @@ object MenuCatalogParser {
                             "Language",
                             "Theme",
                             "HideFocusOutline",
+                            "ShowFooter",
                             "MainMenu",
                             "Pages",
                         ),

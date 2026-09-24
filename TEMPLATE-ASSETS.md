@@ -10,3 +10,5 @@
 本机定制贴图仅用于本次用户已有素材的安装与私有验证，不作为素材库再发布。
 
 字符字体、背景场景及角色立绘不包含在该图集中。示例没有截图中怪物的真实立绘或模型。
+
+首领奖励字体 `toraka_dialogue:rewards` 直接引用客户端的 `minecraft:item/amethyst_shard.png`、`nether_star.png`、`diamond_chestplate.png`。资源包只包含字体 JSON，不包含这些原版图片的副本。

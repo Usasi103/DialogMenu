@@ -7,7 +7,6 @@ import io.netty.util.AttributeKey
 import java.util.Optional
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import org.bukkit.Bukkit
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.event.SubscribeEvent
@@ -53,8 +52,7 @@ object ResourcePackPackets {
                         } catch (error: Exception) {
                             if (!warned) {
                                 warned = true
-                                Bukkit.getLogger()
-                                    .warning("[DialogMenu] 无法读取资源包响应：${error.javaClass.simpleName}")
+                                MenuLog.warning("无法读取资源包响应：${error.javaClass.simpleName}")
                             }
                         } finally {
                             context.fireChannelRead(message)

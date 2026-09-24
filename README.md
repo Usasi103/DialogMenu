@@ -1,8 +1,10 @@
 # DialogMenu
 
+0.1.17 consolidates ItemBridge detection into one console line showing all 39 supported sources separately from the currently connected plugin count/list. Unchanged results are not repeated during rechecks/reloads. Plugin-owned menu/source/configuration messages use a cyan DialogMenu tag; Paper and TabooLib lifecycle/download logs remain native.
+
 0.1.16 uses one file per menu: `menus/settings.yml`, `menus/demo-dialogue.yml`, `menus/demo-boss.yml`. Each contains its own `Pages`; boss introduction and confirmation are two pages of the same demo menu. Use `/dmenu open <menu> [page]`. Chinese configuration guide: [MENU-CONFIG.md](MENU-CONFIG.md). Legacy formats remain supported.
 
-The native bottom close button is removed from canvas menus; use × or ESC. Resource assets are unchanged from 0.1.15. `config.yml.ResourcePack` selects a CraftEngine pack ID, a downloadable URL, or an externally sent UUID; only the required pack loading successfully unlocks menus. `/dmenu pack` sends a configured URL pack or identifies its external sender. All 39 ItemBridge 1.0.32 plugin adapters are now supported: [ITEM-SOURCES.md](ITEM-SOURCES.md).
+The native bottom close button is removed from canvas menus; use × or ESC. Settings also hide the native footer by default (`ShowFooter: false`); ESC still closes every settings page. The boss demo now displays amethyst shard, nether star and diamond chestplate icons using the new `toraka_dialogue:rewards` font. Update the resource pack when upgrading to 0.1.17. `config.yml.ResourcePack` selects a CraftEngine pack ID, a downloadable URL, or an externally sent UUID; only the required pack loading successfully unlocks menus. `/dmenu pack` sends a configured URL pack or identifies its external sender. All 39 ItemBridge 1.0.32 plugin adapters are now supported: [ITEM-SOURCES.md](ITEM-SOURCES.md).
 
 Paper 26.2 configurable Dialog menus with YAML pages, optional item sources, Simplified Chinese / English, Dark / Light themes, and the supplied HallowPrison widget skin. The bundled player settings menu is one example. Whole bitmap panels, measured glyph advances, fixed coordinates, and Paper custom-click events keep the artwork and controls aligned after each action.
 

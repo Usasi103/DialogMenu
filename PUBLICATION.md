@@ -1,6 +1,6 @@
 # DialogMenu publication
 
-Current release: https://github.com/Usasi103/DialogMenu/releases/tag/v0.1.16
+Current release: https://github.com/Usasi103/DialogMenu/releases/tag/v0.1.17
 
 Attachments are the actual tested JAR, source ZIP, distributable resource pack and SHA256SUMS.txt.
 The resource pack uses original geometric skins; the downloaded third-party sheet and derived local UI images are excluded.

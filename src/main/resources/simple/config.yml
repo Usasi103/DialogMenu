@@ -9,5 +9,7 @@ DefaultPage: "particles"
 Language: "zh_cn"
 Theme: "dark"
 HideFocusOutline: true
+# 是否显示底部原生“返回游戏”按钮；默认隐藏，可用 Esc 关闭。
+ShowFooter: false
 Pages: ["profile", "sound", "particles", "notices", "loot", "appearance", "help"]
 MainMenu: ["close", "command: menu"]

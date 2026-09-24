@@ -192,10 +192,9 @@ object MenuResources {
                     player.sendMessage(
                         "无法确认${config.name}：请检查 CraftEngine 资源包 ${config.pack} 的配置和托管状态。"
                     )
-                    Bukkit.getLogger()
-                        .warning(
-                            "[DialogMenu] CraftEngine 包 ${config.pack} 无法解析：${error.javaClass.simpleName}"
-                        )
+                    MenuLog.warning(
+                        "CraftEngine 包 ${config.pack} 无法解析：${error.javaClass.simpleName}"
+                    )
                 } else if (tracker.contains(player.uniqueId, ids)) action()
                 else missing(player, config)
             }

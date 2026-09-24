@@ -171,9 +171,9 @@ object ItemSources {
         ItemBridgeSources.reset()
         runCatching { MenuRuntime.definitions.flatMap { validate(it) } }
             .onSuccess {
-                it.forEach { warning -> Bukkit.getLogger().warning("[DialogMenu] $warning") }
+                it.forEach { warning -> MenuLog.warning(warning) }
             }
-            .onFailure { Bukkit.getLogger().warning("[DialogMenu] ${it.message}") }
+            .onFailure { MenuLog.warning("${it.message}") }
         MenuDialog.reloaded()
     }
 

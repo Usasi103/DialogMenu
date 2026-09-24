@@ -28,6 +28,23 @@ class MenuCatalogTest {
     }
 
     @Test
+    fun `settings footer defaults to hidden and rejects non boolean switches`() {
+        val sources = defaults()
+        val settings = sources.getValue("settings")
+        fun parse(value: String) =
+            MenuCatalogParser.parse(config, sources + ("settings" to value))
+                .menus
+                .getValue("settings")
+                .settings!!
+        assertFalse(parse(settings).showFooter)
+        assertFalse(parse(settings.replace("ShowFooter: false\n", "")).showFooter)
+        assertTrue(parse(settings.replace("ShowFooter: false", "ShowFooter: true")).showFooter)
+        assertThrows(Exception::class.java) {
+            parse(settings.replace("ShowFooter: false", "ShowFooter: 'false'"))
+        }
+    }
+
+    @Test
     fun `canvas controls retain layout and values while links target menu local pages`() {
         val catalog = MenuCatalogParser.parse(config, defaults())
         val intro = catalog.templates.getValue("demo-boss/intro")

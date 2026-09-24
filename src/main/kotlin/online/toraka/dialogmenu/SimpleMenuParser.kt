@@ -50,6 +50,7 @@ object SimpleMenuParser {
                 "Language",
                 "Theme",
                 "HideFocusOutline",
+                "ShowFooter",
                 "Pages",
                 "MainMenu",
             ),
@@ -219,6 +220,12 @@ object SimpleMenuParser {
                 "config.yml.HideFocusOutline: 必须为 true / false"
             }
             compiled.set("hide-focus-outline", config.getBoolean("HideFocusOutline"))
+        }
+        if (config.contains("ShowFooter")) {
+            require(config.isBoolean("ShowFooter")) {
+                "config.yml.ShowFooter: 必须为 true / false"
+            }
+            compiled.set("footer.enabled", config.getBoolean("ShowFooter"))
         }
         if (config.contains("MainMenu")) {
             val action = actions(config.get("MainMenu"), "config.yml.MainMenu")

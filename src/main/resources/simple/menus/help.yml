@@ -24,4 +24,4 @@ Icons:
     Name: {zh_cn: "若界面显示不完整，请调低界面缩放。", en_us: "Lower GUI scale if the menu does not fit."}
   关闭:
     Type: "text"
-    Name: {zh_cn: "点击下方返回游戏，也可按 Esc 关闭。", en_us: "Use Back to game below or press Esc to close."}
+    Name: {zh_cn: "按 Esc 关闭菜单。", en_us: "Press Esc to close the menu."}

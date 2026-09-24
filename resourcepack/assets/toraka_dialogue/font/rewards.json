@@ -1,0 +1,31 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/amethyst_shard.png",
+      "height": 16,
+      "ascent": 2,
+      "chars": [
+        "\ue000"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/nether_star.png",
+      "height": 16,
+      "ascent": 2,
+      "chars": [
+        "\ue001"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/diamond_chestplate.png",
+      "height": 16,
+      "ascent": 2,
+      "chars": [
+        "\ue002"
+      ]
+    }
+  ]
+}

@@ -18,7 +18,7 @@ object DialogMenu : taboolib.common.platform.Plugin() {
                 }
             if (LegacyDataMigration.migrate(getDataFolder().toPath(), generatedLanguageFiles)) {
                 taboolib.module.lang.Language.reload()
-                Bukkit.getLogger().info("[DialogMenu] 已导入 PlayerSettings 配置，旧目录保留。")
+                MenuLog.info("已导入 PlayerSettings 配置，旧目录保留。")
             }
         } catch (error: Exception) {
             migrationFailure = error
@@ -31,7 +31,7 @@ object DialogMenu : taboolib.common.platform.Plugin() {
             Bukkit.getPluginManager().getPlugin("PlayerSettings") != null ||
                 migrationFailure != null
         ) {
-            plugin.logger.severe(
+            MenuLog.severe(
                 "无法启用 DialogMenu：" +
                     (migrationFailure?.message ?: "请先移除旧 PlayerSettings JAR，避免重复注册菜单。")
             )

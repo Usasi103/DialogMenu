@@ -74,6 +74,7 @@ data class MenuDefinition(
     val common: List<MenuWidget>,
     val pages: Map<String, MenuPage>,
     val translations: Map<MenuLanguage, Map<String, String>>,
+    val showFooter: Boolean = false,
 ) {
     fun text(language: MenuLanguage, value: String): String =
         if (value.startsWith("$")) translations.getValue(language).getValue(value.drop(1))
@@ -527,7 +528,10 @@ object MenuConfigParser {
         val defaultPage = string(root, "default-page")
         require(defaultPage in pages) { "default-page: 页面不存在 $defaultPage" }
         val footer = section(root, "footer")
-        keys(footer, setOf("label", "action"), "footer")
+        keys(footer, setOf("enabled", "label", "action"), "footer")
+        require(!footer.contains("enabled") || footer.isBoolean("enabled")) {
+            "footer.enabled: 必须为 true / false"
+        }
         return MenuDefinition(
             text(string(root, "title"), "title"),
             defaultPage,
@@ -544,6 +548,7 @@ object MenuConfigParser {
             common,
             pages,
             translations,
+            footer.getBoolean("enabled", false),
         )
     }
 

@@ -3,12 +3,14 @@ package online.toraka.dialogmenu
 import io.papermc.paper.connection.PlayerGameConnection
 import io.papermc.paper.dialog.Dialog
 import io.papermc.paper.event.player.PlayerCustomClickEvent
+import io.papermc.paper.registry.RegistryKey
 import io.papermc.paper.registry.data.dialog.ActionButton
 import io.papermc.paper.registry.data.dialog.DialogBase
 import io.papermc.paper.registry.data.dialog.action.DialogAction
 import io.papermc.paper.registry.data.dialog.body.DialogBody
 import io.papermc.paper.registry.data.dialog.input.DialogInput
 import io.papermc.paper.registry.data.dialog.type.DialogType
+import io.papermc.paper.registry.set.RegistrySet
 import java.util.UUID
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
@@ -232,6 +234,15 @@ object MenuDialog {
             actions += action
             return ClickEvent.custom(Key.key("toraka_settings", "$token/$action"))
         }
+        val close =
+            if (menu.showFooter)
+                ActionButton.create(
+                    Component.text(expandText(player, menu.text(prefs.language, menu.footerLabel))),
+                    null,
+                    210,
+                    DialogAction.staticAction(click("action/${menu.footerAction}")),
+                )
+            else null
         val page = menu.pages.getValue(view.page)
         if (page.itemLayout) {
             val rendered =
@@ -242,13 +253,6 @@ object MenuDialog {
                     { expandText(player, it) },
                     { ItemSources.registry.resolve(it, player) },
                     ::click,
-                )
-            val close =
-                ActionButton.create(
-                    Component.text(expandText(player, menu.text(prefs.language, menu.footerLabel))),
-                    null,
-                    210,
-                    DialogAction.staticAction(click("action/${menu.footerAction}")),
                 )
             sessions[player.uniqueId] =
                 Session(token, view, actions.toSet(), System.currentTimeMillis(), rendered.guards)
@@ -269,7 +273,7 @@ object MenuDialog {
                                 .build()
                         )
                         .type(
-                            if (rendered.buttons.isEmpty()) DialogType.notice(close)
+                            if (rendered.buttons.isEmpty()) bodyOnlyType(close)
                             else DialogType.multiAction(rendered.buttons, close, 2)
                         )
                 }
@@ -289,13 +293,6 @@ object MenuDialog {
                 view.dropdown,
             )
         val component = canvas.build()
-        val close =
-            ActionButton.create(
-                Component.text(expandText(player, menu.text(prefs.language, menu.footerLabel))),
-                null,
-                210,
-                DialogAction.staticAction(click("action/${menu.footerAction}")),
-            )
         sessions[player.uniqueId] =
             Session(token, view, actions.toSet(), System.currentTimeMillis())
         player.showDialog(
@@ -322,10 +319,14 @@ object MenuDialog {
                             )
                             .build()
                     )
-                    .type(DialogType.notice(close))
+                    .type(bodyOnlyType(close))
             }
         )
     }
+
+    private fun bodyOnlyType(close: ActionButton?): DialogType =
+        if (close != null) DialogType.notice(close)
+        else DialogType.dialogList(RegistrySet.keySet(RegistryKey.DIALOG)).build()
 
     private fun searchDialog(player: Player, view: View) {
         val language = MenuPreferences.read(player.persistentDataContainer).language

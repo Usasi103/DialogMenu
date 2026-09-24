@@ -1,4 +1,4 @@
-# 一个菜单一个文件（0.1.16）
+# 一个菜单一个文件（0.1.17）
 
 `menus/settings.yml` 是完整的玩家设置菜单，个人信息、声音、粒子、拾取、掉落、语言等都在它的 `Pages` 内。
 `menus/demo-dialogue.yml` 是对话演示菜单；`menus/demo-boss.yml` 是首领演示菜单，包含介绍和确认两个子页。
@@ -44,6 +44,7 @@ DefaultPage: appearance
 Language: zh_cn
 Theme: dark
 HideFocusOutline: true
+ShowFooter: false
 MainMenu: [close]
 Pages:
   appearance:
@@ -69,6 +70,8 @@ Pages:
       返回:
         Actions: ["page: appearance"]
 ```
+
+`ShowFooter` 控制 settings 底部原生“返回游戏”按钮，省略或 false 时隐藏；true 时显示。settings 的画布页和原生物品页均可用 ESC 退出，demo 的 × 保持不变。旧 v2 简化配置同名；旧 v1 `menu.yml` 使用 `footer.enabled`。
 
 `Layout` 排列当前页的控件。`Name` 可省略，默认取控件名。
 名称/说明可写纯中文或 `{zh_cn: 中文, en_us: English}`，不需要 `$文本键`。
@@ -131,7 +134,7 @@ button/selected 为 108×18，wide-button 为 144×18，close 为 18×18，rewar
 
 当前使用 CraftEngine 合并资源：`test_server/plugins/CraftEngine/resources/toranca_pack/resourcepack/`。
 保留 toraka_settings、toraka_dialogue 和配套 gui 着色器；无需放到 BetterHud。
-0.1.16 没改资源，已加载 0.1.15 包时无需重新生成。若上次源文件更新后尚未生成，正常启动服务器后执行 `/ce workflow default` 并加载新包。
+0.1.17 新增首领奖励字体，需合入新资源，执行 `/ce workflow default` 并加载新包。其余贴图和焦点着色器保持原有版本。
 本机 UI_Sprite.png 皮肤与可分发基础皮肤具有相同尺寸；许可和本地编译方式见 `TEMPLATE-ASSETS.md`。
 
 旧 `config.yml Version: 2 + menus 单页文件 + templates` 及旧 `menu.yml` 继续读取，不会自动覆盖现有文件。
@@ -171,3 +174,10 @@ DialogMenu 只核对加载状态；不能凭 ZIP 文件名或 pack.mcmeta 描述
 `RequireLoaded: false` 关闭加载检查，适合自行确保本地客户端资源已准备好的情况。
 本地手动启用的资源包不会向服务器报告 UUID；服务器也不能检查客户端是否真的渲染了其中每张图片。
 这些设置选择要加载的资源包，不会自动转换字体 ID；替换包需包含菜单所用 toraka_settings、toraka_dialogue 字体及配套资源。
+
+## 首领奖励贴图
+
+`demo-boss.yml` 的 `Pages.intro.Elements.shard-icon`、`mark-icon`、`gear-icon` 分别显示碎片、印记和装备。
+字体 `toraka_dialogue:rewards` 的 E000 / E001 / E002 对应原版紫水晶碎片、下界之星、钻石胸甲；只引用客户端纹理，不附带原版 PNG。
+在 YAML 的 Position 修改位置，在资源包 `assets/toraka_dialogue/font/rewards.json` 修改贴图引用。更换贴图或高度时需重新测量 Advance，避免同行画布漂移。当前 16 像素高，Advance 分别为 15、16、16。
+这三个是画布展示图标，不会发放物品；ItemBridge 实际物品使用 Display.Material。
