@@ -1,5 +1,15 @@
 # Validation Record
 
+## 0.1.20
+
+- Standard TabooLib build, formatting and all 65 DialogMenu tests passed. Tests cover opt-in and legacy defaults, built-in/custom action identity, invalid styles, all three states, both languages/themes, measured line width and clicks on painted glyphs/status text. Settings consolidation preserves every prior action and translation with only eight style changes.
+- Minecraft/Paper 26.2 rendered unavailable switches without optional providers, then on/off switches with Ambience 1.5.2 and PlaceholderAPI 2.12.3. Actual clicks on the left/right halves and status text changed particle preferences. Read-only SQLite verification confirmed particles=1 and disabled categories firefly,leaves. Reload and navigation retained those values; language/theme dropdowns and blank-area focus were checked in dark Chinese and light English.
+- Fixture limitation: starting the minimal isolated server with Ambience caused connection timeouts; interaction validation therefore loaded the real providers after login and initialized the existing preference cache using a normal particle command. No framework internals or Ambience production code were modified. This is an interaction/persistence check, not a clean-start compatibility certification for that minimal fixture.
+- Added one independent font and six 36 x 18 switch textures (advance 37); existing settings glyphs and focus shaders are unchanged. Fixed the previously invalid size-6 bitmap ascent in its definition and generator; all sized-font ascent/height bounds pass and the real client no longer reports the size-6 font error.
+- test_server was confirmed empty and stopped through its existing console. It runs the exact verified 0.1.20 JAR; settings were patched by adding only eight Style fields and one comment, retaining the deployed extra item-source page. Four menus pass dmenu check. Startup uses 启动.bat with a visible interactive CMD, both console code pages 65001, and verified Chinese input. All backups and probes remain outside test_server.
+
+- CraftEngine generation, validation, PackSquash and upload completed. The hosted ZIP was read back: both updated font definitions match the sources, and all six switch PNGs retain their expected dimensions. The pack SHA-256 and JAR SHA-256 are recorded in the external deployment report.
+
 ## 0.1.19
 
 - Native TabooLib build, formatting and all 63 DialogMenu tests passed. FontSize 6–24, Bold, old TextSize alias, line allocation, measured width/wrapping and invalid input are covered. New font definitions reuse existing atlases and measured glyph ink bounds; no GUI shader or old font is replaced.

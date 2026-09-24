@@ -3,7 +3,7 @@
 Version: 3
 DefaultMenu: settings
 
-# 所需文件：DialogMenu-resourcepack-0.1.19.zip；本机素材版也可用（两者字体 ID 相同）。
+# 所需文件：DialogMenu-resourcepack-0.1.20.zip；本机素材版也可用（两者字体 ID 相同）。
 # 当前已合入 plugins/CraftEngine/resources/toranca_pack/resourcepack/，由下方 default 包发送。
 # 指定本插件所需资源包。CraftEngine 模式的 Pack 对应其 resource-pack.packs 下的 ID。
 ResourcePack:

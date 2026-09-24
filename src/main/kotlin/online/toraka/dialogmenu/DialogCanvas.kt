@@ -92,6 +92,23 @@ class DialogCanvas(
             )
     }
 
+    /** The status and both switch halves share the existing toggle action. */
+    fun toggleSwitch(x: Int, row: Int, on: Boolean?, valueLabel: String, action: String) {
+        val switchX = x + 78
+        val label = fit(valueLabel, 72)
+        val labelX = switchX - 6 - textWidth(label)
+        val state =
+            when (on) {
+                true -> 0
+                false -> 1
+                null -> 2
+            }
+        val glyph = 0xE700 + state + if (theme == MenuTheme.LIGHT) 3 else 0
+        sprite(switchX, row, Skin(glyph, 36, 2, SWITCH_FONT, listOf(37)), action)
+        hits += Hit(labelX, row, switchX - labelX, 2, action)
+        text(labelX, row + 1, label, theme.muted, action, raised = true)
+    }
+
     /** Clip covered text before painting a popup, including labels on the next text row. */
     fun coverLabels(x: Int, row: Int, width: Int, rows: Int) {
         val covered = sprites.filter {
@@ -259,6 +276,7 @@ class DialogCanvas(
         // their native width. Keep in sync with the resource-pack selector.
         const val FRAMELESS_BODY_WIDTH = BODY_WIDTH + 14
         val FONT = Key.key("toraka_settings:ui")
+        val SWITCH_FONT = Key.key("toraka_settings:switches")
         val LABEL_FONT = Key.key("toraka_settings:labels")
         val BUTTON_LABEL_FONT = Key.key("toraka_settings:button_labels")
         private val metrics =

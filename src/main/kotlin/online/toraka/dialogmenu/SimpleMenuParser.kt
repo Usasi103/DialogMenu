@@ -297,6 +297,7 @@ object SimpleMenuParser {
                         icon,
                         setOf(
                             "Type",
+                            "Style",
                             "Name",
                             "Description",
                             "Bind",
@@ -313,6 +314,12 @@ object SimpleMenuParser {
                         type in setOf("button", "toggle", "slider", "dropdown", "heading", "text")
                     ) {
                         "$at.Type: 未知控件 $type"
+                    }
+                    val style = optionalString(icon, "Style", at)
+                    if (icon.contains("Style")) {
+                        require(type == "toggle" && style in setOf("button", "switch")) {
+                            "$at.Style: 仅 toggle 可使用 button / switch"
+                        }
                     }
                     val text = label(icon.get("Name") ?: name, "$at.Name")
                     val descriptions =
@@ -345,6 +352,7 @@ object SimpleMenuParser {
                         widget[
                             if (type in setOf("dropdown", "slider", "toggle")) "label"
                             else "text"] = text
+                        if (style.isNotEmpty()) widget["toggle-style"] = style
                         val bind = optionalString(icon, "Bind", at)
                         val binding =
                             if (bind.isEmpty()) null

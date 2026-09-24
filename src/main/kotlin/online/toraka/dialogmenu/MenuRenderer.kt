@@ -39,7 +39,10 @@ object MenuRenderer {
                     widget.row + 1,
                     DialogCanvas.fit(text(widget.label), room),
                     theme.text,
-                    raised = widget.kind == WidgetKind.SLIDER,
+                    raised =
+                        widget.kind == WidgetKind.SLIDER ||
+                            (widget.kind == WidgetKind.TOGGLE &&
+                                widget.toggleStyle == ToggleStyle.SWITCH),
                 )
             }
             when (widget.kind) {
@@ -77,10 +80,7 @@ object MenuRenderer {
                 }
                 WidgetKind.TOGGLE -> {
                     val on = MenuDialog.booleanState(current)
-                    canvas.button(
-                        widget.x,
-                        widget.row,
-                        if (on == true) DialogCanvas.SELECTED_CONTROL else DialogCanvas.CONTROL,
+                    val label =
                         menu.text(
                             language,
                             "$" +
@@ -89,9 +89,24 @@ object MenuRenderer {
                                     false -> "off"
                                     null -> "unavailable"
                                 },
-                        ),
-                        "action/${widget.action}",
-                    )
+                        )
+                    if (widget.toggleStyle == ToggleStyle.SWITCH) {
+                        canvas.toggleSwitch(
+                            widget.x,
+                            widget.row,
+                            on,
+                            label,
+                            "action/${widget.action}",
+                        )
+                    } else {
+                        canvas.button(
+                            widget.x,
+                            widget.row,
+                            if (on == true) DialogCanvas.SELECTED_CONTROL else DialogCanvas.CONTROL,
+                            label,
+                            "action/${widget.action}",
+                        )
+                    }
                 }
                 WidgetKind.SLIDER -> {
                     val index = widget.options.indexOfFirst { it.value.equals(current, true) }

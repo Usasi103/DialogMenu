@@ -1,3 +1,3 @@
-71ba684f04b8610644ea08a1414e907e79a9796d030136c4d6b500bb0bbdea4e  DialogMenu-0.1.19.jar
-c2ed2a32d22bc22f480c1d0bd8da60232af16ce3f54ba1e898d3e9e521af3825  DialogMenu-resourcepack-0.1.19.zip
-869d8e4a734f47cf5ab25b94a7de350690bba96ccdfb02924d5dbe8776aaaf40  DialogMenu-source-0.1.19.zip
+400a922db0bbc1d1acc138eebb00ccadffaede96b3767f05f577c91d686d95e8  DialogMenu-0.1.20.jar
+aaf5f966ba6c8c65d5e8f6a2cb5c02ed4283c750d76ca1440e5ec4c3d7d94436  DialogMenu-resourcepack-0.1.20.zip
+7b18bfcb1b67587000ff5ad7c42dde643aa23745d56e002c44e53f6b3323c543  DialogMenu-source-0.1.20.zip

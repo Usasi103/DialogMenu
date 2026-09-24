@@ -17,6 +17,11 @@ enum class WidgetKind {
     SPRITE,
 }
 
+enum class ToggleStyle {
+    BUTTON,
+    SWITCH,
+}
+
 data class MenuOption(val value: String, val label: String, val action: String)
 
 data class MenuWidget(
@@ -33,6 +38,7 @@ data class MenuWidget(
     val state: String,
     val selected: String,
     val options: List<MenuOption>,
+    val toggleStyle: ToggleStyle = ToggleStyle.BUTTON,
 )
 
 data class MenuAction(
@@ -303,12 +309,20 @@ object MenuConfigParser {
                         "state",
                         "selected",
                         "options",
+                        "toggle-style",
                     ),
                     at,
                 )
                 val kind =
                     WidgetKind.entries.firstOrNull { it.name.equals(string(conf, "type"), true) }
                         ?: error("$at.type: 未知控件类型")
+                val toggleStyle =
+                    if (conf.contains("toggle-style")) {
+                        require(kind == WidgetKind.TOGGLE) { "$at.toggle-style: 只用于 toggle" }
+                        ToggleStyle.entries.firstOrNull {
+                            it.name.equals(string(conf, "toggle-style"), true)
+                        } ?: error("$at.toggle-style: 使用 button / switch")
+                    } else ToggleStyle.BUTTON
                 val defaultX =
                     when (kind) {
                         WidgetKind.HEADING -> 122
@@ -433,6 +447,7 @@ object MenuConfigParser {
                     binding,
                     conf.getString("selected", "")!!,
                     options,
+                    toggleStyle,
                 )
             }
         }

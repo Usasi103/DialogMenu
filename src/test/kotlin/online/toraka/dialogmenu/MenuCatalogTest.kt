@@ -21,7 +21,22 @@ class MenuCatalogTest {
             SimpleMenuParser.parse(MenuRepository.resource("simple/config.yml")) {
                 MenuRepository.resource("simple/menus/$it.yml")
             }
-        assertEquals(old, catalog.menus.getValue("settings").settings)
+        val current = catalog.menus.getValue("settings").settings!!
+        val switches =
+            current.pages.values.flatMap { it.widgets }.filter { it.kind == WidgetKind.TOGGLE }
+        assertEquals(8, switches.size)
+        assertTrue(switches.all { it.toggleStyle == ToggleStyle.SWITCH })
+        assertEquals(
+            old,
+            current.copy(
+                pages =
+                    current.pages.mapValues { (_, page) ->
+                        page.copy(
+                            widgets = page.widgets.map { it.copy(toggleStyle = ToggleStyle.BUTTON) }
+                        )
+                    }
+            ),
+        )
         assertEquals(
             setOf("settings", "demo-dialogue", "demo-boss", "demo-quests"),
             catalog.menus.keys,

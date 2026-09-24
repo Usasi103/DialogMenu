@@ -1,3 +1,4 @@
+# toggle 的 Style: switch 显示状态文字与小开关；button 恢复宽按钮（省略默认 button）。
 # 玩家设置是一个菜单；Pages 内每项是它的子页面，顺序也是导航顺序。
 # /dmenu open settings；修改后 /dmenu check，再 /dmenu reload。
 Version: 1
@@ -58,6 +59,7 @@ Pages:
     Icons:
       音效:
         Type: "toggle"
+        Style: "switch"
         Name: {zh_cn: "鸟鸣、风声与自然音效", en_us: "Birds, wind and nature"}
         Bind: "sounds"
         Description: {zh_cn: "仅调整你自己听到的环境音效。", en_us: "Changes only the ambience you hear."}
@@ -85,6 +87,7 @@ Pages:
     Icons:
       总开关:
         Type: "toggle"
+        Style: "switch"
         Name: {zh_cn: "显示环境粒子", en_us: "Show ambient particles"}
         Bind: "particles"
         Description: {zh_cn: "仅影响你自己看到的环境粒子。", en_us: "Changes only the particles you see."}
@@ -93,14 +96,17 @@ Pages:
         Name: {zh_cn: "粒子分类与密度", en_us: "Particle categories and density"}
       落叶:
         Type: "toggle"
+        Style: "switch"
         Name: {zh_cn: "自然落叶", en_us: "Falling leaves"}
         Bind: "leaves"
       萤火虫:
         Type: "toggle"
+        Style: "switch"
         Name: {zh_cn: "夜间萤火虫", en_us: "Night fireflies"}
         Bind: "firefly"
       群系:
         Type: "toggle"
+        Style: "switch"
         Name: {zh_cn: "生物群系粒子", en_us: "Biome particles"}
         Bind: "biome"
       密度:
@@ -127,6 +133,7 @@ Pages:
     Icons:
       拾取提示:
         Type: "toggle"
+        Style: "switch"
         Name: {zh_cn: "显示物品拾取提示", en_us: "Show pickup notices"}
         Bind: "pickup"
         Description: {zh_cn: "在屏幕上显示刚刚拾取的物品。", en_us: "Shows the items you just picked up."}
@@ -154,6 +161,7 @@ Pages:
     Icons:
       光柱:
         Type: "toggle"
+        Style: "switch"
         Name: {zh_cn: "显示掉落光柱", en_us: "Show loot beams"}
         Bind: "loot-beams"
         Description: {zh_cn: "帮助你发现地面上的稀有掉落物。", en_us: "Helps you spot rare items on the ground."}
@@ -162,6 +170,7 @@ Pages:
         Name: {zh_cn: "掉落音效", en_us: "Loot sounds"}
       音效:
         Type: "toggle"
+        Style: "switch"
         Name: {zh_cn: "播放光柱音效", en_us: "Play loot sounds"}
         Bind: "loot-sounds"
       分别设置:
