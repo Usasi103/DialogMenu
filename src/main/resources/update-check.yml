@@ -1,8 +1,8 @@
 # GitHub 正式 Release 更新提醒。修改后重启插件/服务器生效。
 enabled: true
-# 启动后错开 0~119 秒发起检查，之后每 6 小时检查一次。
+# 启动延迟后再错开 0~119 秒发起检查，之后固定每 6 小时检查一次。
 startup-delay-seconds: 60
-check-interval-hours: 6
+# 检查周期固定在源码中；旧版 check-interval-hours 字段不再读取。
 # 默认只检测正式 Release；使用预发布分支时可开启。
 include-prereleases: false
 notify-console: true

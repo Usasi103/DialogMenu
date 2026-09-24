@@ -18,6 +18,7 @@ import org.bukkit.scheduler.BukkitTask;
 /** Each plugin owns its checker; network I/O is asynchronous and player access is synchronous. */
 public final class UpdateChecker implements Listener {
     public static final String NOTIFY_PERMISSION = "toraka.update.notify";
+    private static final long CHECK_INTERVAL_HOURS = 6;
 
     record Settings(
             boolean enabled,
@@ -56,7 +57,7 @@ public final class UpdateChecker implements Listener {
             Settings settings =
                     new Settings(
                             config.getBoolean("enabled", true),
-                            Math.max(1, Math.min(168, config.getLong("check-interval-hours", 6))),
+                            CHECK_INTERVAL_HOURS,
                             Math.max(
                                     0, Math.min(3600, config.getLong("startup-delay-seconds", 60))),
                             config.getBoolean("notify-console", true),
