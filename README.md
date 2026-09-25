@@ -46,9 +46,9 @@ DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 
 
 ## 安装
 
-当前开发版以 **Paper 1.21.11** 为最低编译 API，已在 **Paper 1.21.11 / 26.2、Java 25** 环境验证。1.21.11 完成了菜单协议交互与着色器编译检查，完整客户端画面仍需复核，详见[兼容测试记录](docs/development/PAPER-1.21.11.md)。菜单皮肤需要配套资源包，玩家使用原版客户端即可。
+**DialogMenu 0.1.21** 以 **Paper 1.21.11** 为最低编译 API，已在 **Paper 1.21.11 / 26.2、Java 25** 环境验证。1.21.11 完成了菜单协议交互与着色器编译检查，完整客户端画面仍需复核，详见[兼容测试记录](docs/development/PAPER-1.21.11.md)。菜单皮肤需要配套资源包，玩家使用原版客户端即可。
 
-1. 将插件 JAR 放入服务器的 `plugins` 目录。当前开发版已内置配套资源，启动时导出到 `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip`。
+1. 将插件 JAR 放入服务器的 `plugins` 目录。0.1.21 起已内置配套资源，启动时导出到 `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip`。
 2. 新安装默认使用 `ResourcePack.Provider: Auto`，按 **CraftEngine → ItemsAdder → Nexo → Oraxen** 的顺序选择已启用的资源管理插件，并将资源放入其源目录。再次启动会更新由 DialogMenu 管理的文件，保留服主修改过的文件；冲突会在控制台列出。
 3. 按控制台提示让所选插件重新构建并发送资源包。没有这些插件时，可手动启用导出的 ZIP，或配置 URL / External 发送方式。自动复制资源不会替代资源包的构建、托管和客户端加载；与 BetterHud 共用时仍需保留其原包并合并资源。
 4. 玩家加载资源包后，用 `/dmenu` 或 `/settings` 打开默认菜单。新安装默认关闭加载回执检查；已配置的 CraftEngine / URL / External 方式及检查开关会保留。

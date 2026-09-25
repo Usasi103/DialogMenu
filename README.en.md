@@ -46,9 +46,9 @@ Settings demo choices last for the current preview and reset when reopened. Bala
 
 ## Installation
 
-The current development build targets the **Paper 1.21.11** API and has been tested on **Paper 1.21.11 / 26.2 with Java 25**. The 1.21.11 checks cover menu protocol interactions and shader compilation; a full visual review in the game client remains outstanding. See the [compatibility test record](docs/development/PAPER-1.21.11.md). Menu skins require the matching resource pack; players can use the vanilla client.
+**DialogMenu 0.1.21** targets the **Paper 1.21.11** API and has been tested on **Paper 1.21.11 / 26.2 with Java 25**. The 1.21.11 checks cover menu protocol interactions and shader compilation; a full visual review in the game client remains outstanding. See the [compatibility test record](docs/development/PAPER-1.21.11.md). Menu skins require the matching resource pack; players can use the vanilla client.
 
-1. Place the plugin JAR in your server's `plugins` directory. The current development build includes its resources and exports them to `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip` on startup.
+1. Place the plugin JAR in your server's `plugins` directory. Version 0.1.21 and later include the matching resources and export them to `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip` on startup.
 2. Fresh installations use `ResourcePack.Provider: Auto`. DialogMenu selects an enabled provider in this order: **CraftEngine → ItemsAdder → Nexo → Oraxen**, then installs its resources into that provider's source directory. Later starts update managed files while preserving administrator edits; conflicts are reported in the console.
 3. Follow the console instructions to rebuild and send the selected provider's pack. Without these plugins, enable the exported ZIP manually or configure URL / External delivery. Copying resources does not build, host, or load a pack for players. When using BetterHud, keep its original pack and merge the menu resources into it.
 4. Load the pack in the client, then open the default menu with `/dmenu` or `/settings`. Fresh installations disable load-response gating by default. Existing CraftEngine / URL / External settings and their gating preference are preserved.

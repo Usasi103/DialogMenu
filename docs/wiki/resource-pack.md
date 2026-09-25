@@ -4,9 +4,9 @@ DialogMenu 的字体画布需要配套资源包。ResourcePack 配置决定资�
 
 CraftEngine 不是必需依赖。使用 IA / Nexo / Oraxen 等来源的物品，和由哪个插件发送资源包，是两项独立设置；物品源写在 Display.Material，字体图标写 Font/Glyph，发送方式写这里的 Provider。换图标及自定义 PNG 的完整步骤见 [图标与材质](icons.md)。
 
-## 开发版：自动安装内置资源
+## 0.1.21 起：自动安装内置资源
 
-当前开发版 JAR 包含配套资源包，启动后导出为 `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip`。发布版 0.1.20 及更早版本仍需单独下载同版本 ZIP。
+0.1.21 起，JAR 包含配套资源包，启动后导出为 `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip`。发布版 0.1.20 及更早版本仍需单独下载同版本 ZIP。
 
 新安装的默认配置：
 
@@ -131,6 +131,6 @@ RequireLoaded: false 可以关闭这个门槛，但不会自动补齐缺失的�
 
 已有 GUI 着色器的整合包需要合并兼容，不能把其中一方直接覆盖。物品模型则由物品来源插件自己的资源包提供。
 
-当前开发版 0.1.21-SNAPSHOT 已将旧 toraka_settings / toraka_dialogue 命名空间改为 dialogmenu_settings / dialogmenu_dialogue；升级时同步匹配版本的资源包，并修改自定义菜单中的旧字体引用。不要直接使用旧版资源包搭配新字体 ID。仅修改菜单文字、顺序和动作通常无需重新生成资源包；新增字体立绘或替换贴图需要更新资源。
+0.1.21 已将旧 toraka_settings / toraka_dialogue 命名空间改为 dialogmenu_settings / dialogmenu_dialogue；升级时同步匹配版本的资源包，并修改自定义菜单中的旧字体引用。不要直接使用旧版资源包搭配新字体 ID。仅修改菜单文字、顺序和动作通常无需重新生成资源包；新增字体立绘或替换贴图需要更新资源。
 
 本机 UI_Sprite 素材版与可分发基础皮肤的许可边界见源码仓库 `docs/guides/TEMPLATE-ASSETS.md`。发布资源包前沿用已有许可说明。
