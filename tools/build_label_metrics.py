@@ -1,11 +1,11 @@
-"""Pin the menu's Unicode font and compile exact advances, including half pixels.
+"""Reference the client's Unicode font and compile exact advances, including half pixels.
 
 Run after rebuilding any label bitmap fonts. Requires Pillow only at build time.
 """
 from pathlib import Path
+import hashlib
 import json
 import math
-import shutil
 import zipfile
 from functools import cache
 from PIL import Image
@@ -13,6 +13,9 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / 'resourcepack/assets'
 FONT = ASSETS / 'dialogmenu_settings/font'
+UNIFONT_SOURCE = ROOT / 'design/minecraft-font/unifont.zip'
+# Minecraft 26.2 asset minecraft/font/unifont.zip; revalidate when upgrading clients.
+UNIFONT_SHA256 = 'aea3e9918b0d31de6f94623080f04c31c8c16a5b1a2e8d99ab39f1acdddd30f7'
 OVERRIDES = [(0x3001,0x30FF,0,15), (0x3200,0x9FFF,0,15),
              (0x1100,0x11FF,0,15), (0x3130,0x318F,0,15),
              (0xA960,0xA97F,0,15), (0xD7B0,0xD7FF,0,15),
@@ -20,14 +23,25 @@ OVERRIDES = [(0x3001,0x30FF,0,15), (0x3200,0x9FFF,0,15),
              (0xFF01,0xFF5E,0,15)]
 
 
+def write_generated(path, text):
+    # Avoid rewriting unchanged metrics/UI assets, including their existing line endings.
+    if path.exists() and path.read_text(encoding='utf-8') == text:
+        return
+    path.write_text(text, encoding='utf-8', newline='\n')
+
+
 def compile_metrics():
-    shutil.copy2(ROOT / 'design/minecraft-font/unifont.zip', FONT / 'unifont.zip')
-    provider = {'type':'unihex', 'hex_file':'dialogmenu_settings:font/unifont.zip',
+    if hashlib.sha256(UNIFONT_SOURCE.read_bytes()).hexdigest() != UNIFONT_SHA256:
+        raise ValueError('Design Unicode font differs from the verified Minecraft 26.2 asset')
+    legacy_archive = FONT / 'unifont.zip'
+    if legacy_archive.exists() and hashlib.sha256(legacy_archive.read_bytes()).hexdigest() != UNIFONT_SHA256:
+        raise ValueError('Refusing to remove a modified resourcepack/font/unifont.zip')
+    provider = {'type':'unihex', 'hex_file':'minecraft:font/unifont.zip',
                 'size_overrides':[{'from':chr(a), 'to':chr(b), 'left':l, 'right':r}
                                   for a,b,l,r in OVERRIDES]}
-    (FONT / 'unifont.json').write_text(json.dumps({'providers':[provider]}) + '\n', encoding='utf-8')
+    write_generated(FONT / 'unifont.json', json.dumps({'providers':[provider]}) + '\n')
     unicode = {}
-    with zipfile.ZipFile(FONT / 'unifont.zip') as archive:
+    with zipfile.ZipFile(UNIFONT_SOURCE) as archive:
         for name in archive.namelist():
             if not name.endswith('.hex'):
                 continue
@@ -52,7 +66,7 @@ def compile_metrics():
         if key == 'dialogmenu_settings:unifont':
             return unicode.copy()
         path = ASSETS / namespace / 'font' / (name + '.json')
-        data = json.loads(path.read_text())
+        data = json.loads(path.read_text(encoding='utf-8'))
         result = {}
         for entry in reversed(data['providers']):
             kind = entry['type']
@@ -102,12 +116,13 @@ def compile_metrics():
                 previous = value
             if previous is not None:
                 lines.append(f'{key} {start} {end} {previous[0]:g} {previous[1]:g}')
-    (ROOT / 'src/main/resources/label-metrics.txt').write_text('\n'.join(lines)+'\n', encoding='utf-8')
+    write_generated(ROOT / 'src/main/resources/label-metrics.txt', '\n'.join(lines)+'\n')
     ui_path = FONT / 'ui.json'
-    ui = json.loads(ui_path.read_text())
+    ui = json.loads(ui_path.read_text(encoding='utf-8'))
     spaces = next(p['advances'] for p in ui['providers'] if p['type'] == 'space')
     spaces.update({'\ue7f0':0.5, '\ue7f1':-0.5})
-    ui_path.write_text(json.dumps(ui, separators=(',',':'))+'\n', encoding='utf-8')
+    write_generated(ui_path, json.dumps(ui, separators=(',',':'))+'\n')
+    legacy_archive.unlink(missing_ok=True)
     print(f'Compiled {len(lines)-1} font ranges; coin advance={unicode[0x26C2][0]}')
 
 

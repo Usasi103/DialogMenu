@@ -50,7 +50,7 @@ DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 
 
 1. 从下载页获取同一版本的插件 JAR 和 `DialogMenu-resourcepack-<版本>.zip`，将 JAR 放入服务器的 `plugins` 目录。
 2. 将配套资源合入服务器资源包。使用 CraftEngine 时放入其资源包源目录，再执行 `/ce workflow default`。已有 GUI 着色器需要合并处理。
-   CraftEngine 的 `exclude-file-extensions` 不能包含 `zip`，否则会漏掉 `assets/dialogmenu_settings/font/unifont.zip` 字体档案。
+   当前开发版复用 Minecraft 26.2 客户端自带的 Unicode 字库，并保留菜单专用字宽规则。更新资源时删除旧的 `assets/dialogmenu_settings/font/unifont.zip`，保留 `unifont.json` 与字体许可文件；无需为此调整 CraftEngine 的全局文件排除配置。
 3. 启动服务器，在 `plugins/DialogMenu/config.yml` 的 `ResourcePack` 中指定发送方式及所需资源包。支持 CraftEngine 包 ID、ZIP 直链和外部发送的资源包 UUID；默认使用 CraftEngine 的 `default` 包。
 4. 玩家加载资源包后，用 `/dmenu` 或 `/settings` 打开默认菜单。
 

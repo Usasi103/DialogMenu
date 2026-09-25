@@ -50,7 +50,7 @@ Verified environment: **Paper 26.2, Java 25, and a Minecraft 26.2 client**. Menu
 
 1. Download the plugin JAR and `DialogMenu-resourcepack-<version>.zip` from the same release. Place the JAR in your server's `plugins` directory.
 2. Merge the supplied assets into your server resource pack. With CraftEngine, add them to its resource source directory and run `/ce workflow default`. Existing GUI shaders need a compatibility merge.
-   Remove `zip` from CraftEngine's `exclude-file-extensions`; the pack needs `assets/dialogmenu_settings/font/unifont.zip`.
+   The current development pack reuses Minecraft 26.2's built-in Unicode font with the menu's existing width overrides. When updating the assets, remove the old `assets/dialogmenu_settings/font/unifont.zip`, keeping `unifont.json` and the font license. No change to CraftEngine's global file exclusions is needed for this optimization.
 3. Start the server and configure `ResourcePack` in `plugins/DialogMenu/config.yml`. Choose a CraftEngine pack ID, a ZIP download URL, or the UUID of a pack sent by another plugin. The default uses CraftEngine's `default` pack.
 4. Load the resource pack in the client, then open the default menu with `/dmenu` or `/settings`.
 
