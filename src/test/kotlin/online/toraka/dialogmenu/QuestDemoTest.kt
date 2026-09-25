@@ -165,7 +165,7 @@ class QuestDemoTest {
                 val canvas =
                     TemplateRenderer.render(template, values, { it }) {
                         actions += it
-                        ClickEvent.custom(Key.key("test", it))
+                        DialogClicks.custom(Key.key("test", it))
                     }
                 canvas.build()
                 assertEquals(

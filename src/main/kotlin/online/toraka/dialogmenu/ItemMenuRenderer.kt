@@ -22,7 +22,7 @@ object ItemMenuRenderer {
         language: MenuLanguage,
         expand: (String) -> String,
         resolve: (ItemDisplay) -> ResolvedMenuItem,
-        click: (String) -> ClickEvent<*>,
+        click: (String) -> ClickEvent,
     ): ItemMenuRender {
         fun text(value: String) = expand(menu.text(language, value))
         val bodies = mutableListOf<DialogBody>()

@@ -41,11 +41,11 @@ dependencies {
     implementation("cn.gtemc:itembridge:1.0.32") { isTransitive = false }
     add("taboo", "cn.gtemc:itembridge:1.0.32") { isTransitive = false }
     compileOnly("com.google.code.gson:gson:2.8.7")
-    compileOnly("io.papermc.paper:paper-api:26.2.build.123-stable")
+    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
     compileOnly("io.netty:netty-transport:4.2.15.Final")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
-    testImplementation("io.papermc.paper:paper-api:26.2.build.123-stable")
+    testImplementation("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
     testImplementation("org.mockito:mockito-core:5.19.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -79,3 +79,4 @@ val exportJar by tasks.registering(Copy::class) {
 }
 tasks.named("assemble") { dependsOn(exportJar) }
 apply(from = rootProject.file("gradle/source-quality.gradle"))
+apply(from = rootProject.file("gradle/bundled-resourcepack.gradle"))

@@ -206,7 +206,7 @@ class SimpleMenuTest {
                             }
                         },
                         { it },
-                        { ClickEvent.custom(Key.key("test", it)) },
+                        { DialogClicks.custom(Key.key("test", it)) },
                         dropdown,
                     )
                 var width = 0

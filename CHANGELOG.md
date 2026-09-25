@@ -2,6 +2,10 @@
 
 ## 未发布
 
+- 修复 Paper 1.21.11 打开菜单时的 `NoSuchMethodError: ClickEvent.custom(Key)`：以 1.21.11 API 编译，使用 Adventure 4.26.1 与较新版本共用的自定义点击接口。配套资源包支持范围从仅 88 调整为 75–88，保留原有着色器和字宽。
+- 开发版 JAR 内置可分发菜单资源包，启动导出 ZIP；新增 Auto 模式，依次检测 CraftEngine、ItemsAdder、Nexo、Oraxen，优先将资源放入 CraftEngine。按文件哈希更新插件管理的资源，保留用户修改并报告同名资源冲突。资源包仍由所选插件构建和发送；新装默认关闭加载回执门槛，已有发送配置与门槛不变。
+- 修复中英文 README 三张截图的查看入口，改用已验证的原图直链，避开 GitHub 图片页面加载错误。
+
 - 资源包复用 Minecraft 26.2 客户端自带的 Unicode 字库，移除重复的 `dialogmenu_settings/font/unifont.zip`；保留原有字宽覆盖、字号字体和布局。字宽生成工具继续使用经过校验的构建输入，不再复制字库到发布资源；升级时删除部署目录中的旧字库 ZIP，本次无需更换插件 JAR。
 
 - GitHub 更新复查周期固定为源码中的 6 小时，旧配置 `check-interval-hours` 不再覆盖；保留启动错峰、检测开关和限流退避。

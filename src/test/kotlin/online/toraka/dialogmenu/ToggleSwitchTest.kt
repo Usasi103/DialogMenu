@@ -50,7 +50,7 @@ class ToggleSwitchTest {
                         theme,
                         { state },
                         { it },
-                        { ClickEvent.custom(Key.key("test", it)) },
+                        { DialogClicks.custom(Key.key("test", it)) },
                     )
                 val parts = canvas.build().children().map { it as TextComponent }
                 val glyph = parts.single { it.font() == DialogCanvas.SWITCH_FONT }
@@ -59,7 +59,7 @@ class ToggleSwitchTest {
                     glyph.content().single().code,
                 )
                 val action = "action/${widget.action}"
-                assertEquals(ClickEvent.custom(Key.key("test", action)), glyph.clickEvent())
+                assertEquals(DialogClicks.custom(Key.key("test", action)), glyph.clickEvent())
                 val status =
                     menu.text(language, "$" + listOf("on", "off", "unavailable")[stateIndex])
                 assertTrue(

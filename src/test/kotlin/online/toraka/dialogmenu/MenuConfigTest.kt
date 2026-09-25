@@ -185,7 +185,7 @@ class MenuConfigTest {
                 MenuTheme.DARK,
                 { "medium" },
                 { it },
-                { ClickEvent.custom(Key.key("test", it)) },
+                { DialogClicks.custom(Key.key("test", it)) },
             )
         assertEquals(
             "action/density_low",
@@ -210,7 +210,7 @@ class MenuConfigTest {
                     theme,
                     { if (it == "density") "medium" else "true" },
                     { it },
-                    { ClickEvent.custom(Key.key("test", it)) },
+                    { DialogClicks.custom(Key.key("test", it)) },
                 )
             checkLines(canvas, "$page $language $theme")
         }
@@ -220,7 +220,7 @@ class MenuConfigTest {
     fun `two through eight slider steps align and expose every rail pixel with bounded arrows`() {
         for (count in 2..8) for (selected in -1 until count) {
             val actions = (0 until count).map { "step_$it" }
-            val canvas = DialogCanvas { ClickEvent.custom(Key.key("test", it)) }
+            val canvas = DialogCanvas { DialogClicks.custom(Key.key("test", it)) }
             canvas.slider(280, 19, selected, "测试", actions)
             for (row in 19..20) for (x in 302 until 422) {
                 assertEquals(
@@ -260,7 +260,7 @@ class MenuConfigTest {
                         theme,
                         { if (it == "language") language.id else theme.id },
                         { it },
-                        { ClickEvent.custom(Key.key("test", it)) },
+                        { DialogClicks.custom(Key.key("test", it)) },
                         if (opened) index else -1,
                     )
                 assertTrue(canvas.hits.any { it.action == "dropdown/$index" })

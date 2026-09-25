@@ -1,5 +1,6 @@
 package online.toraka.dialogmenu
 
+import java.io.File
 import java.net.URI
 import java.nio.charset.StandardCharsets
 import java.util.UUID
@@ -21,6 +22,7 @@ data class MenuResourcePack(
     val uuid: UUID?,
     val sha1: String,
     val requireLoaded: Boolean,
+    val autoInstall: Boolean = provider in setOf("auto", "craftengine"),
 ) {
     companion object {
         val legacy = MenuResourcePack("服务器资源包", "legacy", "", "", null, "", true)
@@ -29,7 +31,17 @@ data class MenuResourcePack(
             // Old configurations retain their previous gate until explicitly configured.
             if (section == null) return legacy
             val path = "config.yml.ResourcePack"
-            val allowed = setOf("Name", "Provider", "Pack", "URL", "UUID", "SHA1", "RequireLoaded")
+            val allowed =
+                setOf(
+                    "Name",
+                    "Provider",
+                    "Pack",
+                    "URL",
+                    "UUID",
+                    "SHA1",
+                    "RequireLoaded",
+                    "AutoInstall",
+                )
             require((section.getKeys(false) - allowed).isEmpty()) {
                 "$path: 未知字段 ${section.getKeys(false) - allowed}"
             }
@@ -43,13 +55,16 @@ data class MenuResourcePack(
                 return value
             }
             val provider = text("Provider", "CraftEngine").lowercase()
-            require(provider in setOf("craftengine", "url", "external")) {
-                "$path.Provider: CraftEngine / URL / External"
+            require(provider in setOf("auto", "craftengine", "url", "external")) {
+                "$path.Provider: Auto / CraftEngine / URL / External"
             }
             val name = text("Name", "DialogMenu 菜单资源")
             require(name.isNotBlank()) { "$path.Name: 不能为空" }
             val pack = text("Pack", "default")
-            require(provider != "craftengine" || pack.matches(Regex("[a-zA-Z0-9_-]{1,64}"))) {
+            require(
+                provider !in setOf("auto", "craftengine") ||
+                    pack.matches(Regex("[a-zA-Z0-9_-]{1,64}"))
+            ) {
                 "$path.Pack: 填写 CraftEngine 的包 ID"
             }
             val url = text("URL")
@@ -91,6 +106,9 @@ data class MenuResourcePack(
             require(!section.contains("RequireLoaded") || section.isBoolean("RequireLoaded")) {
                 "$path.RequireLoaded: true/false"
             }
+            require(!section.contains("AutoInstall") || section.isBoolean("AutoInstall")) {
+                "$path.AutoInstall: true/false"
+            }
             return MenuResourcePack(
                 name,
                 provider,
@@ -99,6 +117,7 @@ data class MenuResourcePack(
                 id,
                 hash,
                 section.getBoolean("RequireLoaded", true),
+                section.getBoolean("AutoInstall", provider in setOf("auto", "craftengine")),
             )
         }
     }
@@ -135,7 +154,97 @@ object MenuResources {
 
     internal val tracker = PackLoadTracker()
     private val requests = mutableMapOf<UUID, UUID>()
+    private var bundled: BundledResourcePack? = null
+    private var installation: ResourcePackInstallResult? = null
+    private var detectedProvider: ResourcePackProvider? = null
     @Volatile private var running = true
+
+    fun initializeResources(directory: File) {
+        try {
+            val bytes =
+                requireNotNull(
+                        javaClass.classLoader.getResourceAsStream(BundledResourcePack.RESOURCE)
+                    ) {
+                        "JAR 缺少内置资源包，请使用完整构建的 DialogMenu JAR"
+                    }
+                    .use { it.readBytes() }
+            bundled = BundledResourcePack(directory.toPath(), bytes)
+            prepareResources()
+        } catch (error: Exception) {
+            MenuLog.warning("内置资源包初始化失败：${error.message}")
+        }
+    }
+
+    private fun prepareResources() {
+        val installer = bundled ?: return
+        try {
+            val available =
+                ResourcePackProvider.entries.mapNotNull { provider ->
+                    Bukkit.getPluginManager()
+                        .getPlugin(provider.pluginName)
+                        ?.takeIf { it.isEnabled }
+                        ?.let {
+                            AvailableResourceProvider(
+                                provider,
+                                it.dataFolder.toPath().toAbsolutePath().normalize(),
+                            )
+                        }
+                }
+            val selected = BundledResourcePack.select(current, available)
+            detectedProvider = BundledResourcePack.detect(current, available)?.provider
+            val prepared = selected?.let {
+                AvailableResourceProvider.read(it.provider, it.directory)
+            }
+            installation = installer.install(current, listOfNotNull(prepared))
+            val result = requireNotNull(installation)
+            val provider = result.provider
+            if (provider != null) {
+                MenuLog.info(
+                    "资源包接入 ${provider.provider.pluginName}：${result.changed} 个文件已更新；原有自定义文件保留。"
+                )
+                if (result.changed > 0 || result.conflicts.isNotEmpty())
+                    MenuLog.info(provider.provider.instructions())
+            } else {
+                MenuLog.info("内置资源包导出位置：${result.exportedZip}。")
+                if (current.provider == "auto") {
+                    if (!current.autoInstall && detectedProvider != null) {
+                        MenuLog.info(
+                            "检测到 ${detectedProvider!!.pluginName}，AutoInstall: false 已停止自动写入；请自行合并并重新生成、发送。"
+                        )
+                    } else {
+                        MenuLog.info(
+                            "未检测到受支持的资源包插件。请把 ZIP 合并到 BetterHud 等发送方，或配置 Provider: URL 后使用 /dmenu pack。导出文件不代表已发送。"
+                        )
+                    }
+                }
+            }
+            if (result.conflicts.isNotEmpty()) {
+                MenuLog.warning("资源包有 ${result.conflicts.size} 处冲突，未覆盖用户资源：")
+                result.conflicts.forEach { MenuLog.warning(it) }
+            }
+            if (
+                current.provider == "auto" &&
+                    current.requireLoaded &&
+                    effective().provider == "auto"
+            ) {
+                MenuLog.warning(
+                    "Auto + RequireLoaded: true 无法确认菜单资源包：请填写发送方实际 UUID，配置可用 CraftEngine 包，或使用 RequireLoaded: false。"
+                )
+            }
+        } catch (error: Exception) {
+            installation = null
+            MenuLog.warning("内置资源包安装未完成：${error.message}；菜单发送配置保持不变。")
+        }
+    }
+
+    private fun effective(): MenuResourcePack {
+        if (current.provider != "auto") return current
+        if (current.uuid != null) return current.copy(provider = "external")
+        if (detectedProvider == ResourcePackProvider.CRAFT_ENGINE) {
+            return current.copy(provider = "craftengine")
+        }
+        return current
+    }
 
     fun install(next: MenuResourcePack) {
         running = true
@@ -153,12 +262,14 @@ object MenuResources {
             TemplateDialog.shutdown()
         }
         current = next
+        prepareResources()
     }
 
     fun open(player: Player, action: () -> Unit) {
         val request = UUID.randomUUID()
         requests[player.uniqueId] = request
-        val config = current
+        val configured = current
+        val config = effective()
         if (!config.requireLoaded) {
             action()
             return
@@ -172,6 +283,12 @@ object MenuResources {
             else player.sendMessage("请先加载${config.name}，再打开菜单。")
             return
         }
+        if (config.provider == "auto") {
+            player.sendMessage(
+                "菜单资源包尚未配置加载校验。请联系服主设置发送方的 ResourcePack.UUID，或关闭 RequireLoaded；内置资源包仅导出并未自动发送。"
+            )
+            return
+        }
         if (config.provider != "craftengine") {
             if (tracker.contains(player.uniqueId, setOf(requireNotNull(config.uuid)))) action()
             else missing(player, config)
@@ -182,7 +299,7 @@ object MenuResources {
             submit {
                 if (
                     !player.isOnline ||
-                        current != config ||
+                        current != configured ||
                         requests[player.uniqueId] != request ||
                         !player.hasPermission("playersettings.use")
                 )
@@ -209,7 +326,21 @@ object MenuResources {
     }
 
     fun send(player: Player) {
-        val config = current
+        val config = effective()
+        if (config.provider == "auto") {
+            val result = installation
+            if (result == null || !java.nio.file.Files.isRegularFile(result.exportedZip)) {
+                player.sendMessage("菜单资源导出或安装尚未完成，请服主检查控制台错误；/dmenu pack 未发送资源包。")
+                return
+            }
+            val provider = installation?.provider?.provider
+            player.sendMessage(
+                if (provider == null)
+                    "菜单资源已导出到 plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip。请由服主合并并发送，或配置 URL 直链；/dmenu pack 尚未发送资源包。"
+                else "菜单资源已接入 ${provider.pluginName}。${provider.instructions()}资源包须由该插件发送。"
+            )
+            return
+        }
         if (config.provider != "url") {
             player.sendMessage(
                 "所需资源包：${config.name}；来源 ${config.provider}" +
@@ -289,5 +420,8 @@ object MenuResources {
         running = false
         requests.clear()
         tracker.clear()
+        bundled = null
+        installation = null
+        detectedProvider = null
     }
 }

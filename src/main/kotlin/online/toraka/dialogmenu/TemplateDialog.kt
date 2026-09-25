@@ -76,7 +76,7 @@ object TemplateDialog {
                 { TemplateRenderer.expand(it, values, player.name, player.uniqueId.toString()) },
                 { action ->
                     actions += action
-                    ClickEvent.custom(Key.key("dialogmenu_dialogue", "$token/$action"))
+                    DialogClicks.custom(Key.key("dialogmenu_dialogue", "$token/$action"))
                 },
             )
         val content = canvas.build()

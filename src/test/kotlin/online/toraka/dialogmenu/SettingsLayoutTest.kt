@@ -46,7 +46,7 @@ class SettingsLayoutTest {
                 MenuTheme.DARK,
                 { if (it == "theme") "dark" else "true" },
                 { it },
-                { ClickEvent.custom(Key.key("test", it)) },
+                { DialogClicks.custom(Key.key("test", it)) },
             )
         val parts = canvas.build().children().filterIsInstance<TextComponent>()
         val renderedText = parts.single { it.content() == "文字预览" }

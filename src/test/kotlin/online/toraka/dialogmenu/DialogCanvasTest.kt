@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 class DialogCanvasTest {
     @Test
     fun `whole surfaces and measured text keep every row at the same origin`() {
-        val canvas = DialogCanvas { ClickEvent.custom(Key.key("test", it)) }
+        val canvas = DialogCanvas { DialogClicks.custom(Key.key("test", it)) }
         canvas.sprite(114, 0, DialogCanvas.PANEL_TOP)
         canvas.sprite(114, 10, DialogCanvas.PANEL_BOTTOM)
         canvas.button(0, 0, DialogCanvas.SEARCH, "搜索设置", "search")
@@ -114,7 +114,7 @@ class DialogCanvasTest {
 
     @Test
     fun `hit spans cover both halves of a button without affecting neighbours`() {
-        val canvas = DialogCanvas { ClickEvent.custom(Key.key("test", it)) }
+        val canvas = DialogCanvas { DialogClicks.custom(Key.key("test", it)) }
         canvas.button(330, 13, DialogCanvas.CONTROL, "开", "firefly")
         val root = canvas.build()
         val rows = mutableListOf(mutableListOf<TextComponent>())
@@ -139,7 +139,7 @@ class DialogCanvasTest {
         val ids = listOf("off", "low", "medium", "high")
         for (theme in MenuTheme.entries) for (language in MenuLanguage.entries) {
             for (selected in ids + "unavailable") {
-                val canvas = DialogCanvas(theme) { ClickEvent.custom(Key.key("test", it)) }
+                val canvas = DialogCanvas(theme) { DialogClicks.custom(Key.key("test", it)) }
                 canvas.densitySlider(280, 19, selected, language)
                 for (row in 19..20) for (x in 302 until 422) {
                     val hit =

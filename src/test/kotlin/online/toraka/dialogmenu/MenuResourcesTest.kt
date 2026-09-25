@@ -9,6 +9,19 @@ class MenuResourcesTest {
         MenuResourcePack.parse(MenuConfigParser.yaml(source, "resource-pack"))
 
     @Test
+    fun `Auto is opt-in for existing configs and allows explicit UUID or manual installation`() {
+        val id = UUID.randomUUID()
+        val automatic = parse("Provider: Auto\nRequireLoaded: false\n")
+        assertEquals("auto", automatic.provider)
+        assertTrue(automatic.autoInstall)
+        assertFalse(automatic.requireLoaded)
+        assertEquals(id, parse("Provider: Auto\nUUID: $id\nRequireLoaded: true\n").uuid)
+        assertFalse(parse("Provider: Auto\nAutoInstall: false\n").autoInstall)
+        assertEquals("craftengine", parse("Name: Existing configuration\n").provider)
+        assertEquals(MenuResourcePack.legacy, MenuResourcePack.parse(null))
+    }
+
+    @Test
     fun `CraftEngine pack ID name and loading requirement are configurable`() {
         val pack = parse("Name: 我的合并包\nProvider: CraftEngine\nPack: lobby\nRequireLoaded: false\n")
         assertEquals("lobby", pack.pack)
@@ -44,6 +57,7 @@ class MenuResourcesTest {
                 "URL: file:///menu.zip",
                 "URL: https://user:pass@example.com/menu.zip",
                 "RequireLoaded: 'true'",
+                "AutoInstall: 'true'",
                 "RequrieLoaded: false",
             )) {
             assertThrows(Exception::class.java, { parse(source) }, source)

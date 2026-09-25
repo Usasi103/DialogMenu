@@ -51,7 +51,7 @@ class LabelMetricsTest {
 
     @Test
     fun `coin row returns to the same origin before drawing the appearance category`() {
-        val canvas = DialogCanvas { ClickEvent.custom(Key.key("test", it)) }
+        val canvas = DialogCanvas { DialogClicks.custom(Key.key("test", it)) }
         // Same row as the profile balance and the appearance navigation label.
         canvas.text(123, 14, "金币：3,030⛂")
         canvas.button(0, 13, DialogCanvas.NAV, "界面与语言", "appearance")

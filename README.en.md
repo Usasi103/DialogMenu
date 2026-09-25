@@ -14,7 +14,7 @@ In-game screenshots with Chinese menu text. Click an image to view the original.
 
 | NPC conversation | Boss introduction | Quest list |
 | :---: | :---: | :---: |
-| [![DialogMenu NPC conversation with the gatekeeper and trial dialogue choices](docs/images/npc-dialogue.jpg)](docs/images/npc-dialogue.jpg?raw=true) | [![DialogMenu boss introduction with background story, combat tips, and rewards](docs/images/boss-menu.jpg)](docs/images/boss-menu.jpg?raw=true) | [![DialogMenu quest list with category filters, quest details, progress, and rewards](docs/images/quest-menu.jpg)](docs/images/quest-menu.jpg?raw=true) |
+| [![DialogMenu NPC conversation with the gatekeeper and trial dialogue choices](docs/images/npc-dialogue.jpg)](https://raw.githubusercontent.com/Usasi103/DialogMenu/main/docs/images/npc-dialogue.jpg) | [![DialogMenu boss introduction with background story, combat tips, and rewards](docs/images/boss-menu.jpg)](https://raw.githubusercontent.com/Usasi103/DialogMenu/main/docs/images/boss-menu.jpg) | [![DialogMenu quest list with category filters, quest details, progress, and rewards](docs/images/quest-menu.jpg)](https://raw.githubusercontent.com/Usasi103/DialogMenu/main/docs/images/quest-menu.jpg) |
 | Character icon and dialogue choices | Background story, combat tips, and rewards | Categories, pagination, and quest progress |
 
 ## What you can build
@@ -46,13 +46,14 @@ Settings demo choices last for the current preview and reset when reopened. Bala
 
 ## Installation
 
-Verified environment: **Paper 26.2, Java 25, and a Minecraft 26.2 client**. Menu skins require the matching resource pack; players can use the vanilla client.
+The current development build targets the **Paper 1.21.11** API and has been tested on **Paper 1.21.11 / 26.2 with Java 25**. The 1.21.11 checks cover menu protocol interactions and shader compilation; a full visual review in the game client remains outstanding. See the [compatibility test record](docs/development/PAPER-1.21.11.md). Menu skins require the matching resource pack; players can use the vanilla client.
 
-1. Download the plugin JAR and `DialogMenu-resourcepack-<version>.zip` from the same release. Place the JAR in your server's `plugins` directory.
-2. Merge the supplied assets into your server resource pack. With CraftEngine, add them to its resource source directory and run `/ce workflow default`. Existing GUI shaders need a compatibility merge.
-   The current development pack reuses Minecraft 26.2's built-in Unicode font with the menu's existing width overrides. When updating the assets, remove the old `assets/dialogmenu_settings/font/unifont.zip`, keeping `unifont.json` and the font license. No change to CraftEngine's global file exclusions is needed for this optimization.
-3. Start the server and configure `ResourcePack` in `plugins/DialogMenu/config.yml`. Choose a CraftEngine pack ID, a ZIP download URL, or the UUID of a pack sent by another plugin. The default uses CraftEngine's `default` pack.
-4. Load the resource pack in the client, then open the default menu with `/dmenu` or `/settings`.
+1. Place the plugin JAR in your server's `plugins` directory. The current development build includes its resources and exports them to `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip` on startup.
+2. Fresh installations use `ResourcePack.Provider: Auto`. DialogMenu selects an enabled provider in this order: **CraftEngine → ItemsAdder → Nexo → Oraxen**, then installs its resources into that provider's source directory. Later starts update managed files while preserving administrator edits; conflicts are reported in the console.
+3. Follow the console instructions to rebuild and send the selected provider's pack. Without these plugins, enable the exported ZIP manually or configure URL / External delivery. Copying resources does not build, host, or load a pack for players. When using BetterHud, keep its original pack and merge the menu resources into it.
+4. Load the pack in the client, then open the default menu with `/dmenu` or `/settings`. Fresh installations disable load-response gating by default. Existing CraftEngine / URL / External settings and their gating preference are preserved.
+
+Release 0.1.20 and earlier still require the separate matching resource pack and a manual merge. See the [resource-pack guide](docs/wiki/resource-pack.md) for installation paths, conflict handling, and delivery configuration.
 
 A fresh installation creates the default configuration and four example menus. Existing configurations are preserved. After editing, run `/dmenu check`, then `/dmenu reload` to apply the changes. Invalid configuration leaves the previous working menu active.
 

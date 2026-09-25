@@ -10,7 +10,7 @@ object MenuRenderer {
         theme: MenuTheme,
         state: (String) -> String?,
         expand: (String) -> String,
-        click: (String) -> ClickEvent<*>,
+        click: (String) -> ClickEvent,
         dropdown: Int = -1,
     ): DialogCanvas {
         val canvas = DialogCanvas(theme, click = click)

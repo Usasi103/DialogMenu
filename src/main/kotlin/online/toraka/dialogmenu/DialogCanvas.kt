@@ -17,7 +17,7 @@ class DialogCanvas(
     private val rows: Int = ROWS,
     private val labelFont: Key = LABEL_FONT,
     private val buttonLabelFont: Key = BUTTON_LABEL_FONT,
-    private val click: (String) -> ClickEvent<*>,
+    private val click: (String) -> ClickEvent,
 ) {
     data class Skin(
         val glyph: Int,

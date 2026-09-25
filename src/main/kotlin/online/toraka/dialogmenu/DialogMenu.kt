@@ -53,6 +53,7 @@ object DialogMenu : taboolib.common.platform.Plugin() {
                 )
         }
         MenuRuntime.initialize(getDataFolder())
+        MenuResources.initializeResources(getDataFolder())
         taboolib.common.platform.function.submit(delay = 1L) { ItemSources.changed() }
     }
 

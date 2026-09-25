@@ -39,7 +39,9 @@
 
 | 提示 / 现象 | 检查 |
 | --- | --- |
+| 1.21.11 打开菜单报 ClickEvent.custom(Key) 的 NoSuchMethodError | 旧版本调用了较新 Adventure API；使用包含 1.21.11 修复的开发版及其配套资源 |
 | 要求加载资源包 | ResourcePack 指定来源是否正确，客户端是否成功加载指定 UUID |
+| Auto 已复制资源但仍缺贴图 | 按控制台提示重新构建、发送资源包；文件复制成功不代表客户端已加载 |
 | pack 命令没有发包 | 只有 Provider: URL 由 DialogMenu 发包，其他模式由外部来源发送 |
 | 控制台 open 无效 | open 是玩家命令，没有目标玩家参数 |
 | 旧 template 名打不开 | demo 菜单被改名 / 删除，使用实际菜单和页面 ID |
@@ -72,4 +74,4 @@
 
 记录插件版本、命令、完整报错、相关菜单及全局 ResourcePack 段。若是显示问题，再记录客户端版本、GUI 缩放以及是否成功加载资源包。
 
-纯菜单 YAML 修改通常只需 check / reload，不必重启服务器。本机如果另有任务需要重启，仍使用 test_server/启动.bat 并保留可见、可输入的 CMD 控制台。
+纯菜单 YAML 修改通常只需 check / reload，不必重启服务器。资源文件变化后还需要由发送方重新构建并让客户端加载。

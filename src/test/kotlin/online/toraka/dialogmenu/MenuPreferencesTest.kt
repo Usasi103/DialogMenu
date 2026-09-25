@@ -104,7 +104,7 @@ class MenuPreferencesTest {
     fun `both themes have identical hit regions line widths and glyph advances`() {
         var expectedHits: List<DialogCanvas.Hit>? = null
         for (theme in MenuTheme.entries) {
-            val canvas = DialogCanvas(theme) { ClickEvent.custom(Key.key("test", it)) }
+            val canvas = DialogCanvas(theme) { DialogClicks.custom(Key.key("test", it)) }
             canvas.sprite(114, 0, DialogCanvas.PANEL_TOP)
             canvas.sprite(114, 10, DialogCanvas.PANEL_BOTTOM)
             MenuRuntime.current.pages.values.forEachIndexed { index, tab ->

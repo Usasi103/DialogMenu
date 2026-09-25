@@ -36,7 +36,7 @@ object TemplateRenderer {
         template: DialogTemplate,
         values: Map<String, String>,
         expand: (String) -> String,
-        click: (String) -> ClickEvent<*>,
+        click: (String) -> ClickEvent,
     ): DialogCanvas {
         val canvas =
             DialogCanvas(

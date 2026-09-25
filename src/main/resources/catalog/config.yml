@@ -1,34 +1,27 @@
-# 全局设置默认菜单和所需资源包；每个 menus/*.yml 都是一个完整菜单，自动加载。
-# 文件名就是菜单 ID，不需要另写注册列表。
+# 每个 menus/*.yml 都是一个完整菜单，文件名就是菜单 ID。
 Version: 3
-DefaultMenu: demo-settings # 新装默认进入独立设置演示；服务器原有 config.yml 不会被覆盖
+DefaultMenu: demo-settings
 
-# 所需文件：DialogMenu-resourcepack-0.1.21-SNAPSHOT.zip；本机素材版也可用（两者字体 ID 相同）。
-# 当前已合入 plugins/CraftEngine/resources/toranca_pack/resourcepack/，由下方 default 包发送。
-# 指定本插件所需资源包。CraftEngine 模式的 Pack 对应其 resource-pack.packs 下的 ID。
-# 不用 CraftEngine 时无需改菜单的字体 ID；客户端仍须加载完整 DialogMenu 资源和自定义物品资源。
-# 下列二选一，用对应内容替换整个 ResourcePack 段（不要保留两份同名配置段）：
-# 方式一：DialogMenu 发送 ZIP 直链；example.com 须替换成真实下载地址。
-# ResourcePack:
-#   Name: "菜单资源包"
-#   Provider: URL
-#   URL: "https://example.com/server-pack.zip"
-#   UUID: "" # 留空按 URL 生成
-#   SHA1: "" # 更新同一地址的包内容时，填写新文件的 40 位 SHA-1
-#   RequireLoaded: true
-# 方式二：IA / Nexo / Oraxen 等其他插件或 server.properties 已负责发送合并资源包。
-# ResourcePack:
-#   Name: "外部合并资源包"
-#   Provider: External
-#   UUID: "12345678-1234-1234-1234-123456789abc" # 必须替换成发送方实际使用的 UUID
-#   RequireLoaded: true
-# 修改后 /dmenu check、/dmenu reload；URL 用 /dmenu pack 接收，External 由原发送方重新发送。
-# Provider 只控制检查/发送，不会自动合并资源、生成字体或转换物品图标；RequireLoaded: false 也不会补齐资源。
+# JAR 已内置配套资源，启动和 /dmenu reload 时导出到：
+# plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip
+# AutoInstall 为 true 时，按 CraftEngine > ItemsAdder > Nexo > Oraxen 的顺序
+# 检测已启用的插件，把资源写入其资源源目录。CraftEngine 模式只安装到 CE。
+# 仅更新本插件以前安装且未经修改的文件；现有自定义文件和冲突 shader 保留并报告。
+# 安装后仍需按控制台提示重新生成、托管并发送合并资源包，客户端须接受并加载。
+# 只使用 BetterHud 时，请将上述 ZIP 合并到 BetterHud 的资源包构建输入。
+# 自动导出/安装不会替其他插件重载或发送资源包，也不会修改其配置。
 ResourcePack:
-  Name: "DialogMenu 菜单资源（CraftEngine 合并包）"
-  Provider: CraftEngine # CraftEngine / URL / External
-  Pack: default # 可以改成 CraftEngine 配置中的其他包 ID
-  RequireLoaded: true # 玩家必须成功加载指定包才能打开菜单
-  URL: "" # URL 模式填 ZIP 直链，玩家通过 /dmenu pack 下载
-  UUID: "" # URL 模式可由地址生成；External 模式填写发送方使用的包 UUID
-  SHA1: "" # URL 模式可填 40 位 SHA-1，由客户端校验下载内容
+  Name: "DialogMenu 菜单资源"
+  Provider: Auto # Auto / CraftEngine / URL / External
+  AutoInstall: true # false 时只导出 ZIP，不写入其他插件目录
+  Pack: default # CraftEngine 的发送包 ID；与 resources/dialogmenu 目录名无关
+  RequireLoaded: false # 避免因发送方 UUID 未配置而拦截；仍须加载完整资源才能显示菜单
+  URL: "" # Provider: URL 时填写 ZIP 直链，玩家可使用 /dmenu pack 接收
+  UUID: "" # External 必填；Auto 非 CE 的严格校验须填发送方实际 UUID
+  SHA1: "" # URL 模式可填 ZIP 的 40 位 SHA-1；同地址更新包时需更新此值
+
+# 已配置服务器直链时使用 Provider: URL、URL: 实际直链、RequireLoaded: true。
+# IA/Nexo/Oraxen/BetterHud 等发送方使用 Provider: External、UUID: 实际包 UUID，
+# 然后启用 RequireLoaded: true。不能随意生成 UUID，否则玩家加载正确包仍会被拦截。
+# Auto + RequireLoaded: true 只接受明确 UUID，或成功接入 CE 后解析其 Pack 的真实 UUID。
+# 原有配置不会自动改写；升级用户可手动选择 Auto，URL/External 默认不自动安装。

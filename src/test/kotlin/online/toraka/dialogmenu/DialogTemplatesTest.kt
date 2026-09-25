@@ -25,7 +25,7 @@ class DialogTemplatesTest {
         assertTrue(title.row + title.rows <= template.elements.single { it.id == "subtitle" }.row)
         val component =
             TemplateRenderer.render(template, template.values(emptyMap()), { it }) {
-                    ClickEvent.custom(Key.key("test", it))
+                    DialogClicks.custom(Key.key("test", it))
                 }
                 .build()
         assertTrue(component.children().any { it.font() == TitleFont.font(16) })
@@ -55,7 +55,7 @@ class DialogTemplatesTest {
                 }
             )
             TemplateRenderer.render(template, template.values(emptyMap()), { it }) {
-                    ClickEvent.custom(Key.key("test", it))
+                    DialogClicks.custom(Key.key("test", it))
                 }
                 .build()
         }
@@ -88,7 +88,7 @@ class DialogTemplatesTest {
                 val canvas =
                     TemplateRenderer.render(template, values, { it }) {
                         actions += it
-                        ClickEvent.custom(Key.key("test", it))
+                        DialogClicks.custom(Key.key("test", it))
                     }
                 val component = canvas.build()
                 assertFalse(component.children().isEmpty())

@@ -14,7 +14,7 @@ DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 
 
 | NPC 对话 | 首领介绍 | 任务列表 |
 | :---: | :---: | :---: |
-| [![DialogMenu NPC 对话：守门人对话与试炼选项](docs/images/npc-dialogue.jpg)](docs/images/npc-dialogue.jpg?raw=true) | [![DialogMenu 首领介绍：夜巡者背景、战斗建议与奖励](docs/images/boss-menu.jpg)](docs/images/boss-menu.jpg?raw=true) | [![DialogMenu 任务列表：分类筛选、任务详情、进度与奖励](docs/images/quest-menu.jpg)](docs/images/quest-menu.jpg?raw=true) |
+| [![DialogMenu NPC 对话：守门人对话与试炼选项](docs/images/npc-dialogue.jpg)](https://raw.githubusercontent.com/Usasi103/DialogMenu/main/docs/images/npc-dialogue.jpg) | [![DialogMenu 首领介绍：夜巡者背景、战斗建议与奖励](docs/images/boss-menu.jpg)](https://raw.githubusercontent.com/Usasi103/DialogMenu/main/docs/images/boss-menu.jpg) | [![DialogMenu 任务列表：分类筛选、任务详情、进度与奖励](docs/images/quest-menu.jpg)](https://raw.githubusercontent.com/Usasi103/DialogMenu/main/docs/images/quest-menu.jpg) |
 | 角色图标与对话选项 | 背景故事、战斗建议与奖励 | 分类、分页与任务进度 |
 
 ## 可以制作什么
@@ -46,13 +46,14 @@ DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 
 
 ## 安装
 
-已验证环境：**Paper 26.2、Java 25、Minecraft 26.2 客户端**。菜单皮肤需要配套资源包，玩家使用原版客户端即可。
+当前开发版以 **Paper 1.21.11** 为最低编译 API，已在 **Paper 1.21.11 / 26.2、Java 25** 环境验证。1.21.11 完成了菜单协议交互与着色器编译检查，完整客户端画面仍需复核，详见[兼容测试记录](docs/development/PAPER-1.21.11.md)。菜单皮肤需要配套资源包，玩家使用原版客户端即可。
 
-1. 从下载页获取同一版本的插件 JAR 和 `DialogMenu-resourcepack-<版本>.zip`，将 JAR 放入服务器的 `plugins` 目录。
-2. 将配套资源合入服务器资源包。使用 CraftEngine 时放入其资源包源目录，再执行 `/ce workflow default`。已有 GUI 着色器需要合并处理。
-   当前开发版复用 Minecraft 26.2 客户端自带的 Unicode 字库，并保留菜单专用字宽规则。更新资源时删除旧的 `assets/dialogmenu_settings/font/unifont.zip`，保留 `unifont.json` 与字体许可文件；无需为此调整 CraftEngine 的全局文件排除配置。
-3. 启动服务器，在 `plugins/DialogMenu/config.yml` 的 `ResourcePack` 中指定发送方式及所需资源包。支持 CraftEngine 包 ID、ZIP 直链和外部发送的资源包 UUID；默认使用 CraftEngine 的 `default` 包。
-4. 玩家加载资源包后，用 `/dmenu` 或 `/settings` 打开默认菜单。
+1. 将插件 JAR 放入服务器的 `plugins` 目录。当前开发版已内置配套资源，启动时导出到 `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip`。
+2. 新安装默认使用 `ResourcePack.Provider: Auto`，按 **CraftEngine → ItemsAdder → Nexo → Oraxen** 的顺序选择已启用的资源管理插件，并将资源放入其源目录。再次启动会更新由 DialogMenu 管理的文件，保留服主修改过的文件；冲突会在控制台列出。
+3. 按控制台提示让所选插件重新构建并发送资源包。没有这些插件时，可手动启用导出的 ZIP，或配置 URL / External 发送方式。自动复制资源不会替代资源包的构建、托管和客户端加载；与 BetterHud 共用时仍需保留其原包并合并资源。
+4. 玩家加载资源包后，用 `/dmenu` 或 `/settings` 打开默认菜单。新安装默认关闭加载回执检查；已配置的 CraftEngine / URL / External 方式及检查开关会保留。
+
+发布版 0.1.20 及更早版本仍需另下载同版本资源包并手动合入。完整的自动安装目录、冲突处理和发送配置见[资源包指南](docs/wiki/resource-pack.md)。
 
 首次安装会生成默认配置和四个示例菜单。已有配置会保留，修改后可用 `/dmenu check` 检查，再用 `/dmenu reload` 应用；检查失败时继续使用上一份有效配置。
 

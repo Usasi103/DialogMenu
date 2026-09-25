@@ -246,9 +246,9 @@ object MenuDialog {
             view.demo?.preferences ?: MenuPreferences.read(player.persistentDataContainer, menu)
         val token = UUID.randomUUID().toString().replace("-", "")
         val actions = linkedSetOf<String>()
-        fun click(action: String): ClickEvent<*> {
+        fun click(action: String): ClickEvent {
             actions += action
-            return ClickEvent.custom(Key.key("dialogmenu_settings", "$token/$action"))
+            return DialogClicks.custom(Key.key("dialogmenu_settings", "$token/$action"))
         }
         val close =
             if (menu.showFooter)

@@ -2,7 +2,7 @@
 
 ## 字体宽度数据
 
-普通文字通过菜单自己的 Unihex 定义引用 Minecraft 26.2 客户端的 `minecraft:font/unifont.zip`，保留原有 `size_overrides`，避免 Unicode 符号宽度和服务器计算不一致。发布资源不再携带重复字库。源码已附生成结果，正常安装无需 Python。
+普通文字通过菜单自己的 Unihex 定义引用客户端的 `minecraft:font/unifont.zip`，已核验 Minecraft 1.21.11 与 26.2 使用同一份字库。保留原有 `size_overrides`，避免 Unicode 符号宽度和服务器计算不一致。发布资源不再携带重复字库。源码已附生成结果，正常安装无需 Python。
 开发时修改 label 字体或运行皮肤生成工具后，再执行 `python -B tools/build_label_metrics.py`（需要 Pillow），同步生成字宽数据与半像素间距。之后重新构建插件，并同步资源包。
 
 `design/minecraft-font/unifont.zip` 仍是字宽和位图字体的构建输入，生成器校验其 SHA-256 与已验证的客户端字库一致；升级目标客户端时需重新核对官方字库和字宽。生成器只移除与官方原件一致的旧发布 ZIP，发现自定义修改会报错。保留 `LICENSE-Unifont.txt`，其他位图字体仍使用该字库生成。
