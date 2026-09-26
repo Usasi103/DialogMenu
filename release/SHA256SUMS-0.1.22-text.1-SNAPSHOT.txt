@@ -1,0 +1,2 @@
+cbe43d7c06bc327bbfcddc8efbec3a172e130d9e67898efd0a2a1e509a1a64cd  DialogMenu-0.1.22-text.1-SNAPSHOT.jar
+a40354a244a747a27decd1df203a5dc48a971768808146af242b9923690ab4d8  DialogMenu-resourcepack-0.1.22-text.1-SNAPSHOT.zip
