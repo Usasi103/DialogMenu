@@ -17,6 +17,7 @@ class DialogCanvas(
     private val rows: Int = ROWS,
     private val labelFont: Key = LABEL_FONT,
     private val buttonLabelFont: Key = BUTTON_LABEL_FONT,
+    private val richText: RichMenuText = RichMenuText(),
     private val click: (String) -> ClickEvent,
 ) {
     data class Skin(
@@ -33,7 +34,7 @@ class DialogCanvas(
     private data class Label(
         val x: Float,
         val row: Int,
-        val text: String,
+        val text: MeasuredText,
         val color: Int,
         val action: String? = null,
         val raised: Boolean = false,
@@ -62,11 +63,38 @@ class DialogCanvas(
         textSize: Int = 8,
         bold: Boolean = false,
     ) {
+        text(x, row, prepare(text, textSize, bold, raised), color, action, raised, textSize, bold)
+    }
+
+    fun prepare(
+        text: String,
+        textSize: Int = 8,
+        bold: Boolean = false,
+        raised: Boolean = false,
+    ): MeasuredText =
+        richText.measure(
+            text,
+            if (textSize != 8) TitleFont.font(textSize, raised)
+            else if (raised) buttonLabelFont else labelFont,
+            textSize,
+            bold,
+        )
+
+    fun text(
+        x: Int,
+        row: Int,
+        text: MeasuredText,
+        color: Int = theme.text,
+        action: String? = null,
+        raised: Boolean = false,
+        textSize: Int = 8,
+        bold: Boolean = false,
+    ) {
         labels +=
             Label(
                 x.toFloat(),
                 row,
-                if (textSize != 8) TitleFont.normalize(text) else text,
+                text,
                 color,
                 action,
                 raised,
@@ -95,13 +123,7 @@ class DialogCanvas(
             Label(
                 (x + inset).toFloat(),
                 row + if (textSize == 8) 1 else 0,
-                fit(
-                    if (textSize != 8) TitleFont.normalize(label) else label,
-                    skin.width - inset - rightInset,
-                    textSize,
-                    bold,
-                    buttonLabelFont,
-                ),
+                prepare(label, textSize, bold, true).fit(skin.width - inset - rightInset),
                 if (skin == SELECTED_NAV || skin == SELECTED_CONTROL) 0x122408 else theme.text,
                 action,
                 true,
@@ -121,8 +143,8 @@ class DialogCanvas(
         bold: Boolean = false,
     ) {
         val switchX = x + 78
-        val label = fit(valueLabel, 72, textSize, bold, buttonLabelFont)
-        val labelX = switchX - 6 - textWidth(label, textSize, bold, buttonLabelFont)
+        val label = prepare(valueLabel, textSize, bold, true).fit(72)
+        val labelX = switchX - 6 - label.width
         val state =
             when (on) {
                 true -> 0
@@ -172,30 +194,25 @@ class DialogCanvas(
                 val parts = mutableListOf<Label>()
                 var cursor = label.x
                 var start = cursor
-                var run = ""
-                for (codepoint in label.text.codePoints().toArray()) {
-                    val character = String(Character.toChars(codepoint))
-                    val advance = labelAdvance(character, label.textSize, label.bold, label.raised)
+                var run = mutableListOf<MeasuredGlyph>()
+                for (glyph in label.text.glyphs) {
+                    val advance = glyph.advance
                     if (cursor + advance <= x || cursor >= x + width) {
                         if (run.isEmpty()) start = cursor
-                        run += character
+                        run += glyph
                     } else if (run.isNotEmpty()) {
-                        parts += label.copy(x = start, text = run)
-                        run = ""
+                        parts += label.copy(x = start, text = MeasuredText(run))
+                        run = mutableListOf()
                     }
                     cursor += advance
                 }
-                if (run.isNotEmpty()) parts += label.copy(x = start, text = run)
+                if (run.isNotEmpty()) parts += label.copy(x = start, text = MeasuredText(run))
                 parts
             }
         }
         labels.clear()
         labels.addAll(clipped)
     }
-
-    private fun labelAdvance(text: String, size: Int, bold: Boolean, raised: Boolean): Float =
-        if (size != 8) textWidth(text, size, bold).toFloat()
-        else LabelMetrics.width(text, if (raised) buttonLabelFont else labelFont, bold)
 
     fun build(): Component {
         val result = Component.text()
@@ -248,17 +265,10 @@ class DialogCanvas(
                 .forEach {
                     result.append(space(it.x))
                     var label: Component =
-                        Component.text(it.text, TextColor.color(it.color))
-                            .font(
-                                if (it.textSize != 8) TitleFont.font(it.textSize, it.raised)
-                                else if (it.raised) buttonLabelFont else labelFont
-                            )
-                    label = label.decoration(TextDecoration.BOLD, it.bold)
+                        it.text.component().colorIfAbsent(TextColor.color(it.color))
                     if (it.action != null) label = label.clickEvent(click(it.action))
                     result.append(label)
-                    result.append(
-                        space(-it.x - labelAdvance(it.text, it.textSize, it.bold, it.raised))
-                    )
+                    result.append(space(-it.x - it.text.advance))
                 }
             result.append(space(lineWidth))
             if (row < rows - 1) result.append(Component.newline())
@@ -287,9 +297,9 @@ class DialogCanvas(
         bold: Boolean = false,
     ) {
         require(actions.size in 2..8)
-        val label = fit(valueLabel, 52, textSize, bold, buttonLabelFont)
+        val label = prepare(valueLabel, textSize, bold, true).fit(52)
         text(
-            x - 8 - textWidth(label, textSize, bold, buttonLabelFont),
+            x - 8 - label.width,
             row + if (textSize == 8) 1 else 0,
             label,
             raised = true,

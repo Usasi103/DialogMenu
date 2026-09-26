@@ -1,0 +1,3 @@
+# <i18n:key> 使用此语言；<l10n:key> 优先使用玩家客户端语言。
+# 翻译全部放在 DialogMenu/translations/*.yml，无需在 CraftEngine 中配置。
+DefaultLanguage: zh_cn

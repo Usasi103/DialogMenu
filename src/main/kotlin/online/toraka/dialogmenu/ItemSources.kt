@@ -168,6 +168,7 @@ object ItemSources {
     }
 
     fun changed() {
+        MenuImages.reset()
         ItemBridgeSources.reset()
         runCatching { MenuRuntime.definitions.flatMap { validate(it) } }
             .onSuccess {
@@ -175,6 +176,7 @@ object ItemSources {
             }
             .onFailure { MenuLog.warning("${it.message}") }
         MenuDialog.reloaded()
+        TemplateDialog.reloaded()
     }
 
     @SubscribeEvent(bind = "net.momirealms.craftengine.bukkit.api.event.CraftEngineReloadEvent")

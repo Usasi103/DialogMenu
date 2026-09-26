@@ -1,0 +1,44 @@
+Version: 1
+Type: canvas
+Skin: amethyst
+Title: "<l10n:demo.title>"
+DefaultPage: main
+Pages:
+  main:
+    Canvas:
+      Width: 552
+      Rows: 20
+      Background: panel
+    Elements:
+      title:
+        Type: text
+        Position: [24, 3]
+        Width: 480
+        Rows: 2
+        Text: "<l10n:demo.title>"
+      welcome:
+        Type: text
+        Position: [24, 6]
+        Width: 480
+        Rows: 2
+        Text: "<l10n:demo.welcome:'{player}'>"
+      language:
+        Type: text
+        Position: [24, 9]
+        Width: 480
+        Rows: 2
+        Text: "<l10n:demo.language>"
+      server-language:
+        Type: text
+        Position: [24, 12]
+        Width: 480
+        Rows: 2
+        Text: "i18n: <i18n:demo.title>"
+      # 替换为已注册图片 ID 后，可添加独立 Type: text 元素：
+      # Text: "<image:CE:my_pack:star> <image:IA:my_pack:star>"
+      close:
+        Type: button
+        Position: [24, 16]
+        Sprite: button
+        Text: "<l10n:demo.close>"
+        Actions: [close]

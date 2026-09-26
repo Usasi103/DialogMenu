@@ -23,6 +23,7 @@ object ItemMenuRenderer {
         expand: (String) -> String,
         resolve: (ItemDisplay) -> ResolvedMenuItem,
         click: (String) -> ClickEvent,
+        richText: RichMenuText = RichMenuText(),
     ): ItemMenuRender {
         fun text(value: String) = expand(menu.text(language, value))
         val bodies = mutableListOf<DialogBody>()
@@ -32,12 +33,12 @@ object ItemMenuRenderer {
             val resolved = entry.display?.let(resolve)
             val available = resolved == null || resolved.available
             val label = text(entry.name)
-            var caption = Component.text(label).decorate(TextDecoration.BOLD)
+            var caption = richText.component(label).decorate(TextDecoration.BOLD)
             entry.description.forEach {
                 caption =
                     caption
                         .appendNewline()
-                        .append(Component.text(text(it)).decoration(TextDecoration.BOLD, false))
+                        .append(richText.component(text(it)).decoration(TextDecoration.BOLD, false))
             }
             if (!available) {
                 caption =
@@ -57,10 +58,9 @@ object ItemMenuRenderer {
                 if (event != null) caption = caption.clickEvent(event)
                 buttons +=
                     ActionButton.create(
-                        Component.text(
-                            label,
-                            if (available) NamedTextColor.WHITE else NamedTextColor.GRAY,
-                        ),
+                        richText
+                            .component(label)
+                            .color(if (available) NamedTextColor.WHITE else NamedTextColor.GRAY),
                         null,
                         200,
                         event?.let(DialogAction::staticAction),
@@ -76,7 +76,7 @@ object ItemMenuRenderer {
             .forEach { other ->
                 buttons +=
                     ActionButton.create(
-                        Component.text(text(other.label)),
+                        richText.component(text(other.label)),
                         null,
                         200,
                         DialogAction.staticAction(click("page/${other.id}")),

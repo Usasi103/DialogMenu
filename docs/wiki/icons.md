@@ -2,6 +2,8 @@
 
 DialogMenu 不强制依赖 CraftEngine。先看要改的是哪个字段：物品模型、字体贴图和资源包发送方式分别配置，不能互相替代。
 
+`0.1.22-text.1-SNAPSHOT` 可在文本中使用 `<image:CE:namespace:id>`、`<image:IA:namespace:id>`，详见 [图片标签与独立多语言](text-tags.md)。以下原有字段继续兼容。
+
 | 所在位置 | 显示内容 | 更换方法 |
 | --- | --- | --- |
 | settings 的 `Pages.<页>.Icon` | 左侧分类的内置字体图标 | 换内置名称，或替换资源包中对应 PNG |

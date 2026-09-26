@@ -10,6 +10,9 @@ object MenuRuntime {
     private var templateRepository: TemplateRepository? = null
     private var catalogRepository: CatalogRepository? = null
     private lateinit var directory: File
+    var translations: MenuTranslations = MenuTranslations()
+        private set
+
     private val catalog: MenuCatalog?
         get() = catalogRepository?.current
 
@@ -78,6 +81,8 @@ object MenuRuntime {
         repository = next
         templateRepository = nextTemplates
         try {
+            MenuTranslations.initialize(directory)
+            translations = MenuTranslations.read(directory)
             CatalogRepository.exportIfNew(directory)
             if (CatalogRepository.selected(directory)) {
                 val store = CatalogRepository(directory)
@@ -110,6 +115,13 @@ object MenuRuntime {
         }
         val store = requireNotNull(repository) { "菜单尚未初始化" }
         ItemBridgeSources.reset()
+        val nextTranslations =
+            try {
+                MenuTranslations.read(directory)
+            } catch (error: Exception) {
+                MenuLog.reply(sender, "DialogMenu 翻译配置错误，保留原菜单：${error.message}")
+                return
+            }
         try {
             if (CatalogRepository.selected(directory)) {
                 val nextStore = catalogRepository ?: CatalogRepository(directory)
@@ -125,6 +137,8 @@ object MenuRuntime {
                     return
                 }
                 nextStore.install(next)
+                translations = nextTranslations
+                MenuImages.reset()
                 MenuResources.install(next.resourcePack)
                 catalogRepository = nextStore
                 MenuDialog.reloaded()
@@ -158,6 +172,8 @@ object MenuRuntime {
             return
         }
         store.install(next)
+        translations = nextTranslations
+        MenuImages.reset()
         templateStore.install(nextTemplates)
         catalogRepository = null
         MenuResources.install(MenuResourcePack.legacy)

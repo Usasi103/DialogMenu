@@ -74,6 +74,7 @@ object TemplateDialog {
                 template,
                 values,
                 { TemplateRenderer.expand(it, values, player.name, player.uniqueId.toString()) },
+                MenuImages.text(player),
                 { action ->
                     actions += action
                     DialogClicks.custom(Key.key("dialogmenu_dialogue", "$token/$action"))
@@ -87,7 +88,7 @@ object TemplateDialog {
                     .empty()
                     .base(
                         DialogBase.builder(Component.empty())
-                            .externalTitle(Component.text(template.title))
+                            .externalTitle(MenuImages.text(player).component(template.title))
                             .canCloseWithEscape(true)
                             .pause(false)
                             .afterAction(DialogBase.DialogAfterAction.NONE)
@@ -154,7 +155,7 @@ object TemplateDialog {
                     "set" ->
                         values[argument.substringBefore('=').trim()] =
                             argument.substringAfter('=').trim()
-                    "message" -> player.sendMessage(expanded)
+                    "message" -> player.sendMessage(MenuImages.text(player).component(expanded))
                     "close" -> {
                         player.closeDialog()
                         return@submit

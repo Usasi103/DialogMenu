@@ -17,6 +17,7 @@
 | 让按钮执行命令、翻页 | [动作参考](actions.md) |
 | 选择难度、显示条件文字 | [变量、条件与占位符](variables.md) |
 | 展示 CraftEngine / 其他插件物品 | [物品页面与物品源](items.md) |
+| 测试 CE/IA 图片标签与 DialogMenu 独立多语言 | [图片标签与独立多语言](text-tags.md) |
 | 更换图标、使用 IA / Nexo / Oraxen、完全不用 CE | [图标与材质](icons.md)、[资源包](resource-pack.md) |
 | 排查加载、方块字、布局错误 | [资源包](resource-pack.md)、[常见问题](troubleshooting.md) |
 | 直接复制完整文件 | [示例库](examples.md) |

@@ -12,8 +12,9 @@ object MenuRenderer {
         expand: (String) -> String,
         click: (String) -> ClickEvent,
         dropdown: Int = -1,
+        richText: RichMenuText = RichMenuText(),
     ): DialogCanvas {
-        val canvas = DialogCanvas(theme, click = click)
+        val canvas = DialogCanvas(theme, richText = richText, click = click)
         fun text(value: String) =
             expand(menu.text(language, value))
                 .map { if (it.isISOControl()) ' ' else it }
@@ -42,13 +43,14 @@ object MenuRenderer {
                 canvas.text(
                     widget.labelX,
                     widget.labelRow,
-                    DialogCanvas.fit(
-                        text(widget.label),
-                        room,
-                        widget.textSize,
-                        widget.bold,
-                        if (raised) DialogCanvas.BUTTON_LABEL_FONT else DialogCanvas.LABEL_FONT,
-                    ),
+                    canvas
+                        .prepare(
+                            text(widget.label),
+                            widget.textSize,
+                            widget.bold,
+                            raised,
+                        )
+                        .fit(room),
                     theme.text,
                     raised = raised,
                     textSize = widget.textSize,
@@ -61,12 +63,13 @@ object MenuRenderer {
                     canvas.text(
                         widget.x,
                         widget.row,
-                        DialogCanvas.fit(
-                            text(widget.text),
-                            widget.width,
-                            widget.textSize,
-                            widget.bold,
-                        ),
+                        canvas
+                            .prepare(
+                                text(widget.text),
+                                widget.textSize,
+                                widget.bold,
+                            )
+                            .fit(widget.width),
                         color(widget.color),
                         action(widget.action),
                         textSize = widget.textSize,

@@ -36,6 +36,7 @@ object TemplateRenderer {
         template: DialogTemplate,
         values: Map<String, String>,
         expand: (String) -> String,
+        richText: RichMenuText = RichMenuText(),
         click: (String) -> ClickEvent,
     ): DialogCanvas {
         val canvas =
@@ -45,6 +46,7 @@ object TemplateRenderer {
                 template.rows,
                 net.kyori.adventure.key.Key.key("dialogmenu_dialogue:labels"),
                 net.kyori.adventure.key.Key.key("dialogmenu_dialogue:button_labels"),
+                richText,
                 click,
             )
         template.background?.let { canvas.sprite(0, 0, it) }
@@ -59,15 +61,15 @@ object TemplateRenderer {
                     "button" -> {
                         canvas.sprite(element.x, element.row, requireNotNull(sprite), element.id)
                         val label =
-                            DialogCanvas.fit(
-                                expand(element.lines.single()),
-                                element.width - 8,
-                                bold = element.bold,
-                            )
+                            canvas
+                                .prepare(
+                                    expand(element.lines.single()),
+                                    bold = element.bold,
+                                    raised = true,
+                                )
+                                .fit(element.width - 8)
                         canvas.text(
-                            element.x +
-                                (element.width -
-                                    DialogCanvas.textWidth(label, bold = element.bold)) / 2,
+                            element.x + (element.width - label.width) / 2,
                             element.row + 1,
                             label,
                             element.color,
@@ -81,22 +83,17 @@ object TemplateRenderer {
                         val capacity = element.rows / stride
                         val lines =
                             element.lines.flatMap {
-                                wrap(expand(it), element.width, element.textSize, element.bold)
+                                canvas
+                                    .prepare(expand(it), element.textSize, element.bold)
+                                    .wrap(element.width)
                             }
                         lines.take(capacity).forEachIndexed { row, line ->
                             val label =
                                 if (row == capacity - 1 && lines.size > capacity)
-                                    DialogCanvas.fit(
-                                        line,
-                                        element.width -
-                                            DialogCanvas.textWidth(
-                                                "..",
-                                                element.textSize,
-                                                element.bold,
-                                            ),
-                                        element.textSize,
-                                        element.bold,
-                                    ) + ".."
+                                    canvas.prepare("..", element.textSize, element.bold).let {
+                                        suffix ->
+                                        line.fit(element.width - suffix.width) + suffix
+                                    }
                                 else line
                             canvas.text(
                                 element.x,

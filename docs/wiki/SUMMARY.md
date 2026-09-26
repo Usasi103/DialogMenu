@@ -8,6 +8,7 @@
 * [settings 控件参考](controls.md)
 * [canvas 画布](canvas.md)
 * [canvas 元素与贴图](elements.md)
+* [图片标签与独立多语言（测试版）](text-tags.md)
 * [动作参考](actions.md)
 * [变量、条件与占位符](variables.md)
 * [图标与材质：更换图片与非 CE 用法](icons.md)

@@ -1,0 +1,5 @@
+demo:
+  title: "Translations and images"
+  welcome: "Hello, <arg:0>!"
+  close: "Close"
+  language: "Client translation: English"

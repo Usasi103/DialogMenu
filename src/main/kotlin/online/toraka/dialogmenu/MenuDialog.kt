@@ -246,6 +246,7 @@ object MenuDialog {
             view.demo?.preferences ?: MenuPreferences.read(player.persistentDataContainer, menu)
         val token = UUID.randomUUID().toString().replace("-", "")
         val actions = linkedSetOf<String>()
+        val richText = MenuImages.text(player)
         fun click(action: String): ClickEvent {
             actions += action
             return DialogClicks.custom(Key.key("dialogmenu_settings", "$token/$action"))
@@ -253,7 +254,9 @@ object MenuDialog {
         val close =
             if (menu.showFooter)
                 ActionButton.create(
-                    Component.text(expandText(player, menu.text(prefs.language, menu.footerLabel))),
+                    richText.component(
+                        expandText(player, menu.text(prefs.language, menu.footerLabel))
+                    ),
                     null,
                     210,
                     DialogAction.staticAction(click("action/${menu.footerAction}")),
@@ -269,6 +272,7 @@ object MenuDialog {
                     { expandText(player, it) },
                     { ItemSources.registry.resolve(it, player) },
                     ::click,
+                    richText,
                 )
             sessions[player.uniqueId] =
                 Session(token, view, actions.toSet(), System.currentTimeMillis(), rendered.guards)
@@ -278,7 +282,7 @@ object MenuDialog {
                         .empty()
                         .base(
                             DialogBase.builder(
-                                    Component.text(
+                                    richText.component(
                                         expandText(player, menu.text(prefs.language, page.label))
                                     )
                                 )
@@ -311,6 +315,7 @@ object MenuDialog {
                 { expandText(player, it) },
                 ::click,
                 view.dropdown,
+                richText,
             )
         val component = canvas.build()
         sessions[player.uniqueId] =
@@ -321,7 +326,7 @@ object MenuDialog {
                     .empty()
                     .base(
                         DialogBase.builder(
-                                Component.text(
+                                richText.component(
                                     expandText(player, menu.text(prefs.language, menu.title))
                                 )
                             )

@@ -1,0 +1,5 @@
+demo:
+  title: "多语言与图片测试"
+  welcome: "你好，<arg:0>！"
+  close: "关闭"
+  language: "当前客户端翻译：简体中文"
