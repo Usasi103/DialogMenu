@@ -78,7 +78,7 @@ Description:
 
 纯文本无需加 `$`。简化格式里的 `$foo` 会作为普通文本，不读取旧版 languages 文件中的 foo。
 
-普通文字不解析 MiniMessage / `&a` 颜色语法；控件按皮肤样式显示，长文本按可用宽度裁切。canvas 元素的显式 Color 是另一套字段。`0.1.22-text.1-SNAPSHOT` 新增的 image / i18n / l10n 写法见 [图片标签与独立多语言](text-tags.md)，翻译由 DialogMenu 自己管理。
+普通文字不解析 MiniMessage / `&a` 颜色语法；控件按皮肤样式显示，长文本按可用宽度裁切。canvas 元素的显式 Color 是另一套字段。`0.1.22` 新增的 image / i18n / l10n 写法见 [图片标签与独立多语言](text-tags.md)，翻译由 DialogMenu 自己管理。
 
 ## Renderer 如何选择
 

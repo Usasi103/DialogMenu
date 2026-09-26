@@ -1,9 +1,9 @@
 # DialogMenu publication
 
-Current release: https://github.com/Usasi103/DialogMenu/releases/tag/v0.1.21
+Current release: https://github.com/Usasi103/DialogMenu/releases/tag/v0.1.22
 
-Cumulative test prerelease: https://github.com/Usasi103/DialogMenu/releases/tag/v0.1.22-text.1-SNAPSHOT
-This prerelease reuses the exact JAR verified by 106 tests, Paper + CraftEngine runtime probes,
+Previous cumulative test prerelease: https://github.com/Usasi103/DialogMenu/releases/tag/v0.1.22-text.1-SNAPSHOT
+The earlier prerelease reused the exact JAR verified by 106 tests, Paper + CraftEngine runtime probes,
 and the user's Minecraft 26.2 screenshot. Client language switching and real ItemsAdder validation remain pending.
 It includes the directory-junction installation fix and DialogMenu-owned translations.
 
@@ -16,3 +16,7 @@ The repository is public at the owner's request; existing commits, tags and earl
 Publication checks read back main/tag, release notes and all server-provided attachment SHA-256 digests.
 See [CHANGELOG](../../CHANGELOG.md), [templates](../guides/TEMPLATES.md),
 [asset licensing](../guides/TEMPLATE-ASSETS.md), and [1.21.11 validation](PAPER-1.21.11.md).
+
+Version 0.1.22 is the stable release of the same runtime code and resources, rebuilt and tested with the final version number.
+
+See the [0.1.22 validation record](RELEASE-0.1.22.md).

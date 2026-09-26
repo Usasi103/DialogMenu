@@ -49,7 +49,7 @@ Get-Item -LiteralPath '.\plugins\CraftEngine\resources' -Force | Format-List Ful
 
 临时处理：在 DialogMenu 的 `config.yml` 中设置 `ResourcePack.AutoInstall: false`，执行 `/dmenu reload`；将已导出的 `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip` 手动合入一个启用的 CE 内容包的 `resourcepack` 目录，保留原有文件并处理着色器冲突，然后按服务器现有流程重建并发送资源包。不要仅删除或替换 `resources` 链接，否则可能影响其他内容包。
 
-开发版 `0.1.22-paths.1-SNAPSHOT` 已支持上表中的资源输入根使用目录联接或软链接：CE 的 `resources`、IA 的 `contents`、Nexo 的 `pack/external_packs`、Oraxen 的 `pack`。安装时先固定其真实路径；输入根下的 `dialogmenu`、字体、贴图等内部路径仍禁止链接重定向。输入根换到其他位置后，旧位置的托管清单不会用来接管新位置的文件；已有不同内容会保留并提示冲突。
+`0.1.22` 已支持上表中的资源输入根使用目录联接或软链接：CE 的 `resources`、IA 的 `contents`、Nexo 的 `pack/external_packs`、Oraxen 的 `pack`。安装时先固定其真实路径；输入根下的 `dialogmenu`、字体、贴图等内部路径仍禁止链接重定向。输入根换到其他位置后，旧位置的托管清单不会用来接管新位置的文件；已有不同内容会保留并提示冲突。
 
 ## 手动指定 CraftEngine
 

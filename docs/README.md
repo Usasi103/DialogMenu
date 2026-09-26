@@ -16,7 +16,7 @@
 | [对话与首领模板](guides/TEMPLATES.md) | 画布菜单和字体图标 |
 | [任务列表 demo](guides/QUEST-DEMO.md) | 分类、分页、进度和演示奖励 |
 | [物品源](guides/ITEM-SOURCES.md) | ItemBridge 与原生物品页面 |
-| [图片标签与独立多语言（测试版）](wiki/text-tags.md) | CE/IA 图片、DialogMenu 本地 i18n / l10n 文件与示例 |
+| [图片标签与独立多语言](wiki/text-tags.md) | CE/IA 图片、DialogMenu 本地 i18n / l10n 文件与示例 |
 | [迁移到 DialogMenu](guides/MIGRATION.md) | 旧插件名称、指令和数据兼容 |
 | [资源素材](guides/TEMPLATE-ASSETS.md) | 字体生成、素材来源和使用范围 |
 | [更新检测](guides/UPDATE-CHECK.md) | 匿名检查和配置方式 |

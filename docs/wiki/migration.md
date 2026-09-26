@@ -60,7 +60,7 @@ Pages:
 
 DialogMenu 从 0.1.14 更名。不要同时加载旧 PlayerSettings JAR 与新 DialogMenu。新目录没有配置时，启动迁移会尝试导入旧目录并保留原文件；已有新配置优先，冲突不覆盖。
 
-命令别名、playersettings 权限名、玩家语言与主题 PDC 键保留兼容。当前开发版 0.1.21-SNAPSHOT 已把 toraka_settings / toraka_dialogue 字体命名空间改为 dialogmenu_settings / dialogmenu_dialogue；需要同步配套资源包并修改自定义 Font 引用，见 [资源包](resource-pack.md)。
+命令别名、playersettings 权限名、玩家语言与主题 PDC 键保留兼容。0.1.21 已把 toraka_settings / toraka_dialogue 字体命名空间改为 dialogmenu_settings / dialogmenu_dialogue；需要同步配套资源包并修改自定义 Font 引用，见 [资源包](resource-pack.md)。
 
 ## 对照 TrMenu 理解
 
