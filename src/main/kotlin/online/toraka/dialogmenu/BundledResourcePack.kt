@@ -13,11 +13,15 @@ import java.util.zip.ZipInputStream
 import org.bukkit.configuration.file.YamlConfiguration
 
 /** Paths follow each provider's documented resource-pack input, never its generated output. */
-enum class ResourcePackProvider(val pluginName: String, val sourceDirectory: String) {
-    CRAFT_ENGINE("CraftEngine", "resources/dialogmenu"),
-    ITEMS_ADDER("ItemsAdder", "contents/dialogmenu"),
-    NEXO("Nexo", "pack/external_packs/dialogmenu"),
-    ORAXEN("Oraxen", "pack");
+enum class ResourcePackProvider(
+    val pluginName: String,
+    val sourceDirectory: String,
+    val inputDirectory: String,
+) {
+    CRAFT_ENGINE("CraftEngine", "resources/dialogmenu", "resources"),
+    ITEMS_ADDER("ItemsAdder", "contents/dialogmenu", "contents"),
+    NEXO("Nexo", "pack/external_packs/dialogmenu", "pack/external_packs"),
+    ORAXEN("Oraxen", "pack", "pack");
 
     fun instructions(): String =
         when (this) {
@@ -125,11 +129,14 @@ class BundledResourcePack(private val dataDirectory: Path, private val archive: 
                 name.none { it == '\\' || it == ':' || it.isISOControl() } &&
                 name.split('/').all { it.isNotEmpty() && it != "." && it != ".." }
 
-        private fun safePath(root: Path, name: String): Path {
+        private fun safePath(root: Path, name: String, expectedRoot: Path? = null): Path {
             require(validName(name)) { "不安全的资源路径：$name" }
             val absolute = root.toAbsolutePath().normalize()
             Files.createDirectories(absolute)
             val realRoot = absolute.toRealPath()
+            require(expectedRoot == null || realRoot == expectedRoot) {
+                "资源目标目录已改变，已停止写入：$absolute"
+            }
             val target = absolute.resolve(name).normalize()
             require(target.startsWith(absolute)) { "资源路径超出目标目录：$name" }
             var current = absolute
@@ -137,7 +144,8 @@ class BundledResourcePack(private val dataDirectory: Path, private val archive: 
                 current = current.resolve(component)
                 if (Files.exists(current, LinkOption.NOFOLLOW_LINKS)) {
                     require(
-                        !Files.isSymbolicLink(current) && current.toRealPath().startsWith(realRoot)
+                        !Files.isSymbolicLink(current) &&
+                            current.toRealPath() == realRoot.resolve(absolute.relativize(current))
                     ) {
                         "资源路径包含链接或重定向：$current"
                     }
@@ -183,6 +191,23 @@ class BundledResourcePack(private val dataDirectory: Path, private val archive: 
             "内置资源包缺少 pack.mcmeta 或 assets"
         }
         result
+    }
+
+    /**
+     * Only the provider's input root may redirect; all descendants stay inside its resolved root.
+     */
+    private data class InstallationRoot(
+        val logicalRoot: Path,
+        val logicalInput: Path,
+        val resolvedInput: Path,
+    ) {
+        fun resolve(name: String): Path {
+            require(validName(name)) { "不安全的资源路径：$name" }
+            val logicalTarget = logicalRoot.resolve(name).normalize()
+            require(logicalTarget.startsWith(logicalInput)) { "资源路径超出输入目录：$name" }
+            val relative = logicalInput.relativize(logicalTarget).joinToString("/")
+            return safePath(resolvedInput, relative, resolvedInput)
+        }
     }
 
     fun install(
@@ -236,6 +261,7 @@ class BundledResourcePack(private val dataDirectory: Path, private val archive: 
                 "resourcepack/${provider.provider.name.lowercase()}-state.properties",
                 files,
                 shared.files.mapKeys { "$destination/${it.key}" },
+                provider.provider.inputDirectory,
             )
         return ResourcePackInstallResult(
             exported,
@@ -252,20 +278,39 @@ class BundledResourcePack(private val dataDirectory: Path, private val archive: 
         stateName: String,
         files: Map<String, ByteArray>,
         external: Map<String, String> = emptyMap(),
+        inputDirectory: String = "",
     ): WriteResult {
         val stateFile = safePath(dataDirectory, stateName)
         val state = Properties()
         if (Files.isRegularFile(stateFile)) Files.newInputStream(stateFile).use { state.load(it) }
-        val scope = targetRoot.toAbsolutePath().normalize().toString()
-        if (state.getProperty("target") != scope) state.clear()
-        val next = Properties().apply { setProperty("target", scope) }
+        val logicalRoot = targetRoot.toAbsolutePath().normalize()
+        val logicalInput = logicalRoot.resolve(inputDirectory)
+        val root =
+            try {
+                Files.createDirectories(logicalInput)
+                InstallationRoot(logicalRoot, logicalInput, logicalInput.toRealPath())
+            } catch (error: Exception) {
+                return WriteResult(0, listOf("$logicalInput（无法访问资源输入目录：${error.message}）"))
+            }
+        val scope = logicalRoot.toString()
+        val previousRoot = state.getProperty("resolved-root")
+        // Legacy state did not record resolved paths. Only inherit it for an ordinary directory.
+        val sameRoot =
+            if (previousRoot == null) root.resolvedInput == logicalInput
+            else previousRoot == root.resolvedInput.toString()
+        if (state.getProperty("target") != scope || !sameRoot) state.clear()
+        val next =
+            Properties().apply {
+                setProperty("target", scope)
+                setProperty("resolved-root", root.resolvedInput.toString())
+            }
         var changed = 0
         val conflicts = mutableListOf<String>()
         for ((name, bytes) in files) {
             val previous = state.getProperty("file.$name")
             if (previous != null) next.setProperty("file.$name", previous)
             try {
-                val target = safePath(targetRoot, name)
+                val target = root.resolve(name)
                 val hash = digest(bytes)
                 val current =
                     if (Files.isRegularFile(target)) digest(Files.readAllBytes(target)) else null
@@ -301,7 +346,7 @@ class BundledResourcePack(private val dataDirectory: Path, private val archive: 
             val name = key.removePrefix("file.")
             if (name in files) continue
             try {
-                val target = safePath(targetRoot, name)
+                val target = root.resolve(name)
                 if (
                     Files.isRegularFile(target) &&
                         digest(Files.readAllBytes(target)) == state.getProperty(key)

@@ -1,5 +1,11 @@
 # Changelog
 
+## 未发布
+
+- 修复资源自动安装拒绝合法目录联接的问题：允许 CraftEngine `resources`、ItemsAdder `contents`、Nexo `pack/external_packs`、Oraxen `pack` 输入根使用目录链接，解析并固定真实目标后再安装。输入根下的文件仍禁止通过链接或重定向改写其他目录。
+- 托管文件清单记录实际输入根；链接目标改变时不继承原位置的文件所有权，避免误覆盖或删除新位置的文件。普通目录的旧清单继续支持升级，无法访问的输入根只报告一次。
+- 增加 Windows junction / 非 Windows symlink 回归用例，覆盖四种输入根、重复安装、目标切换、旧清单迁移和越界保护；开发产物使用独立版本 `0.1.22-paths.1-SNAPSHOT`。
+
 ## [0.1.21] - 2026-09-25
 
 - 修复 Paper 1.21.11 打开菜单时的 `NoSuchMethodError: ClickEvent.custom(Key)`：以 1.21.11 API 编译，使用 Adventure 4.26.1 与较新版本共用的自定义点击接口。配套资源包支持范围从仅 88 调整为 75–88，保留原有着色器和字宽。

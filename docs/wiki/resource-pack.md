@@ -39,6 +39,18 @@ CraftEngine 的 `resource-pack.exclude-core-shaders` 和 Oraxen 的 `Pack.import
 
 Auto 的 `RequireLoaded: false` 允许手动启用客户端资源包，不再等待本服专用的 CraftEngine 加载回执；这并不表示资源已经加载。开启严格检查时，CraftEngine 使用真实托管 UUID，其他发送方需要填写其实际 UUID。已有服务器的配置不会被新默认配置覆盖；URL / External 省略 AutoInstall 时不会向其他插件安装资源。`AutoInstall: false` 可禁止写入提供方的源目录，ZIP 仍会导出，Auto 仍可检测 CE 发送来源并进行严格检查。
 
+## 目录链接与自动安装警告
+
+0.1.21 的自动安装会拒绝指向插件目录外的资源目录链接。若控制台大量出现“资源路径包含链接或重定向”，且都指向 `plugins/CraftEngine/resources`，说明安装器拦住了这个目录；这不代表贴图文件损坏。可用 PowerShell 检查实际属性和目标：
+
+```powershell
+Get-Item -LiteralPath '.\plugins\CraftEngine\resources' -Force | Format-List FullName,Attributes,LinkType,Target
+```
+
+临时处理：在 DialogMenu 的 `config.yml` 中设置 `ResourcePack.AutoInstall: false`，执行 `/dmenu reload`；将已导出的 `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip` 手动合入一个启用的 CE 内容包的 `resourcepack` 目录，保留原有文件并处理着色器冲突，然后按服务器现有流程重建并发送资源包。不要仅删除或替换 `resources` 链接，否则可能影响其他内容包。
+
+开发版 `0.1.22-paths.1-SNAPSHOT` 已支持上表中的资源输入根使用目录联接或软链接：CE 的 `resources`、IA 的 `contents`、Nexo 的 `pack/external_packs`、Oraxen 的 `pack`。安装时先固定其真实路径；输入根下的 `dialogmenu`、字体、贴图等内部路径仍禁止链接重定向。输入根换到其他位置后，旧位置的托管清单不会用来接管新位置的文件；已有不同内容会保留并提示冲突。
+
 ## 手动指定 CraftEngine
 
 以下是全局 config.yml 的完整结构：
