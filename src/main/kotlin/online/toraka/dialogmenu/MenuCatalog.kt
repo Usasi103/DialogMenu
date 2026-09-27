@@ -107,6 +107,7 @@ object MenuCatalogParser {
                             "Skin",
                             "Canvas",
                             "Variables",
+                            "Placeholders",
                             "Pages",
                         ),
                         path,
@@ -116,12 +117,20 @@ object MenuCatalogParser {
                             val section = pages.getConfigurationSection(page)!!
                             keys(
                                 section,
-                                setOf("Title", "Skin", "Canvas", "Variables", "Elements"),
+                                setOf(
+                                    "Title",
+                                    "Skin",
+                                    "Canvas",
+                                    "Variables",
+                                    "Placeholders",
+                                    "Elements",
+                                ),
                                 "$path.Pages.$page",
                             )
                             val compiled = YamlConfiguration()
                             compiled.set("Version", 1)
-                            for (key in listOf("Title", "Skin", "Canvas", "Variables")) {
+                            for (key in
+                                listOf("Title", "Skin", "Canvas", "Variables", "Placeholders")) {
                                 if (root.contains(key)) put(compiled, key, root.get(key))
                             }
                             section.getValues(false).forEach { (key, value) ->

@@ -73,9 +73,9 @@ DialogMenu 从 0.1.14 更名。不要同时加载旧 PlayerSettings JAR 与新 D
 | 布局 | settings 的 Layout 是控件名顺序；canvas 用像素 / 行坐标 |
 | 图标 | settings 用 Icons；canvas 用 Elements；真实物品用 Display.Material |
 | 点击动作 | Actions 字符串列表，动作名及顺序规则见本 Wiki |
-| 条件显示 | canvas 只支持枚举变量等值条件 |
+| 条件显示 | canvas 支持枚举变量与 Placeholders 声明值的比较、条件列表；不支持 JS / Kether 表达式 |
 | 自定义物品 | source:插件ID:物品ID，交给内置 ItemBridge 适配器 |
-| 变量 | settings 文本 / State 用 PAPI；canvas 用声明的枚举变量 |
+| 变量 | settings 文本 / State 用 PAPI；canvas 用声明的枚举变量和 Placeholders |
 
 不要把箱子槽位网格、TrMenu 的嵌套动作组、JS / Kether、动态物品表达式、自动动画或点击类型配置直接贴进 DialogMenu。当前解析器只接受文档中列出的字段。
 

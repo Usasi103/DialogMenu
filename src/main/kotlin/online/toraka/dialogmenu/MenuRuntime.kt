@@ -132,6 +132,10 @@ object MenuRuntime {
                     .forEach {
                         MenuLog.reply(sender, "DialogMenu 警告：$it")
                     }
+                MenuImages.reset()
+                TemplateDialog.warnings(next.templates.values).forEach {
+                    MenuLog.reply(sender, "DialogMenu 警告：$it")
+                }
                 if (checkOnly) {
                     MenuLog.reply(sender, "DialogMenu 配置检查通过：${next.menus.size} 个菜单，未应用修改。")
                     return
@@ -156,6 +160,10 @@ object MenuRuntime {
         val next =
             try {
                 nextTemplates = templateStore.read()
+                MenuImages.reset()
+                TemplateDialog.warnings(nextTemplates.values).forEach {
+                    MenuLog.reply(sender, "DialogMenu 警告：$it")
+                }
                 store.readDefinition().also { definition ->
                     ItemSources.validate(definition).forEach {
                         MenuLog.reply(sender, "DialogMenu 警告：$it")

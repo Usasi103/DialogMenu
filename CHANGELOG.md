@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.23-papi.1-SNAPSHOT] - 2026-09-27
+
+- canvas 新增 `Placeholders`：在菜单根部或页面中把 PlaceholderAPI 变量声明为名称，文字写 `{名称}`，条件直接引用；Text 与 message 也可直接写 `%变量%` 及 `{ping}`、`{world}`。取值在打开、跳转、刷新时进行，点击时重新核对条件，条件不再成立只刷新界面。
+- 条件支持 `=`、`!=`、`>`、`>=`、`<`、`<=` 与条件列表（同时成立）。数字比较仅用于 Placeholders；取不到的 PAPI 值令相关条件均不成立。旧的 `变量=值` 写法不变，重叠按钮可用互斥的等值或不相交数字范围证明不会同时显示。
+- sprite 新增 `Image: "CE/IA:命名空间:图片"`，按 CE / IA 注册的图片 ID 显示并自动测量字宽；新增 `Cases` 按条件切换内置贴图、字体字形或图片，首条成立者生效。`/dmenu check`、`/dmenu reload` 报告不可用或超宽的图片，以及缺少 PlaceholderAPI 的菜单。
+- 兼容提示：canvas 文字中原本原样显示的 `%英文数字%` 形式（如 `50%-100%` 中的 `%-100%`）现在按 PAPI 变量解析，取不到时显示未接入；`{ping}`、`{world}` 也开始替换。同名 Variables 仍优先于 `{ping}`、`{world}`。
+- 命令动作仍只接受 `{player}`、`{uuid}` 与枚举变量，拒绝 Placeholders 值和 `%`，避免 PAPI 输出拼入控制台指令。Wiki 增补条件语法、Image / Cases 字段、Glyph 写法说明与可复制的 placeholders.yml 示例。
+
 ## [0.1.22] - 2026-09-26
 
 - 将已验证的图片标签、DialogMenu 本地 i18n/l10n、翻译回退与参数功能纳入正式版；配套 Wiki 与菜单示例同步更新。

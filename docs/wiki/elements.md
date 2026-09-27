@@ -10,7 +10,7 @@
 | Position | 必填 [X, Row] | 横向像素、纵向行，每行 9 像素 |
 | Text | 单行字符串或字符串列表 | text 正文；button 必须恰好一行 |
 | Color | 默认 "#e7deed" | `#RRGGBB`，作用于文字 |
-| VisibleWhen | 可省略 | 声明过的变量等值条件，如 difficulty=hard |
+| VisibleWhen | 可省略 | 条件，如 difficulty=hard、"level>=30"，或条件列表；见 [条件语法](variables.md) |
 | SelectedWhen | 可省略 | 选中条件 |
 | SelectedSprite | 可省略 | 选中时替换的内置贴图，尺寸必须与原贴图相同 |
 | Permission | 可省略 | button 点击权限；不使元素隐藏 |
@@ -56,7 +56,7 @@ accept:
 
 button 默认 Sprite 是 button，大小由贴图决定。设置 Width / Rows 不能把内置按钮拉伸；需要宽按钮时使用 wide-button。
 
-按钮文字自动居中，过长裁切。按钮背景和文字都属于点击区域。按钮间不允许重叠，除非双方 VisibleWhen 是同一个变量的不同值，确保不会同时显示。
+按钮文字自动居中，过长裁切。按钮背景和文字都属于点击区域。按钮间不允许重叠，除非双方 VisibleWhen 能证明不会同时成立：同一名称的不同 `=` 值、`=值` 与 `!=值`，或 `"level<30"` 与 `"level>=30"` 这类不相交的数字范围。无法证明时 `/dmenu check` 拒绝。
 
 ## sprite：装饰图片
 
@@ -68,6 +68,55 @@ portrait:
 ```
 
 不写 Sprite 时默认 emblem。装饰图没有动作；reward 也只是一张图片，不是玩家可以拿走的物品。
+
+## sprite：用图片 ID 显示 CE / IA 图片
+
+```yaml
+portrait:
+  Type: sprite
+  Position: [24, 3]
+  Width: 108
+  Rows: 12
+  Image: "CE:my_pack:elf_calm"
+```
+
+Image 的写法与文字中的 `<image:...>` 标签相同：`CE:` 或 `IA:` 前缀，省略时为 CE；CE 图集可写 `CE:命名空间:图片:行:列`。图片 ID 是 CE / IA 注册的图片 ID，不是物品 ID 或 PNG 路径。
+
+| Image 相关字段 | 默认 | 要求 |
+| --- | --- | --- |
+| Image | 无 | 只用于 sprite，不能与 Font / Glyph / Advance / Sprite 同时写 |
+| Width | 108 | 1–256，占位宽度；字宽由插件按图片自动测量，无需 Advance |
+| Rows | 12 | 1–28，占位高度；IA 接口不提供图片高度，需要自己预留 |
+
+图片使用来源插件定义的高度和基线，不会被 Width / Rows 缩放。`/dmenu check` 和 `/dmenu reload` 会逐个检查图片是否可用、是否超出占位宽度；来源插件尚未加载时只给警告。打开菜单时仍取不到的图片显示为 `[image:图片ID]`，并在控制台报告。
+
+## sprite：按条件切换图片（Cases）
+
+```yaml
+portrait:
+  Type: sprite
+  Position: [24, 3]
+  Width: 108
+  Rows: 12
+  Image: "CE:my_pack:elf_calm"
+  Cases:
+    - When: "quest>=3"
+      Image: "CE:my_pack:elf_smile"
+    - When: mood=angry
+      Image: "CE:my_pack:elf_angry"
+```
+
+Cases 从上往下取第一条成立的，都不成立时使用元素自己的图。When 的写法与 VisibleWhen 相同，可以引用 Variables 或 [Placeholders](variables.md)，也可以写条件列表。每个元素 1–16 条。
+
+每条 Case 使用与元素默认图相同的写法：
+
+| 默认写法 | 每条 Case 写 | 说明 |
+| --- | --- | --- |
+| Image | Image | 共用元素的 Width / Rows |
+| Font + Glyph | Glyph，可选 Font、Advance | Font 省略时沿用元素字体；Advance 省略时沿用元素的 Advance |
+| Sprite（内置贴图） | Sprite | 尺寸必须与默认贴图相同 |
+
+Cases 只用于 sprite，不能与 SelectedSprite / SelectedWhen 同时使用；按钮的选中效果继续用 SelectedSprite。
 
 ## 内置贴图尺寸
 
@@ -106,9 +155,11 @@ portrait:
 | 自定义字体字段 | 默认 | 要求 |
 | --- | --- | --- |
 | Font | 无 | 字体资源 ID，只用于 sprite |
-| Glyph | 必填 | 单个 BMP 字符；YAML 双引号可用 Unicode 转义 |
+| Glyph | 必填 | 单个 BMP 字符；YAML 双引号可用 Unicode 转义，单引号不转义 |
 | Width | 108 | 1–256，实际图片占用宽度 |
 | Rows | 12 | 1–28，实际高度按每行 9 像素计算 |
 | Advance | Width + 1 | 0–1024，字体绘制后的游标前进量 |
+
+Glyph 不要求是私用区字符，字体把哪个字符映射到图片就写哪个；`"\uE001"` 只是 YAML 双引号的转义写法，也可以直接粘贴该字符。写成 `'\uE001'`（单引号）会变成 6 个字符而报错。已在 CE / IA 注册的图片，改用上方的 Image 更省事，不用记码位和 Advance。
 
 Width 与 Advance 不是同一个概念。要按实际字体 metrics 填写，否则图片后续元素可能偏位。插件不能仅凭 YAML 校验客户端字体图片是否存在、尺寸是否正确，需要加载资源包后查看实际效果。

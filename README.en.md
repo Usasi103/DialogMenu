@@ -23,7 +23,7 @@ In-game screenshots with Chinese menu text. Click an image to view the original.
 | --- | --- |
 | Player settings | Toggles, buttons, stepped sliders, dropdowns, search, and category navigation |
 | Conversations and confirmations | Page navigation, conditional content, option state, and player or console commands |
-| Custom canvases | Element positions, text widths, colors, and sprites; text supports font sizes from 6 to 24 and bold styling |
+| Custom canvases | Element positions, text widths, colors, and sprites; text supports font sizes from 6 to 24 and bold styling; PlaceholderAPI values can fill text, hide elements, or switch images |
 | Item previews | Display vanilla or custom items with their models and hover tooltips |
 | Quest list demo | Up to five entries per page, categories, details, progress, reward icons, and a completed category |
 

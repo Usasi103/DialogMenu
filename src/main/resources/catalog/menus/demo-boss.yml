@@ -12,6 +12,8 @@
 # 修改画布尺寸时须设 HideFocusOutline: false；背景和各元素仍须在新画布边界内。
 # Variables 的首个选项是默认值；set 修改当前玩家本次会话的值，refresh 重新绘制。
 # VisibleWhen / SelectedWhen 写作 变量名=值；分别控制是否显示、是否使用 SelectedSprite。
+# Placeholders 可声明 PAPI 值（名称: "%变量%"），文字写 {名称}；条件还支持 != > >= < <=，写成列表表示同时成立。
+# sprite 可写 Image: "CE:命名空间:图片" 显示 CE / IA 图片，并用 Cases 按条件切换图片；详见 Wiki 变量与元素章节。
 # Actions 按顺序执行：page 跳本菜单页，menu 打开其他菜单，message 发提示，close 关闭。
 # command / console 分别以玩家 / 控制台身份执行指令，指令不带 /；权限和业务校验由实际插件处理。
 # 原版 16 色对照（Color 填右侧的 '#RRGGBB'，不能直接填 &a 或 §a）：

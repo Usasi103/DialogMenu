@@ -4,7 +4,7 @@ import net.kyori.adventure.text.event.ClickEvent
 
 object TemplateRenderer {
     fun visible(element: TemplateElement, values: Map<String, String>): Boolean =
-        element.condition?.let { values[it.first] == it.second } ?: true
+        element.condition?.matches(values) ?: true
 
     fun expand(text: String, values: Map<String, String>, player: String, uuid: String): String =
         Regex("\\{([a-zA-Z0-9_-]+)}").replace(text) {
@@ -14,6 +14,18 @@ object TemplateRenderer {
                 else -> values[key] ?: it.value
             }
         }
+
+    /** One pass, so a substituted value is never expanded again. Unknown names stay literal. */
+    fun display(source: String, lookup: (String) -> String?, papi: (String) -> String): String =
+        Regex("%[a-zA-Z0-9_:.\\-]+%|\\{([a-zA-Z0-9_-]+)}").replace(source) { match ->
+            val key = match.groupValues[1]
+            if (key.isEmpty()) papi(match.value) else lookup(key) ?: match.value
+        }
+
+    fun imageTag(request: MenuImageRequest): String =
+        "<image:${request.provider}:${request.id}" +
+            (if (request.provider == "CE") ":${request.row}:${request.column}" else "") +
+            ">"
 
     fun wrap(text: String, width: Int, textSize: Int = 8, bold: Boolean = false): List<String> {
         val lines = mutableListOf<String>()
@@ -53,11 +65,24 @@ object TemplateRenderer {
         template.elements
             .filter { visible(it, values) }
             .forEach { element ->
-                val selected = element.selected?.let { values[it.first] == it.second } ?: false
+                val selected = element.selected?.matches(values) ?: false
+                val case = element.cases.firstOrNull { it.condition.matches(values) }
                 val sprite =
-                    if (selected) element.selectedSprite ?: element.sprite else element.sprite
+                    if (selected) element.selectedSprite ?: element.sprite
+                    else case?.sprite ?: element.sprite
+                val image = case?.image ?: element.image
                 when (element.type) {
-                    "sprite" -> canvas.sprite(element.x, element.row, requireNotNull(sprite))
+                    // Images keep their provider's font and baseline. A missing image falls back
+                    // to text, clipped at the canvas edge so the row cannot wrap.
+                    "sprite" ->
+                        if (image != null)
+                            canvas.text(
+                                element.x,
+                                element.row,
+                                canvas.prepare(imageTag(image)).fit(template.width - element.x),
+                                element.color,
+                            )
+                        else canvas.sprite(element.x, element.row, requireNotNull(sprite))
                     "button" -> {
                         canvas.sprite(element.x, element.row, requireNotNull(sprite), element.id)
                         val label =

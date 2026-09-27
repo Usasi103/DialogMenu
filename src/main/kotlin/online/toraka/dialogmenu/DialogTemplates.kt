@@ -16,12 +16,21 @@ data class TemplateElement(
     val sprite: DialogCanvas.Skin?,
     val selectedSprite: DialogCanvas.Skin?,
     val color: Int,
-    val condition: Pair<String, String>?,
-    val selected: Pair<String, String>?,
+    val condition: MenuCondition?,
+    val selected: MenuCondition?,
     val permission: String,
     val actions: List<String>,
     val textSize: Int = 8,
     val bold: Boolean = false,
+    val image: MenuImageRequest? = null,
+    val cases: List<SpriteCase> = emptyList(),
+)
+
+/** One alternative look for a sprite; the element's own look is the fallback. */
+data class SpriteCase(
+    val condition: MenuCondition,
+    val sprite: DialogCanvas.Skin?,
+    val image: MenuImageRequest?,
 )
 
 data class DialogTemplate(
@@ -33,6 +42,7 @@ data class DialogTemplate(
     val background: DialogCanvas.Skin?,
     val variables: Map<String, List<String>>,
     val elements: List<TemplateElement>,
+    val placeholders: Map<String, String> = emptyMap(),
 ) {
     fun values(previous: Map<String, String>) = variables.mapValues { (key, options) ->
         previous[key]?.takeIf { it in options } ?: options.first()
@@ -78,13 +88,18 @@ object TemplateSkins {
 object TemplateParser {
     private val idPattern = Regex("[a-z][a-z0-9_-]{0,47}")
     private val valuePattern = Regex("[a-zA-Z0-9_-]{1,48}")
+    private val placeholderPattern = Regex("%[^%\\p{Cntrl}]{1,254}%")
 
     fun parse(id: String, source: String, path: String = "templates/$id.yml"): DialogTemplate {
         require(id.split('/').size <= 2 && id.split('/').all { it.matches(idPattern) }) {
             "无效菜单页面 ID $id"
         }
         val root = MenuConfigParser.yaml(source, path)
-        keys(root, setOf("Version", "Title", "Skin", "Canvas", "Variables", "Elements"), path)
+        keys(
+            root,
+            setOf("Version", "Title", "Skin", "Canvas", "Variables", "Placeholders", "Elements"),
+            path,
+        )
         require(root.get("Version") == 1) { "$path.Version: 必须为 1" }
         val title = line(root.getString("Title") ?: id, path)
         val theme = root.getString("Skin", "amethyst")!!
@@ -126,10 +141,59 @@ object TemplateParser {
                     }
                 }
             } ?: emptyMap()
-        fun condition(value: String?): Pair<String, String>? = value?.let {
-            val pair = it.substringBefore('=').trim() to it.substringAfter('=', "").trim()
-            require(pair.second in variables[pair.first].orEmpty()) { "$path: 无效变量条件 $it" }
-            pair
+        require(!root.contains("Placeholders") || root.isConfigurationSection("Placeholders")) {
+            "$path.Placeholders: 需要 名称: \"%PAPI变量%\" 配置段"
+        }
+        val placeholders =
+            root.getConfigurationSection("Placeholders")?.getKeys(false)?.associateWith { key ->
+                require(
+                    key.matches(idPattern) &&
+                        key !in setOf("player", "uuid", "ping", "world") &&
+                        key !in variables
+                ) {
+                    "$path.Placeholders: 无效名称 $key，不能与 Variables 或 player/uuid/ping/world 重名"
+                }
+                val token = root.get("Placeholders.$key")
+                require(token is String && token.matches(placeholderPattern)) {
+                    "$path.Placeholders.$key: 需要一个完整的 %PAPI变量%，如 \"%player_level%\""
+                }
+                token
+            } ?: emptyMap()
+        require(placeholders.size <= 32) { "$path.Placeholders: 最多 32 个" }
+        fun condition(raw: Any?, at: String): MenuCondition? {
+            if (raw == null) return null
+            val texts = if (raw is String) listOf(line(raw, at)) else strings(raw, at)
+            require(texts.size in 1..8) { "$at: 需要 1–8 条条件" }
+            return MenuCondition(
+                texts.map { text ->
+                    val clause =
+                        requireNotNull(MenuCondition.clause(text)) {
+                            "$at: 条件写作 名称=值、名称!=值 或 名称>=数字：$text"
+                        }
+                    require(!clause.value.startsWith('=')) { "$at: 比较只用一个 =：$text" }
+                    val options = variables[clause.name]
+                    when {
+                        options != null ->
+                            require(
+                                clause.operator in setOf("=", "!=") && clause.value in options
+                            ) {
+                                "$at: 菜单变量只能用 = 或 !=，值须在 Variables 列表中：$text"
+                            }
+                        clause.name in placeholders ->
+                            require(
+                                clause.operator in setOf("=", "!=") ||
+                                    clause.value.toDoubleOrNull()?.isFinite() == true
+                            ) {
+                                "$at: > >= < <= 右侧需要数字：$text"
+                            }
+                        else ->
+                            throw IllegalArgumentException(
+                                "$at: 未在 Variables 或 Placeholders 中声明 ${clause.name}"
+                            )
+                    }
+                    clause
+                }
+            )
         }
         val section =
             requireNotNull(root.getConfigurationSection("Elements")) { "$path: 缺少 Elements" }
@@ -158,6 +222,8 @@ object TemplateParser {
                         "Font",
                         "Glyph",
                         "Advance",
+                        "Image",
+                        "Cases",
                         "TextSize",
                         "FontSize",
                         "Bold",
@@ -192,24 +258,28 @@ object TemplateParser {
                 val x = position[0] as Int
                 val row = position[1] as Int
                 val customFont = conf.getString("Font")
+                val image = conf.get("Image")?.let { parseImage(it, "$location.Image") }
+                require(image == null || type == "sprite") { "$location.Image: 仅用于 sprite" }
+                require(
+                    image == null ||
+                        listOf("Font", "Glyph", "Advance", "Sprite").none(conf::contains)
+                ) {
+                    "$location: Image 不能与 Font / Glyph / Advance / Sprite 同时使用"
+                }
                 val sprite =
                     if (customFont != null) {
                         require(type == "sprite") { "$location.Font: 仅用于 sprite" }
-                        val glyph = conf.getString("Glyph").orEmpty()
-                        require(glyph.length == 1 && !glyph[0].isSurrogate()) {
-                            "$location.Glyph: 需要单个 BMP 字符，可写 Unicode 转义"
-                        }
                         val spriteWidth = integer(conf, "Width", 108, 1..256, location)
                         val spriteRows = integer(conf, "Rows", 12, 1..28, location)
                         DialogCanvas.Skin(
-                            glyph[0].code,
+                            glyph(conf.get("Glyph"), "$location.Glyph"),
                             spriteWidth,
                             spriteRows,
                             resourceFont(customFont),
                             listOf(integer(conf, "Advance", spriteWidth + 1, 0..1024, location)),
                             1,
                         )
-                    } else if (type != "text")
+                    } else if (type != "text" && image == null)
                         TemplateSkins.get(
                             theme,
                             conf.getString(
@@ -219,8 +289,18 @@ object TemplateParser {
                         )
                     else null
                 val elementWidth =
-                    sprite?.width ?: integer(conf, "Width", width - x - 12, 1..960, location)
-                val elementRows = sprite?.rows ?: integer(conf, "Rows", lineRows, 1..28, location)
+                    sprite?.width
+                        ?: if (image != null) integer(conf, "Width", 108, 1..256, location)
+                        else integer(conf, "Width", width - x - 12, 1..960, location)
+                val elementRows =
+                    sprite?.rows
+                        ?: integer(
+                            conf,
+                            "Rows",
+                            if (image != null) 12 else lineRows,
+                            1..28,
+                            location,
+                        )
                 require(elementRows >= lineRows) { "$location.Rows: 当前字号至少占 $lineRows 行" }
                 require(x + elementWidth <= width && row + elementRows <= rows) {
                     "$location: 元素超出画布"
@@ -242,7 +322,13 @@ object TemplateParser {
                     val verb = action.substringBefore(':').trim()
                     val argument = action.substringAfter(':', "").trim()
                     when (verb) {
-                        "set" -> require(condition(argument) != null)
+                        "set" -> {
+                            val variable = argument.substringBefore('=').trim()
+                            val value = argument.substringAfter('=', "").trim()
+                            require('=' in argument && value in variables[variable].orEmpty()) {
+                                "$location: set 只能把 Variables 中的变量设为其列表值：$argument"
+                            }
+                        }
                         "template" ->
                             require(
                                 argument.split('/').size <= 2 &&
@@ -262,6 +348,9 @@ object TemplateParser {
                                 "$location: 指令不加 /，最长 512 字符，不支持 PAPI 指令替换"
                             }
                             Regex("\\{([^}]+)}").findAll(argument).forEach {
+                                require(it.groupValues[1] !in placeholders) {
+                                    "$location: 指令不能使用 Placeholders 的值 " + it.value
+                                }
                                 require(
                                     it.groupValues[1] in variables ||
                                         it.groupValues[1] in setOf("player", "uuid")
@@ -290,6 +379,78 @@ object TemplateParser {
                 ) {
                     "$location: 选中贴图尺寸必须相同"
                 }
+                val cases =
+                    conf.get("Cases")?.let { raw ->
+                        require(type == "sprite") { "$location.Cases: 仅用于 sprite" }
+                        require(
+                            !conf.contains("SelectedSprite") && !conf.contains("SelectedWhen")
+                        ) {
+                            "$location: Cases 不能与 SelectedSprite / SelectedWhen 同时使用"
+                        }
+                        require(
+                            raw is List<*> && raw.size in 1..16 && raw.all { it is Map<*, *> }
+                        ) {
+                            "$location.Cases: 需要 1–16 条 - When: 条件 列表"
+                        }
+                        raw.mapIndexed { index, entry ->
+                            val at = "$location.Cases[${index + 1}]"
+                            val fields = (entry as Map<*, *>).keys.map { it.toString() }.toSet()
+                            val look =
+                                when {
+                                    image != null -> "Image"
+                                    customFont != null -> "Glyph"
+                                    else -> "Sprite"
+                                }
+                            val allowed =
+                                setOf("When", look) +
+                                    if (customFont != null) setOf("Font", "Advance") else emptySet()
+                            require(fields.all { it in allowed } && look in fields) {
+                                "$at: 默认写法为 $look 时，每条需要 When 和 $look，可用字段 $allowed"
+                            }
+                            val condition =
+                                requireNotNull(condition(entry["When"], "$at.When")) {
+                                    "$at.When: 缺少条件"
+                                }
+                            when {
+                                image != null ->
+                                    SpriteCase(
+                                        condition,
+                                        null,
+                                        parseImage(entry["Image"], "$at.Image"),
+                                    )
+                                sprite != null && customFont != null -> {
+                                    val font = entry["Font"] ?: customFont
+                                    require(font is String) { "$at.Font: 需要字体 ID" }
+                                    val advance = entry["Advance"] ?: sprite.advances.single()
+                                    require(advance is Int && advance in 0..1024) {
+                                        "$at.Advance: 需要 0..1024 范围内整数"
+                                    }
+                                    SpriteCase(
+                                        condition,
+                                        sprite.copy(
+                                            glyph = glyph(entry["Glyph"], "$at.Glyph"),
+                                            font = resourceFont(font),
+                                            advances = listOf(advance),
+                                        ),
+                                        null,
+                                    )
+                                }
+                                else -> {
+                                    val skinName = entry["Sprite"]
+                                    require(skinName is String) { "$at.Sprite: 需要贴图 ID" }
+                                    val skin = TemplateSkins.get(theme, skinName)
+                                    require(
+                                        sprite != null &&
+                                            skin.width == sprite.width &&
+                                            skin.rows == sprite.rows
+                                    ) {
+                                        "$at.Sprite: 贴图尺寸必须与默认 Sprite 相同"
+                                    }
+                                    SpriteCase(condition, skin, null)
+                                }
+                            }
+                        }
+                    } ?: emptyList()
                 val color = conf.getString("Color", "#e7deed")!!
                 require(color.matches(Regex("#[a-fA-F0-9]{6}"))) { "$location.Color: #RRGGBB" }
                 TemplateElement(
@@ -303,22 +464,21 @@ object TemplateParser {
                     sprite,
                     selectedSprite,
                     color.drop(1).toInt(16),
-                    condition(conf.getString("VisibleWhen")),
-                    condition(conf.getString("SelectedWhen")),
+                    condition(conf.get("VisibleWhen"), "$location.VisibleWhen"),
+                    condition(conf.get("SelectedWhen"), "$location.SelectedWhen"),
                     conf.getString("Permission", "")!!,
                     actions,
                     textSize,
                     bold,
+                    image,
+                    cases,
                 )
             }
         val buttons = elements.filter { it.type == "button" }
         buttons.forEachIndexed { index, a ->
             buttons.drop(index + 1).forEach { b ->
                 val exclusive =
-                    a.condition != null &&
-                        b.condition != null &&
-                        a.condition.first == b.condition.first &&
-                        a.condition.second != b.condition.second
+                    a.condition != null && b.condition != null && a.condition.excludes(b.condition)
                 require(
                     exclusive ||
                         a.x >= b.x + b.width ||
@@ -330,7 +490,36 @@ object TemplateParser {
                 }
             }
         }
-        return DialogTemplate(id, title, width, rows, hide, background, variables, elements)
+        return DialogTemplate(
+            id,
+            title,
+            width,
+            rows,
+            hide,
+            background,
+            variables,
+            elements,
+            placeholders,
+        )
+    }
+
+    private fun glyph(raw: Any?, path: String): Int {
+        require(raw is String && raw.length == 1 && !raw[0].isSurrogate()) {
+            "$path: 需要单个 BMP 字符，可写 Unicode 转义"
+        }
+        return raw[0].code
+    }
+
+    private fun parseImage(raw: Any?, path: String): MenuImageRequest {
+        require(raw is String) { "$path: 需要图片 ID，如 \"CE:命名空间:图片\"" }
+        return try {
+            RichMenuText.imageRequest(raw.split(':'))
+        } catch (error: RuntimeException) {
+            throw IllegalArgumentException(
+                "$path: 格式为 [CE/IA:]命名空间:图片[:行:列]，${error.message}",
+                error,
+            )
+        }
     }
 
     fun validateLinks(templates: Map<String, DialogTemplate>) {

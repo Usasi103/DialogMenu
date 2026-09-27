@@ -420,13 +420,8 @@ object MenuDialog {
             else -> papi(player, binding)
         }
 
-    private fun papi(player: Player, token: String): String? {
-        if (!Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) return null
-        val value = runCatching { PapiAdapter.resolve(player, token) }.getOrNull() ?: return null
-        return value
-            .takeUnless { it.isBlank() || it == token }
-            ?.replace(Regex("[&§][0-9a-fk-or]", RegexOption.IGNORE_CASE), "")
-    }
+    private fun papi(player: Player, token: String): String? =
+        MenuPlaceholders.resolve(player, token)
 
     private fun expandText(player: Player, template: String): String =
         Regex("%[a-zA-Z0-9_:.\\-]+%|\\{(?:player|uuid|ping|world)}")

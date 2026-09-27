@@ -7,9 +7,9 @@
 | settings 显示文本 | player、uuid、ping、world | 外部插件提供的 PAPI | 支持完整 `%变量%` |
 | settings State | 使用 Bind 或完整 PAPI token | 外部插件状态 | 支持 |
 | settings 命令动作 | player、uuid | 不支持 | 不支持 |
-| canvas Text / message | player、uuid | Variables 中的枚举变量 | 不支持 |
+| canvas Text / message | player、uuid、ping、world | Variables 枚举变量、Placeholders 名称 | 支持完整 `%变量%` |
 | canvas 命令动作 | player、uuid | Variables 中的枚举变量 | 不支持 |
-| canvas VisibleWhen / SelectedWhen | 无 | 声明的枚举变量等值比较 | 不支持 |
+| canvas VisibleWhen / SelectedWhen / Cases | 无 | Variables 与 Placeholders 名称 | 通过 Placeholders 声明 |
 | Display.Material | 无 | 静态物品 ID | 不支持 |
 
 以上内置值写作 `{player}` 等；PAPI 使用 `%example_value%`。
@@ -75,7 +75,52 @@ hard-description:
 
 VisibleWhen 决定是否绘制与提供点击区域。SelectedWhen 决定是否改用 SelectedSprite；只写 SelectedWhen、不提供 SelectedSprite，不会自动生成高亮贴图。
 
-条件语法只有 `变量=值`。不支持大于、小于、`&&`、`||`、权限表达式、JavaScript 或 PAPI 判断。
+## canvas Placeholders：PAPI 值
+
+菜单根部或页面中声明要用到的 PAPI 变量，给每个值起名：
+
+```yaml
+Placeholders:
+  rank: "%luckperms_primary_group_name%"
+  level: "%player_level%"
+  quest: "%example_quest_stage%"
+```
+
+- 名称规则与 Variables 相同，不能与同页 Variables 重名，也不能叫 player / uuid / ping / world。
+- 值必须是一枚完整的 `%变量%`，可以含逗号、括号等参数；每页最多 32 个。
+- 与 Variables 一样按整段继承：子页写了 Placeholders，就替换根部全部声明。
+- 需要安装 PlaceholderAPI 及提供该变量的扩展。取值时去除传统颜色代码和首尾空格；空值、未解析或原样返回 token 视为取不到。
+
+声明后，Text / message 里写 `{rank}`，条件里写 `rank=vip`。Text / message 也可以直接写 `%player_level%` 这类简单 token；含逗号、空格等字符的复杂变量请先声明再用名称引用。取不到的值在文字中显示未接入。
+
+取值时机：打开菜单、page / menu 跳转、refresh 时各读一次。菜单打开期间不会自动刷新。点击按钮时会重新读取一次，条件不再成立就只刷新界面，不执行动作。
+
+命令动作不能使用 Placeholders 的值或 `%变量%`；PAPI 返回内容不受配置控制，拼进 console 指令有注入风险。需要传给命令的值用 Variables 枚举。
+
+## 条件语法
+
+| 写法 | 含义 | 适用 |
+| --- | --- | --- |
+| `名称=值` | 文字完全相同 | Variables、Placeholders |
+| `名称!=值` | 文字不同 | Variables、Placeholders |
+| `名称>数字`、`>=`、`<`、`<=` | 按数字比较 | 仅 Placeholders |
+
+以下为 Elements 内两个元素的条件片段：
+
+```yaml
+locked:
+  VisibleWhen: "level<30"                 # 单条条件
+reward:
+  VisibleWhen: ["level>=30", "quest=0"]   # 列表：每条都要成立
+```
+
+- 写成列表表示每一条都要成立，最多 8 条。不支持 `||`、括号、权限表达式或 JavaScript。
+- Variables 只能用 `=` / `!=`，值必须在它的枚举列表中。
+- 数字比较要求 PAPI 返回纯数字；`1,000`、`30级` 等格式化文本不是数字，条件不成立。需要比较时选用扩展提供的原始数值变量。
+- **取不到的 Placeholders 值让所有相关条件都不成立**，包括 `!=`。因此 `rank!=vip` 在 PAPI 缺失时也不成立，元素隐藏、Cases 回到默认图。
+- 旧写法 `difficulty=hard` 保持原义。
+
+YAML 中含 `>`、`<`、`!` 或以 `%` 开头的值请加引号。完整可复制的示例见 [placeholders.yml](examples/placeholders.yml)。
 
 ## 变量能保留多久
 

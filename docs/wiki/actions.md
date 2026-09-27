@@ -85,7 +85,8 @@ yourdungeon 是占位命令，必须替换成你的副本插件实际命令。�
 | --- | --- |
 | settings 的 command / console | `{player}`、`{uuid}` |
 | canvas 的 command / console | `{player}`、`{uuid}`、当前页声明的枚举变量 |
-| 两种命令动作 | 都不展开 PlaceholderAPI |
+| 两种命令动作 | 都不展开 PlaceholderAPI，canvas 也不能使用 Placeholders 声明的值 |
+| canvas 的 message | 与 Text 相同：内置值、枚举变量、Placeholders 名称和 `%变量%` |
 
 command 保留玩家自身权限，不临时提权；console 由控制台执行。Permission 检查点击玩家的权限，它不改变命令发送者。
 

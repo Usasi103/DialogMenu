@@ -41,6 +41,30 @@ object TemplateDialog {
         }
     }
 
+    /** Optional providers may still be loading, so missing images and PAPI only warn. */
+    fun warnings(templates: Collection<DialogTemplate>): List<String> {
+        val result = mutableListOf<String>()
+        if (!MenuPlaceholders.enabled && templates.any { it.placeholders.isNotEmpty() })
+            result += "未启用 PlaceholderAPI：Placeholders 条件均不成立，对应文字显示为不可用"
+        for (template in templates) {
+            for (element in template.elements) {
+                val requests = listOfNotNull(element.image) + element.cases.mapNotNull { it.image }
+                for (request in requests.distinct()) {
+                    val at = "${template.id} 元素 ${element.id}"
+                    val image = MenuImages.resolve(request)
+                    if (image == null)
+                        result +=
+                            "$at：图片 ${request.provider}:${request.id} 不可用" +
+                                "（来源插件未启用、尚未加载或 ID 不存在），将显示 [image:${request.id}]"
+                    else if (image.advance > element.width + 1)
+                        result +=
+                            "$at：图片 ${request.id} 宽 ${image.advance - 1} 像素，超出占位宽度 ${element.width}"
+                }
+            }
+        }
+        return result
+    }
+
     fun forget(uuid: UUID) {
         sessions.remove(uuid)
     }
@@ -64,16 +88,47 @@ object TemplateDialog {
         }
     }
 
+    /** Menu variables plus this moment's declared PlaceholderAPI values; names never overlap. */
+    private fun context(player: Player, template: DialogTemplate, values: Map<String, String>) =
+        values + MenuPlaceholders.values(player, template.placeholders)
+
+    private fun display(
+        player: Player,
+        template: DialogTemplate,
+        context: Map<String, String>,
+    ): (String) -> String {
+        val unavailable by lazy { MenuPlaceholders.unavailable(player) }
+        return { source ->
+            TemplateRenderer.display(
+                source,
+                { key ->
+                    when (key) {
+                        "player" -> player.name
+                        "uuid" -> player.uniqueId.toString()
+                        in template.variables -> context[key]
+                        in template.placeholders -> context[key] ?: unavailable
+                        "ping" -> player.ping.toString()
+                        "world" -> player.world.name
+                        else -> null
+                    }
+                },
+            ) { token ->
+                MenuPlaceholders.resolve(player, token) ?: unavailable
+            }
+        }
+    }
+
     private fun show(player: Player, id: String, previous: Map<String, String>) {
         val template = MenuRuntime.templates.getValue(id)
         val values = template.values(previous)
+        val context = context(player, template, values)
         val token = UUID.randomUUID().toString().replace("-", "")
         val actions = linkedSetOf<String>()
         val canvas =
             TemplateRenderer.render(
                 template,
-                values,
-                { TemplateRenderer.expand(it, values, player.name, player.uniqueId.toString()) },
+                context,
+                display(player, template, context),
                 MenuImages.text(player),
                 { action ->
                     actions += action
@@ -133,7 +188,12 @@ object TemplateDialog {
                 return@submit
             val template = MenuRuntime.templates[session.template] ?: return@submit
             val element = template.elements.firstOrNull { it.id == id } ?: return@submit
-            if (!TemplateRenderer.visible(element, session.values)) return@submit
+            // Placeholder conditions may have changed since the menu was drawn.
+            if (!TemplateRenderer.visible(element, context(player, template, session.values))) {
+                sessions.remove(player.uniqueId)
+                show(player, template.id, session.values)
+                return@submit
+            }
             sessions.remove(player.uniqueId)
             if (element.permission.isNotEmpty() && !player.hasPermission(element.permission)) {
                 player.sendMessage("你没有权限执行此操作。")
@@ -144,6 +204,7 @@ object TemplateDialog {
             for (action in element.actions) {
                 val verb = action.substringBefore(':').trim()
                 val argument = action.substringAfter(':', "").trim()
+                // Commands only receive validated menu variables, never PlaceholderAPI output.
                 val expanded =
                     TemplateRenderer.expand(
                         argument,
@@ -155,7 +216,10 @@ object TemplateDialog {
                     "set" ->
                         values[argument.substringBefore('=').trim()] =
                             argument.substringAfter('=').trim()
-                    "message" -> player.sendMessage(MenuImages.text(player).component(expanded))
+                    "message" -> {
+                        val text = display(player, template, context(player, template, values))
+                        player.sendMessage(MenuImages.text(player).component(text(argument)))
+                    }
                     "close" -> {
                         player.closeDialog()
                         return@submit

@@ -13,11 +13,12 @@
 | Skin | 公共皮肤，默认 amethyst |
 | Canvas | 公共画布设置 |
 | Variables | 公共枚举变量 |
+| Placeholders | 公共 PAPI 值声明，见 [变量、条件与占位符](variables.md) |
 | Pages | 1–64 个页面 |
 
-每个 Pages 子页只支持 Title、Skin、Canvas、Variables、Elements。每页必须有 Elements；Title、Skin、Canvas、Variables 可继承根配置。
+每个 Pages 子页只支持 Title、Skin、Canvas、Variables、Placeholders、Elements。每页必须有 Elements；Title、Skin、Canvas、Variables、Placeholders 可继承根配置。
 
-**继承以整个字段 / 配置段为单位替换，不做深度合并。** 子页写了 Variables，就替换根部全部变量；子页写了 Canvas，就替换根部整个 Canvas 配置段，未写的子字段重新取解析器默认值。
+**继承以整个字段 / 配置段为单位替换，不做深度合并。** 子页写了 Variables 或 Placeholders，就替换根部对应的全部声明；子页写了 Canvas，就替换根部整个 Canvas 配置段，未写的子字段重新取解析器默认值。
 
 例如根部 `Canvas: {Width: 700, Rows: 24, Background: none, HideFocusOutline: false}`，子页只写 `Canvas: {Rows: 22}`，不会保留宽度 700。它会回到 Width 552、Background panel、HideFocusOutline true，并因非默认行数而报错。需要覆盖时复制完整段再修改。
 

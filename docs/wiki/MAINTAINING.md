@@ -39,6 +39,8 @@ python -B tools/build_wiki.py --dependency-path <安装Markdown的目录>
 | [trial.yml](examples/trial.yml) | 枚举难度、条件文字、确认页 |
 | [item-preview.yml](examples/item-preview.yml) | 原版物品预览 |
 | [migrated-help.yml](examples/migrated-help.yml) | 旧单页迁移后的完整结构 |
+| [text-tags.yml](examples/text-tags.yml) | 图片标签与独立多语言（手写，单元测试解析并渲染） |
+| [placeholders.yml](examples/placeholders.yml) | Placeholders、条件与 Cases（手写，单元测试解析并渲染） |
 
 生成器不修改服务器配置，也不把示例自动部署进 menus。
 

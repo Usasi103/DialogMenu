@@ -1,5 +1,12 @@
 # Validation Record
 
+## Canvas placeholders, conditions and sprite images (0.1.23-papi.1-SNAPSHOT, unreleased)
+
+- Project formatter and `build_selfdev.py` (JDK 25, TabooLib check + packaging) passed with 114 tests, 8 new. New tests cover every condition operator, unresolved placeholders (including `!=`), numeric text such as `1,000`, provable button exclusivity, first-match Cases for glyph/built-in/image looks, image fallback text, one-pass text expansion, catalog-level Placeholders inheritance, the documented example, and 18 invalid configurations each asserted by its specific rejection reason.
+- An isolated Paper 26.2 fixture outside `test_server` (PlaceholderAPI 2.12.3, CraftEngine 26.9.1, a probe-registered `probe` expansion and a proxy player) passed 21 checks. Dialogs were encoded and re-parsed with the server's Dialog codec. Verified: unresolved values hide both gated buttons and render the unavailable text; resolved values switch text, the gated button and the CE image; a click whose condition stopped holding redraws without running actions; a valid click sends the expanded message and closes; a menu-variable Case switches the image after `set` + `refresh`; the Wiki `placeholders.yml` loads and degrades without the Player expansion; `/dmenu check` warns about a missing CE image and an image wider than its box, with no PlaceholderAPI warning while it is installed.
+- Limits: no real client screenshot was taken, so on-screen placement of CE images relative to other rows is covered only by the existing text-tag rendering record. ItemsAdder images still follow the public API without a live IA test. The probe used a proxy player rather than a network client. The build was not deployed to `test_server`, which runs the private-branch JAR; no tag or GitHub Release was created.
+- Final development JAR `DialogMenu-0.1.23-papi.1-SNAPSHOT.jar`, SHA-256 `27fab9571476a531c8b0c7263282c87cc353b286713eda2c98029bb255d900cb`. It was rebuilt after restoring LF line endings; compared with the probed JAR, the only differing entry is `catalog/menus/demo-dialogue.yml`, identical after CRLF normalization.
+
 ## Scaling removed (0.1.21-noscale.1-SNAPSHOT, unreleased)
 
 - Standard workspace formatter and TabooLib build passed all 76 tests. The build retains the separately committed fixed six-hour update schedule.

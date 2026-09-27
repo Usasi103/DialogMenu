@@ -1,0 +1,97 @@
+# 占位符与条件演示：复制到 plugins/DialogMenu/menus/placeholders.yml 后 /dmenu reload、/dmenu open placeholders。
+# 需要 PlaceholderAPI 与 Player 扩展（/papi ecloud download Player，然后 /papi reload）。
+# 取不到 PAPI 值时，相关条件都不成立：两个等级按钮都会隐藏，徽记保持默认贴图。
+Version: 1
+Type: canvas
+Skin: parchment
+Title: "占位符与条件演示"
+DefaultPage: main
+Placeholders: # 名称: "%PAPI变量%"；文字写 {level}，条件写 level>=30
+  level: "%player_level%"
+  mode: "%player_gamemode%"
+Variables: # 菜单内枚举变量，由按钮 set 修改
+  mood: [calm, angry]
+Pages:
+  main:
+    Elements:
+      title:
+        Position: [24, 2]
+        Width: 480
+        Text: "你好，{player}"
+        Color: "#f0d8b9"
+      info:
+        Position: [24, 4]
+        Width: 480
+        Rows: 2
+        Text:
+          - "等级 {level} · 模式 {mode}"
+          - "延迟 {ping} 毫秒 · 世界 {world} · 直接写 PAPI：%player_level%"
+      # 内置贴图按条件切换；Cases 从上往下取第一条成立的，都不成立时用 Sprite。
+      badge:
+        Type: sprite
+        Position: [24, 7]
+        Sprite: button
+        Cases:
+          - When: "level>=30"
+            Sprite: selected
+      badge-ready:
+        Position: [36, 8]
+        Width: 90
+        Text: "30 级认证"
+        VisibleWhen: "level>=30"
+      badge-locked:
+        Position: [36, 8]
+        Width: 90
+        Text: "尚未认证"
+        VisibleWhen: "level<30"
+      # 已在 CE / IA 注册的图片可以改用 Image，并用 Cases 切换：
+      # portrait:
+      #   Type: sprite
+      #   Position: [420, 7]
+      #   Width: 108
+      #   Rows: 12
+      #   Image: "CE:my_pack:elf_calm"
+      #   Cases:
+      #     - When: "level>=30"
+      #       Image: "CE:my_pack:elf_smile"
+      #     - When: mood=angry
+      #       Image: "CE:my_pack:elf_angry"
+      calm:
+        Type: button
+        Position: [24, 11]
+        Text: "平静"
+        SelectedWhen: mood=calm
+        SelectedSprite: selected
+        Actions: ["set: mood=calm", "refresh"]
+      angry:
+        Type: button
+        Position: [144, 11]
+        Text: "生气"
+        SelectedWhen: mood=angry
+        SelectedSprite: selected
+        Actions: ["set: mood=angry", "refresh"]
+      mood-text:
+        Position: [264, 12]
+        Width: 240
+        Text: "当前心情：{mood}"
+      # 两个按钮位置相同：level<30 与 level>=30 不会同时成立，所以允许重叠。
+      reward:
+        Type: button
+        Position: [24, 15]
+        Sprite: wide-button
+        Text: "领取奖励"
+        VisibleWhen: "level>=30"
+        Actions: ["message: {player}，你已达到 {level} 级。", "close"]
+      locked:
+        Type: button
+        Position: [24, 15]
+        Sprite: wide-button
+        Text: "等级不足"
+        VisibleWhen: "level<30"
+        Actions: ["message: 还需要达到 30 级，当前 {level} 级。", "refresh"]
+      close:
+        Type: button
+        Position: [516, 2]
+        Sprite: close
+        Text: "×"
+        Actions: ["close"]
