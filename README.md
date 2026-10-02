@@ -46,9 +46,9 @@ DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 
 
 ## 安装
 
-**DialogMenu 0.1.21** 以 **Paper 1.21.11** 为最低编译 API，已在 **Paper 1.21.11 / 26.2、Java 25** 环境验证。1.21.11 完成了菜单协议交互与着色器编译检查，完整客户端画面仍需复核，详见[兼容测试记录](docs/development/PAPER-1.21.11.md)。菜单皮肤需要配套资源包，玩家使用原版客户端即可。
+**DialogMenu 0.2.0** 以 **Paper 26.3** 为当前编译和验证目标，使用 Java 25 构建并输出 Java 21 字节码。菜单皮肤需要配套资源包，玩家使用原版客户端即可；旧的 1.21.11 / 26.2 验证记录见[历史兼容记录](docs/development/PAPER-1.21.11.md)。
 
-0.2.0 测试版起，源码改为 Java，并使用 Keystone 共享库构建，不再依赖 TabooLib 运行库；编译 API、配置格式、指令与权限不变。新构建已在 Paper 1.21.11 与 26.2 沙盒中用模拟玩家完成指令与菜单交互对比，真实客户端画面仍待复核。
+源码为 Java，并使用 Keystone 共享库构建，不依赖 TabooLib 运行库；配置格式、指令与权限保持不变。0.2.0 已按 Paper 26.3 API 重新构建并验证，具体结果见 [Paper 26.3 兼容记录](docs/development/PAPER-26.3.md)。
 
 1. 将插件 JAR 放入服务器的 `plugins` 目录。0.1.21 起已内置配套资源，启动时导出到 `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip`。
 2. 新安装默认使用 `ResourcePack.Provider: Auto`，按 **CraftEngine → ItemsAdder → Nexo → Oraxen** 的顺序选择已启用的资源管理插件，并将资源放入其源目录。再次启动会更新由 DialogMenu 管理的文件，保留服主修改过的文件；冲突会在控制台列出。

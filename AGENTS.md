@@ -7,7 +7,7 @@
 # 构建
 
 - 源码为纯 Java（`src/main/java`、JUnit 5 测试在 `src/test/java`），不使用 Kotlin 或 TabooLib；共享库 Keystone 放在 `libs/`，打包时重定位到 `online.toraka.dialogmenu.libs.keystone`，ItemBridge 重定位到 `online.toraka.dialogmenu.library.itembridge`。
-- 以 Paper 1.21.11 API 编译，只使用 1.21.11 与 26.2 共有的接口；Gradle 命令加 `--no-daemon`，先 `formatSources` 再 `build`。
+- 以 Paper 26.3 API 编译与验证；Gradle 命令加 `--no-daemon`，先 `formatSources` 再 `build`。稳定发布版本不使用 `SNAPSHOT` 或 GitHub Pre-release 标记。
 - 打包时用 Shadow `minimize` 只保留用到的 Keystone 类（根为 main 源码，Maven 坐标依赖如 ItemBridge 不裁剪）。核对：先 `./gradlew --no-daemon shadowJar --no-minimize-jar` 把不瘦身的 jar 另存，再 `build`，然后 `python -B <工作区>/tools/minimize_check.py dist/<jar> --full <不瘦身的 jar>` 须为 `0 problem(s)`。
 
 # 文件校验与恢复（Keystone 0.3.5）

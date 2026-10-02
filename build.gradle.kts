@@ -17,9 +17,9 @@ repositories {
 }
 
 dependencies {
-    // DialogMenu still supports Paper 1.21.11: compile against the older API so only members
-    // present on both 1.21.11 and 26.2 are linked. Newer server features are probed by reflection.
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    // Compile against the current Paper 26.3 API. The plugin keeps its stable public
+    // configuration and command contract while probing optional server integrations by reflection.
+    compileOnly("io.papermc.paper:paper-api:26.3.build.142-beta")
     // Read-only resource-pack observer on the player's Netty channel (the server provides Netty).
     compileOnly("io.netty:netty-transport:4.2.15.Final")
     // Other plugins' API jars (PlaceholderAPI), never shipped.
@@ -32,7 +32,7 @@ dependencies {
     // Item-source bridge shipped inside the jar under the same relocated package as before.
     implementation("cn.gtemc:itembridge:1.0.32") { isTransitive = false }
 
-    testImplementation("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    testImplementation("io.papermc.paper:paper-api:26.3.build.142-beta")
     // EmbeddedChannel for the resource-pack observer tests.
     testImplementation("io.netty:netty-transport:4.2.15.Final")
     testImplementation(platform("org.junit:junit-bom:5.12.2"))
@@ -83,7 +83,7 @@ tasks.shadowJar {
 // - Roots are the main classes. Shadow's default also roots the test classes, which would ship
 //   Keystone classes that only the tests use.
 // - Keystone 0.3.3/0.3.4 load none of their own classes by name, so no keep list is needed.
-// Verify with tools/minimize_check.py (see plugins-dev/_refactor/notes/shadow-minimize.md).
+// Verify with tools/minimize_check.py (see plugins-dev/refactor/notes/shadow-minimize.md).
 tasks.shadowJar {
     minimize {
         exclude { true }

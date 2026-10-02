@@ -46,9 +46,9 @@ Settings demo choices last for the current preview and reset when reopened. Bala
 
 ## Installation
 
-**DialogMenu 0.1.21** targets the **Paper 1.21.11** API and has been tested on **Paper 1.21.11 / 26.2 with Java 25**. The 1.21.11 checks cover menu protocol interactions and shader compilation; a full visual review in the game client remains outstanding. See the [compatibility test record](docs/development/PAPER-1.21.11.md). Menu skins require the matching resource pack; players can use the vanilla client.
+**DialogMenu 0.2.0** targets the **Paper 26.3** API, is built with Java 25, and emits Java 21 bytecode. Menu skins require the matching resource pack; players can use the vanilla client. The older 1.21.11 / 26.2 checks remain in the [historical compatibility record](docs/development/PAPER-1.21.11.md).
 
-From the 0.2.0 test builds on, the source is plain Java built with the shared Keystone library, and the TabooLib runtime is no longer required. The compile API, configuration format, commands, and permissions are unchanged. The new build was compared with the previous one on Paper 1.21.11 and 26.2 test servers using simulated players for commands and menu interactions; the in-client visuals still need a review.
+The source is plain Java built with the shared Keystone library, and the TabooLib runtime is no longer required. The configuration format, commands, and permissions are unchanged. The 0.2.0 build was compiled and verified against Paper 26.3; see the [Paper 26.3 compatibility record](docs/development/PAPER-26.3.md).
 
 1. Place the plugin JAR in your server's `plugins` directory. Version 0.1.21 and later include the matching resources and export them to `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip` on startup.
 2. Fresh installations use `ResourcePack.Provider: Auto`. DialogMenu selects an enabled provider in this order: **CraftEngine → ItemsAdder → Nexo → Oraxen**, then installs its resources into that provider's source directory. Later starts update managed files while preserving administrator edits; conflicts are reported in the console.

@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.0] - 2026-10-02
+
+### 正式版与 Paper 26.3
+
+- 正式版不使用 `SNAPSHOT`，也不标记为 GitHub Pre-release。
+- 编译与测试目标更新为 Paper `26.3.build.142-beta`，继续输出 Java 21 字节码并使用 Java 25 构建。
+- 保留公开版配置格式、指令、权限、公开 API、ItemBridge 和资源边界；私有版衣帽间功能不进入本版本。
+- 实际 JAR、SHA256SUMS 和 Paper 26.3 构建验证结果以本版本的 `RELEASE-VALIDATION.md` 为准。
+
 ## [0.2.0-paper.4-SNAPSHOT] - 2026-10-02
 
 ### GitHub 发布收尾（2026-10-02）

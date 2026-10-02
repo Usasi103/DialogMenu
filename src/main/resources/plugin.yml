@@ -1,7 +1,8 @@
 name: DialogMenu
 version: '${version}'
 main: online.toraka.dialogmenu.DialogMenu
-# Kept from the TabooLib build: the same jar must load on Paper 1.21.11 and 26.2.
+# The public build targets Paper 26.3; the legacy api-version value remains valid for
+# servers that load the unchanged Bukkit plugin descriptor.
 api-version: '1.13'
 description: Configurable Dialog menus with custom layouts and optional item sources
 folia-supported: false
