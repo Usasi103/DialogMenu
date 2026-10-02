@@ -4,15 +4,16 @@
 
 | 使用位置 | 内置值 | 自定义值 | PAPI |
 | --- | --- | --- | --- |
-| settings 显示文本 | player、uuid、ping、world | 外部插件提供的 PAPI | 支持完整 `%变量%` |
+| settings 显示文本、文字类动作 | player、uuid、ping、world | 外部插件提供的 PAPI | 支持完整 `%变量%` |
 | settings State | 使用 Bind 或完整 PAPI token | 外部插件状态 | 支持 |
-| settings 命令动作 | player、uuid | 不支持 | 不支持 |
-| canvas Text / message | player、uuid、ping、world | Variables 枚举变量、Placeholders 名称 | 支持完整 `%变量%` |
-| canvas 命令动作 | player、uuid | Variables 中的枚举变量 | 不支持 |
+| settings 命令动作 | player、uuid | 不支持 | 支持完整 `%变量%`，取不到时不执行 |
+| canvas Text、文字类动作 | player、uuid、ping、world | Variables 枚举变量、Placeholders 名称 | 支持完整 `%变量%` |
+| canvas 命令动作 | player、uuid | Variables 枚举变量、Placeholders 名称 | 支持完整 `%变量%`，取不到时不执行 |
 | canvas VisibleWhen / SelectedWhen / Cases | 无 | Variables 与 Placeholders 名称 | 通过 Placeholders 声明 |
+| 动作条件（条件块、`{condition=}`） | 无 | canvas：Variables 与 Placeholders 名称 | 直接比较完整 `%变量%`；另有 `perm 节点` |
 | Display.Material | 无 | 静态物品 ID | 不支持 |
 
-以上内置值写作 `{player}` 等；PAPI 使用 `%example_value%`。
+以上内置值写作 `{player}` 等；PAPI 使用 `%example_value%`。文字类动作指 tell（message）、chat、title、actionbar、tellraw 与 connect，写法见 [动作参考](actions.md)。
 
 canvas 的 Title 直接作为普通外部标题使用，不做上述替换；需要动态可见标题时使用 text 元素。
 
@@ -93,9 +94,11 @@ Placeholders:
 
 声明后，Text / message 里写 `{rank}`，条件里写 `rank=vip`。Text / message 也可以直接写 `%player_level%` 这类简单 token；含逗号、空格等字符的复杂变量请先声明再用名称引用。取不到的值在文字中显示未接入。
 
-取值时机：打开菜单、page / menu 跳转、refresh 时各读一次。菜单打开期间不会自动刷新。点击按钮时会重新读取一次，条件不再成立就只刷新界面，不执行动作。
+取值时机：打开菜单、page / open 跳转、refresh 时各读一次。菜单打开期间不会自动刷新。点击按钮时会重新读取一次，条件不再成立就只刷新界面，不执行动作。
 
-命令动作不能使用 Placeholders 的值或 `%变量%`；PAPI 返回内容不受配置控制，拼进 console 指令有注入风险。需要传给命令的值用 Variables 枚举。
+0.2.0-paper.3 起，命令动作也可以写 `{rank}` 这类 Placeholders 名称和 `%变量%`。`;` 在填值之前拆分指令，值里的 `;` 不会多出一条指令；任何一个值取不到时这条指令不执行，按失败处理。PAPI 返回内容不受配置控制，可能含空格而变成多个参数：console 指令里只放格式固定的值，能用 Variables 枚举的仍优先用枚举。详见 [动作参考](actions.md)。
+
+动作的条件块和 `{condition=}` 也能直接比较 `%变量%` 和检查 `perm 节点`，写法见 [动作参考](actions.md)；下面的条件语法只适用于 VisibleWhen、SelectedWhen 和 Cases。
 
 ## 条件语法
 
@@ -127,7 +130,7 @@ YAML 中含 `>`、`<`、`!` 或以 `%` 开头的值请加引号。完整可复�
 | 操作 | 行为 |
 | --- | --- |
 | set 后刷新 | 保留修改后的值 |
-| page / menu / template 跳转 | 目标页声明同名变量且接受该值时保留 |
+| page / template 跳转，或 open 到另一个 canvas 菜单 | 目标页声明同名变量且接受该值时保留 |
 | 目标页没声明该变量 | 不带入该变量 |
 | 目标页声明同名变量，但不接受旧值 | 取目标页枚举第一项 |
 | 重新用命令打开 | 从默认值开始 |

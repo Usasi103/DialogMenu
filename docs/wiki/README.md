@@ -59,7 +59,7 @@ settings 子页的 `Renderer: canvas` 指设置界面的字体画布；它与整
 - 双击同目录的 `index.html` 阅读离线网页，支持全文搜索、章节跳转和复制代码，无需启动服务器。
 - Markdown 是文档源文件，`SUMMARY.md` 是 GitBook 风格的导航目录。
 - 修改 Markdown 后，按 [文档维护说明](MAINTAINING.md) 重新生成网页。
-- 文档组织参考了 [TrMenu V3 文档](https://hhhhhy.gitbook.io/trmenu-v3)，字段和行为依据 DialogMenu 自己的解析器与运行代码。TrMenu 的动作、脚本和布局语法不能直接移植。
+- 文档组织参考了 [TrMenu V3 文档](https://hhhhhy.gitbook.io/trmenu-v3)，字段和行为依据 DialogMenu 自己的解析器与运行代码。动作沿用 TrMenu 3 的写法（差异见 [动作参考](actions.md)）；TrMenu 的脚本和布局语法不能直接移植。
 
 ## 核对依据
 

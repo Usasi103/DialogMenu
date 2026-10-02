@@ -1,35 +1,14 @@
 import org.gradle.api.attributes.java.TargetJvmVersion
-import java.util.Properties
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import io.izzel.taboolib.gradle.*
 
 plugins {
-    kotlin("jvm") version "2.4.10"
-    id("io.izzel.taboolib") version "2.0.38"
+    java
+    id("com.gradleup.shadow") version "9.0.0"
 }
 
-taboolib {
-    description {
-        name("DialogMenu")
-        desc("Configurable Dialog menus with custom layouts and optional item sources")
-        dependencies {
-
-            name("PlaceholderAPI").optional(true)
-            name("Ambience").optional(true)
-            name("LootBeam").optional(true)
-            name("PickupNotifier").optional(true)
-            val providers = Properties().apply {
-                rootProject.file("src/main/resources/itembridge-providers.properties").inputStream().use { load(it) }
-            }
-            providers.values.map { it.toString() }.sorted().forEach { name(it).optional(true) }
-        }
-    }
-    env { install(Basic, Bukkit, BukkitUtil, BukkitNMS, I18n, MinecraftChat) }
-    version { taboolib = "6.3.0-75b18a2" }
-    relocate("cn.gtemc.itembridge", "online.toraka.dialogmenu.library.itembridge")
-}
-
-layout.buildDirectory.set(File(System.getProperty("user.home"), ".gradle-builds/${rootProject.name}"))
+// Keep transient Gradle outputs outside OneDrive; only the final jar is exported to dist/.
+layout.buildDirectory.set(
+    File(System.getProperty("user.home"), ".gradle-builds/${rootProject.name}")
+)
 
 repositories {
     mavenCentral()
@@ -38,25 +17,35 @@ repositories {
 }
 
 dependencies {
-    implementation("cn.gtemc:itembridge:1.0.32") { isTransitive = false }
-    add("taboo", "cn.gtemc:itembridge:1.0.32") { isTransitive = false }
-    compileOnly("com.google.code.gson:gson:2.8.7")
+    // DialogMenu still supports Paper 1.21.11: compile against the older API so only members
+    // present on both 1.21.11 and 26.2 are linked. Newer server features are probed by reflection.
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    // Read-only resource-pack observer on the player's Netty channel (the server provides Netty).
     compileOnly("io.netty:netty-transport:4.2.15.Final")
-    compileOnly(kotlin("stdlib"))
-    compileOnly(fileTree("libs"))
+    // Other plugins' API jars (PlaceholderAPI), never shipped.
+    compileOnly(fileTree("libs") {
+        include("*.jar")
+        exclude("keystone-*.jar")
+    })
+    // Shared helpers (lang/commands/tasks/events/update check), relocated into this plugin below.
+    implementation(files("libs/keystone-0.3.5.jar"))
+    // Item-source bridge shipped inside the jar under the same relocated package as before.
+    implementation("cn.gtemc:itembridge:1.0.32") { isTransitive = false }
+
     testImplementation("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
+    // EmbeddedChannel for the resource-pack observer tests.
+    testImplementation("io.netty:netty-transport:4.2.15.Final")
+    testImplementation(platform("org.junit:junit-bom:5.12.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.mockito:mockito-core:5.19.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-configurations.compileClasspath {
-    attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
+listOf("compileClasspath", "testCompileClasspath", "testRuntimeClasspath").forEach {
+    configurations.named(it) {
+        attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
+    }
 }
-configurations.testCompileClasspath { attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25) }
-configurations.testRuntimeClasspath { attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25) }
-tasks.test { useJUnitPlatform() }
 
 java { toolchain { languageVersion.set(JavaLanguageVersion.of(25)) } }
 
@@ -65,18 +54,46 @@ tasks.withType<JavaCompile> {
     options.release.set(21)
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_21)
-    }
+tasks.test { useJUnitPlatform() }
+
+tasks.processResources {
+    val version = project.version.toString()
+    inputs.property("version", version)
+    filesMatching("plugin.yml") { expand("version" to version) }
 }
 
-val exportJar by tasks.registering(Copy::class) {
-    dependsOn("taboolibMainTask")
-    from(tasks.jar)
-    into(layout.projectDirectory.dir("dist"))
-    outputs.upToDateWhen { false }
+// The plugin jar: our classes plus Keystone and ItemBridge, relocated so nothing is shared with
+// other plugins (each plugin carries its own copy; no runtime downloads).
+tasks.shadowJar {
+    archiveClassifier.set("")
+    archiveFileName.set("${project.name}-${project.version}.jar")
+    destinationDirectory.set(layout.projectDirectory.dir("dist"))
+    relocate("dev.keystone", "online.toraka.dialogmenu.libs.keystone")
+    relocate("cn.gtemc.itembridge", "online.toraka.dialogmenu.library.itembridge")
+    exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA", "META-INF/maven/**")
+    exclude("META-INF/versions/*/module-info.class", "module-info.class")
+    from("LICENSE")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
-tasks.named("assemble") { dependsOn(exportJar) }
+
+// Ship only the Keystone classes this plugin actually reaches (Shadow minimize).
+// - Keystone is the only files(...) dependency. Shadow's minimize filter sees Maven-coordinate
+//   dependencies only, so `exclude { true }` keeps each of those whole (Nashorn and its ASM,
+//   itembridge, ...) while the Keystone jar is still trimmed.
+// - Roots are the main classes. Shadow's default also roots the test classes, which would ship
+//   Keystone classes that only the tests use.
+// - Keystone 0.3.3/0.3.4 load none of their own classes by name, so no keep list is needed.
+// Verify with tools/minimize_check.py (see plugins-dev/_refactor/notes/shadow-minimize.md).
+tasks.shadowJar {
+    minimize {
+        exclude { true }
+    }
+    sourceSetsClassesDirs.setFrom(sourceSets.main.get().output.classesDirs)
+}
+
+tasks.jar { archiveClassifier.set("plain") }
+
+tasks.assemble { dependsOn(tasks.shadowJar) }
+
 apply(from = rootProject.file("gradle/source-quality.gradle"))
 apply(from = rootProject.file("gradle/bundled-resourcepack.gradle"))

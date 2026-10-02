@@ -1,5 +1,92 @@
 # Changelog
 
+## [0.2.0-paper.4-SNAPSHOT] - 2026-10-02
+
+### GitHub 发布收尾（2026-10-02）
+
+- 累计迁移与重构源码随 `v0.2.0-paper.4-SNAPSHOT` 标签同步；以下开发验证记录按原时间保留。
+- 发布精确已验证 JAR 与 `SHA256SUMS.txt`；构建与验证范围、产物 SHA-256 见 `RELEASE-VALIDATION.md`。
+- 发布地址：https://github.com/Usasi103/DialogMenu/releases/tag/v0.2.0-paper.4-SNAPSHOT
+
+
+开发候选，以已交接的 paper.3 动作/Width 版本为基线；Keystone 0.3.5 最终库 SHA256 `314b664f3bb14174b9a2d84485a8ca403a1c44e5950a1e0cff3dd46d565f73bb`。
+
+- reload 改为原字节候选解析 → 公共事务 commit → 模型/语言/菜单/缓存/资源安装。编码、YAML、重复键、业务取值或引用错误整次取消，旧状态和磁盘保留，无失败备份；TAB 修复只在整体通过后核验备份再写回。check 只读、无提交。
+- startup 预检覆盖实际业务非法值。坏设置/内置内容先公共原字节备份并读回核验，再完整默认；备份失败不加版本头、不恢复日志，内存默认并锁写；自建坏内容保留/跳过。无法解开坏自建引用时，只回退完整内存内置菜单，不覆盖其他有效文件。
+- 公共 ConfigProblems 统一详细后台日志、执行者取消摘要和最多三次管理员提醒；转发位置不重复追加。候选物品校验使用独立 ItemBridge，图片检查和资源副作用延至 commit 后。
+- paper.3 的动作、条件、PAPI顺序、按钮 Width、公开接口和资源资产保留；未引入私有特性或素材。旧 JAR 作为外部对照保留。本轮不提交、部署、发布。
+- 语言和更新设置语义预检提前于加载；语言恢复/跳过或备份失败时直接安装预检候选，避免普通加载清除锁写。真实 Windows 备份读取拒绝验证了配置/语言/更新设置原字节、版本头及写入日志保持；中文默认帮助可用。
+- 完整构建与实际执行的176项单测通过；API（paper.3与旧公开0.1.23）、minimize均0问题。最终JAR八个Paper增量场景、131条结果核验通过；四个默认菜单JSON与paper.3排除动态字段后相同，41个动作/Width/PAPI/绘制类及全部原资源字节一致。
+- 验证记录见外部 `runs/codex1002-dialogmenu-coordination-tools/REPORT.md`，收尾以实际最终 JAR 和对应 SHA256SUMS 为准。
+
+## [0.2.0-paper.3-SNAPSHOT] - 2026-10-01
+
+开发版（只累计源码，不建标签、不发 Release）。在 0.2.0-paper.2（sha256 `7966fc58…6dda`）之上增加 TrMenu 式动作与 canvas 按钮宽度。
+
+- TrMenu 式动作、条件块与条件（用户 2026-10-01 决定，格式照 TrMenu 3.12.5）：settings（控件、物品页按钮、选项与 `MainMenu`）和 canvas 按钮的 `Actions` 改由同一个解析器 `ReactionParser` 读取、`ReactionRunner` 执行。
+  - 动作行 `名称: 值`，一行可用 `_||_`（或 `&&&`）连接多条；名称不分大小写并接受 TrMenu 别名：tell（message、msg、talk）、chat（send、say）、title（subtitle、send-title）、actionbar、tellraw（json）、command（cmd、player、execute）、console、connect（bungee、server）、sound（sounds、play-sound）、delay（wait）、return（break）、close（shut、force-close、silent-close）、open（gui、menu、trmenu、force-open）、page、refresh（update、icon-refresh），以及 DialogMenu 自己的 set（canvas）、search（settings）和兼容用的 template（canvas）。顶层可写单条字符串、列表、条件块或 TrMenu 的 `all:`。
+  - 行尾选项：`{delay=N}`（0–72000 tick，只推迟这一条）、`{chance=0.5}`、`{condition=条件}`、`{players}` / `{players=条件}`（对每个在线玩家执行，仅 tell、chat、title、actionbar、tellraw、command、sound、connect；文字和指令里的值仍按点击者填写）；`{}` 或 `<>`、`=` 或 `:` 都可以，所以 `{Delay=2}` 原样可用。一行多条动作时，选项最多的那一段的选项套用到整行（TrMenu 的规则）。
+  - 值格式：title `主标题 副标题 淡入 停留 淡出`（tick，默认 15 / 20 / 15，带空格的文字用反引号）；sound `名称-音量-音调`，数字从右读，所以 `mypack:ui-click-0.8-1.4` 这类带 `-` 的资源包 ID 可用，Bukkit 名、原版 ID（`ui.button.click`、`minecraft:…`）和命名空间 ID 都认，`;` 分多个，在玩家位置播放，Bukkit 名写错时 check 报错；tell / title / actionbar 认 `&` 颜色、`&#RRGGBB` 和字面 `\n` 换行，含 image / i18n / l10n 标签的行照旧走标签解析；tellraw 接受 JSON 或 `<文字@hover=…@url=…>` 简写，占位符逐段填入，不会破坏 JSON；connect 发送代理的 `Connect` 插件消息（需 BungeeCord / Velocity），插件启用时注册 `BungeeCord` 发送通道；公开版 actionbar 直接发原版动作栏。
+  - 条件块 `condition` / `actions` / `deny` / `priority`（接受 TrMenu 的键别名），可嵌套 8 层，按 priority 从小到大执行，默认按列表位置；一组 Actions 所有分支合计最多 64 条动作（以前 settings 与 canvas 都是 16 条）。条件块没有 condition 却写 deny、写了未知键或 `left` / `right` 等按键分组（Dialog 只有一种点击，只认 `all`）时加载报错。
+  - 条件：canvas 沿用 `名称=值`、`名称>=数字`（Variables / Placeholders 声明的名称，规则同 VisibleWhen），另加完整 PAPI token 直接比较（`%player_level% >= 10`）、`perm 节点`（TrMenu 的 `perm *节点` 照收）、`not` 取反，列表表示全部成立，最多 8 条；settings 只有 PAPI 与 perm 两种。取不到的 PAPI 值让条件不成立，取反也不成立。不支持 Kether / JavaScript；TrMenu 的 `$ Number(vars("%x%")) >= 150` 写成 `%x% >= 150`。
+  - 指令可以使用 `%PAPI变量%`（以前 settings 与 canvas 都禁止 `%`），canvas 指令也能用 Placeholders 名称（以前报 `指令不能使用 Placeholders 的值`）。`;` 在填值之前把一条动作拆成多条指令，每个值只填一次、控制字符变空格，所以填入的值不会多出指令或再次展开；任何一个值取不到时这条指令不执行、按失败处理，不会带着原样的 token 执行。`{名称}` 仍只限 `{player}`、`{uuid}`（canvas 另加 Variables / Placeholders 名称），未声明的报 `指令中的 {…} 未声明`。
+  - 执行严格按顺序：条件在执行到时才判断，能看到前面 set 和指令的结果；`delay: N` 暂停其余动作，玩家下线则取消。取消以前的顺序限制（settings 的 close 只能在首项、page / refresh / search 只能在末尾；canvas 的 close / template / refresh 只能在末尾），这些动作现在可放在任意位置，之后的动作照常执行。重绘规则：第一个 `delay:` 之前的部分结束（或 return、指令失败）时重绘一次，之前执行过 page / open / close / refresh / search / template 则不重绘；settings 仍在下一 tick 重绘。指令失败时提示玩家（canvas `DialogMenu：指令执行失败，后续动作已停止。`，settings `setting.failed`）并跳过其余动作，已执行的不回滚；`{delay=N}` 推迟的指令失败只提示。
+  - `open: 菜单ID` / `open: 菜单ID:页面ID` 可打开 menus/ 中的任何菜单：canvas 之间与 page 一样带上合法的同名变量，其他情况按 `/dmenu open` 打开。旧 `menu:` 是它的别名，现在也能打开 settings 菜单（以前要求目标为 canvas）。Version 2 简化配置与 templates/ 独立模板没有菜单目录，不能用 open，独立模板也不能用 page。settings 现在也可以用 tell（含 `message:`）、title、sound 等提示动作；settings-demo 的普通按钮另外允许 tell、title、actionbar、tellraw、sound、delay、return 与条件块。
+  - 与 TrMenu 的刻意差异：未知动作名在加载时报错并列出可用动作（TrMenu 当作 Kether 执行）；未加引号的 `- tell: hi` 报错提示加引号（TrMenu 静默忽略）；条件按顺序在执行到时判断（TrMenu 预先判断）；title 时间写错报错（TrMenu 用默认值）；`{chance=}` 须在 0–1 之间（TrMenu 不检查，写成 50 会总是执行）；`page:` 是页面 ID 而不是页码；没有 op、Kether、JavaScript、经济、物品、bossbar 等动作。
+  - 兼容：现有菜单不用改，`message:`（tell）、`menu:`（open）和原来的顺序都照旧有效，settings 的 close → 指令 → 刷新 / 跳转与失败处理和以前相同。以下写法的含义变了：指令值里的 `;` 现在拆成多条指令（以前整段作为一条指令）；canvas `message:` 现在解析 `&` 颜色代码和字面 `\n`（以前原样显示）；动作文字中的 `_||_`、`&&&` 以及 `{delay=…}`、`{chance=…}`、`{condition=…}`、`{players}` 和对应的 `<…>` 写法现在是分隔符或选项。按文本检索，test_server 现有的 5 个菜单、插件内置菜单与模板以及 Wiki 示例都没有这些写法。以前报错的写法现在可以加载：单条字符串 Actions、条件块、任意位置的 close / page / refresh、指令中的 `%` 与 Placeholders 名称、settings 中的 `message:` / `menu:`。相关报错文字也换成了新的提示。
+  - 代码：新增 `ReactionParser`、`ReactionRunner`、`MenuReaction`、`ActionCondition`、`ActionValues`、`ActionBars`。`MenuAction` 新增 `reaction` 分量，settings 的 Actions 列表不再编译成 `steps` 序列和 `close` 标记（原构造器保留）；`TemplateElement` 的 `actions` 分量换成 `reaction`，`actions()` 仍返回规范化后的动作行（`page: x` 读作 `template: 菜单/x`），原构造器保留；`TemplateParser.parse`、`SimpleMenuParser.parse` 各加一个带跳转解析的重载，原方法不变。
+  - 文档：`docs/wiki/actions.md` 重写为完整参考（动作速查、可用范围、行尾选项、条件块、条件写法、执行顺序与重绘、失败处理、指令身份与占位符、各动作的值、与 TrMenu 的差异和迁移步骤）；`variables.md` 的支持范围速查与命令占位符说明，`troubleshooting.md`、`migration.md`、`quick-start.md`、`settings.md`、`elements.md`、`structure.md`、`text-tags.md`、`README.md`（Wiki）、`docs/guides/MENU-CONFIG.md`、`SETTINGS-DEMO.md` 和 jar 内 `配置说明.md` 中过时的动作规则同步更新，`docs/wiki/index.html` 用 `tools/build_wiki.py` 重新生成。
+  - 验证（2026-10-01）：测试 125 → 161 项（按钮宽度 8 项、动作 28 项），全部通过；`minimize_check` 0 problem（省 280.4 KB，保留的 Keystone 类与 paper.2 相同）；`api_contract_check` 对 paper.2 为 0 problem（调用方为 test_server 中除私有 DialogMenu 外的全部插件与 Ambience 构建）；jar sha256 `5e1d2dd1…ef9b`，可重复构建。沙盒 `server-dialogmenu-actions`（Paper 26.2，模拟玩家与抓包探针，日志 `keystone-sandbox/runs/dm3final-*`、`dmactions-r*`）：干净安装的 5 个内置菜单 Dialog JSON 与 paper.2 相同（只差会话令牌与实时延迟）；canvas 与 settings 各动作结果符合预期——sound 的 Bukkit 名、原版 ID 与带 `-` 的资源包 ID 都在玩家位置播放，tell 的 `&` / `&#RRGGBB` 与 `
+`，title 反引号与默认时间，actionbar，tellraw 的 JSON 与 `<文字@url=…@hover=…>`，command / console 带 PAPI 与 `;` 多条，chat 与以 `/` 开头转为指令，connect 在 `bungeecord:main` 发出 `Connect`，`delay:` 与 `{delay}`，`{chance}`，`{players}` 与 `{players=perm …}`，条件块的 actions / deny 与 priority，return 中止其余动作，set 后的条件与文字读到新值，page / open / close 之后的动作照常执行，旧写法 `message:` / `menu:` 可用，指令失败或 PAPI 取不到时停止并提示；未知动作名、未加引号的动作行、open 目标不存在时启动、`/dmenu check` 与 `/dmenu reload` 都报中文错误（文件、路径、可用写法）。未验证：真实代理下的跨服切换（沙盒没有 BungeeCord / Velocity，只核对了发出的插件消息）、真实客户端中的显示与音效。
+- canvas 按钮可设置宽度（用户 2026-10-01 确认）：`Type: button` 且 Sprite 为 button（默认）、selected 或 wide-button 时，`Width` 可设为 16–960 像素，默认仍是贴图原宽（108 / 144），按钮仍须放进画布（`X + Width <= Canvas.Width`）。高度固定 2 行，没有高度选项。
+  - 贴图按三段拼接：左右各 2 像素的边框原样保留，中间用 1、2、4……256 像素的中间列切片补足，每个按钮最多 12 个字形，任何宽度都不变形。紫晶与羊皮纸两种皮肤都支持。
+  - `SelectedSprite: selected`（及 button / wide-button）按按钮的宽度拼出，任意宽度都能使用；wide-button 不写 Width 时也能配 selected（按 144 拼出，以前会报尺寸不同）。其他贴图之间的 SelectedSprite 仍要求尺寸相同。
+  - 文字照旧在新宽度内居中、按 Width − 8 裁切；点击区域为整个 Width × 2 行，按钮重叠检查按新宽度计算。
+  - close、emblem、divider、reward、panel 等其他贴图的按钮写 Width 时报错 `Width: 仅 button / selected / wide-button 贴图的按钮可设置宽度`（以前静默忽略；现有内置与 test_server 菜单中没有这样的写法）。sprite 元素的 Width 仍不拉伸内置贴图。
+  - 不写 Width 或 Width 等于原宽时仍发送原来的整张贴图：内置 canvas 菜单、旧版模板、Wiki 示例菜单与 settings 页面（两种语言、两种主题）生成的 Dialog JSON 与改动前逐字节相同。
+  - **资源包有变化**：`dialogmenu_dialogue:ui` 字体在原有字形之后追加 U+E016–U+E057，新增 `textures/ui/<皮肤>_button-edges.png` 与 `<皮肤>_button-fill-{1,2,4,…,256}.png` 共 20 张贴图，原有贴图和码位不变。更新插件后需让 CraftEngine 重新合并资源包（`/ce reload all` 后执行 `/ce workflow default`），玩家重新加载资源包或重进服务器；使用旧资源包时拉宽的按钮显示为缺字方块。
+  - `tools/BuildTemplateSkin.java` 从按钮贴图自动切出边框与中间列并生成上述贴图、字体条目和 `template-skins.properties` 的 `slice.<皮肤>.<贴图>` 数据（每段为 码位,宽度,实测前进量）；`DialogCanvas.Skin` 新增 `slices` 分量（原 6 参数构造器保留）。
+  - 文档：`docs/wiki/elements.md`（button 的 Width、选中贴图与内置贴图说明）、`docs/wiki/canvas.md`、`docs/guides/MENU-CONFIG.md`、jar 内 `配置说明.md` 与内置菜单 / 模板的注释同步更新，`docs/wiki/index.html` 重新生成。
+  - 验证：新增 `ButtonWidthTest` 8 项（解析、错误提示、重叠、16–960 每个宽度的拼接与字形数、按客户端规则从资源包实测前进量后逐像素比对拼出的图像、点击区域与文字裁切、无 Width 输出不变），全部 133 项测试通过。沙盒 `server-dialogmenu-width`（Paper 26.2，模拟玩家）：含 40 / 108 / 200 / 300 / 选中 200 / wide 144 / wide 250 / 536 宽按钮的两页菜单 `check`、`reload` 通过，打开、点击、选中切换与翻页正常，Dialog 中各按钮的切片字形数与预期一致；关闭按钮写 Width 时启动、`check`、`reload` 均报上述中文错误且不改动文件。独立的原版 26.2 客户端（GUI 缩放 2、菜单模糊 5）截图中两种皮肤、普通与选中状态的 9 个按钮边框与三段拼接的参考图逐像素一致，无接缝；demo-boss 显示不变。真实客户端中按坐标点击未验证（模拟点击只按动作 ID 触发）。
+
+## [0.2.0-paper.2-SNAPSHOT] - 2026-09-30
+
+开发版（按 DialogMenu 发布节奏只累计源码，不建标签、不发 Release）。在 0.2.0-paper.1（sha256 `c1b4cb22…15e0`，对照副本 `keystone-sandbox/data/dialogmenu-jars/`）之上：
+
+- 依赖 Keystone 0.3.4：`libs/keystone-0.3.4.jar`（sha256 `8656a4b5…`）替换 0.3.3，仍重定位到 `online.toraka.dialogmenu.libs.keystone`；本插件没有 `TODO(keystone)` 私有实现可删。换 jar 即生效的变化：
+  - 指令报错改为中文提示：未知子指令列出可用子指令，缺参数给出用法，`/dmenu open <菜单> <页面>` 的页面不在候选里时回 `无效的 <page>：…` 并列出可选页面（最多 10 个）；错误片段 `§c§n` 高亮。控制台执行仅限玩家的子指令（`pack`、`open`、`template`）回 `这个指令只能由玩家使用。`。插件自己的帮助（`command-help-*` 语言键）不变。
+  - 根指令 `/dialogmenu`（`dmenu` `settings` `playersettings` `player-settings`）被显式拒绝 `playersettings.use` 时回 `你没有权限使用这个指令。`，补全里看不到。它是玩家用的根，不加 `hideWhenDenied()`；`reload` / `check` 照旧由插件检查 `playersettings.admin`。
+  - `lang/*.yml` 无法解析时备份为 `<文件名>_yyyyMMddHHmmss.bak` 并在原处写入默认。
+  - 只用 Paper Dialog，没有物品栏菜单，0.3.4 的“菜单只认鼠标左右键”不涉及本插件（源码中没有 Keystone 菜单或物品栏点击处理）。
+- 无法解析的菜单文件（用户 2026-09-29 决定，新增 `BrokenFiles`）：启动与 `/dmenu reload` 应用前，逐个读一遍当前配置模式用到的 `config.yml`、`menus/*.yml`、`text.yml`、`translations/*.yml`（旧模式另含 `menu.yml`、`languages/`、`templates/`）。只有 YAML 语法错误或字节不是 UTF-8 才算无法解析；能读但校验不通过的文件照旧报错、不改动文件。
+  - 有 jar 默认的（`config.yml` 按 `Version: 3` / `2` 行认出 catalog / simple 默认，内置菜单、`text.yml`、内置语言的翻译文件等）：原文件保留为同目录 `<文件名>_yyyyMMddHHmmss.bak`（Keystone 读回核对过的备份），原处写入默认内容并按它加载，控制台 `错误` 行写明出错位置与备份路径，执行 reload 的玩家也收到这一行。
+  - 没有 jar 默认的（服主自建的菜单、翻译、模板）：原文件不动，这次不加载（catalog 菜单、翻译与模板目录可以单独略过），`错误` 行写明文件与行列；被别的菜单引用或是 `DefaultMenu` 时，整体校验照旧失败并沿用原有的回退。
+  - `/dmenu check` 只检查，从不改写文件。
+  - `CatalogRepository.read`、`MenuTranslations.read`、`TemplateRepository.read/initialize` 各加一个带跳过集合的重载，原方法不变。
+- 文档：`docs/wiki/troubleshooting.md` 在“配置报错”表格之后新增“文件无法解析”（含运行中改坏文件再 reload 的处理）一节，`docs/wiki/index.html` 用 `tools/build_wiki.py` 重新生成。
+- 打包的 Keystone 只保留用到的类（Shadow minimize，用户 2026-09-29 决定），jar 从 2,914.6 KB 减到 2,634.2 KB（Keystone 595 → 446 个类）；ItemBridge 等 Maven 依赖不裁剪。`AGENTS.md` 写明核对方法（`tools/minimize_check.py`）。
+- 运行中改坏的文件（用户 2026-10-01 的规则）：`/dmenu reload` 与启动时同样处理——有 jar 默认的换成默认、坏文件留作 `.bak`，没有的原样保留、这次不加载——不再像 0.2.0-paper.1 那样拒绝重载、保留旧菜单（paper.1 回 `配置错误，保留原菜单：config.yml: while parsing a flow sequence`）。执行重载的玩家对每个坏文件收到一行 `DialogMenu 错误：<文件> 无法解析（第 N 行第 M 列：…）；原文件已备份为 <路径>…`，控制台是同一行。`lang/*.yml` 只在启动时读取，`/dmenu reload` 不重读它（paper.1 起如此，未改）。Keystone 0.3.5 的“通知在线管理员”接口应在 `BrokenFiles.repair` 的两处错误行调用，这次不自建广播。
+- 验证（2026-09-30 至 10-01，沙盒 server-dialogmenu / 25645，`--heap 1G`；paper.1 对照 jar 与瘦身后的 paper.2 跑同一组场景，日志在 `keystone-sandbox/runs/dialogmenu-034-{p1,p2}-*`）：
+  - `formatSources`、`build` 通过；测试 120 → 125 项（新增 `BrokenFilesTest` 5 项），全部通过。jar 没有未重定位的 `dev/keystone/`、`kotlin/`、`taboolib/`；资源与 `plugin.yml` 只差版本号。`minimize_check` 0 problem（省 280.4 KB，去掉 149 个 Keystone 类）。
+  - `api_contract_check`：部署版 0.1.23-papi.1 → paper.2、paper.1 → paper.2、不瘦身 → 瘦身均 0 problem；作为 Ambience 1.5.3 / 1.6.0-paper.2、PlaceholderAPI 的调用方 0 problem。
+  - 场景：cmderr、content / content2（坏内容文件启动、再次启动）、broken、real、dialogs、dialogs2、ext、interval、fresh、legacy、langold、url、playersettings、12111（Paper 1.21.11）、reloadbroken（+ restart，用户 2026-10-01 的规则）：干净安装启动后，在运行中改坏 `config.yml`、`menus/demo-boss.yml`（有 jar 默认）、`translations/zh_cn.yml`（另存为 GBK）和服主自建的 `menus/zz-owner.yml`，paper.1 回 `配置错误，保留原菜单：config.yml: …` 并保留旧菜单；本版玩家（op）`/dmenu reload` 后前三个换成 jar 默认（逐字节相同）、各留一份 `.bak`，`zz-owner.yml` 原样不加载，玩家收到 4 行 `DialogMenu 错误：…`（文件、行列、备份路径）和 `重载成功：4 个菜单`，菜单照常打开；控制台再次 reload 结果相同（同内容的 `.bak` 不重复）；以结果目录重启，只剩 `zz-owner.yml` 一行错误。p1 与 p2 之间除上面列出的默认变化外没有差别；p2 控制台没有 `NoClassDefFoundError` / `ClassNotFoundException` / `NoSuchMethodError`。
+  - 未验证：真实客户端观感（沿用 paper.1 的结论）。
+
+## [0.2.0-paper.1-SNAPSHOT] - 2026-09-28
+
+- 依赖 Keystone 0.3.3（2026-09-29）：共享库换成 `libs/keystone-0.3.3.jar`（仍重定位到 `online.toraka.dialogmenu.libs.keystone`），版本号不变。
+  - 删除插件自带的更新检测副本 `updates/UpdateChecker.java`、`GitHubReleases.java`、`ReleaseVersion.java`，改用 Keystone 的 `UpdateChecker.start(plugin, "Usasi103/DialogMenu", 6)`；主类新增常量 `DialogMenu.UPDATE_CHECK_HOURS = 6` 与 `startUpdateChecks(plugin)`（与私有 DialogMenu 同形）。行为不变：固定每 6 小时复查，`update-check.yml` 的 `check-interval-hours` 不读取，启动延迟、开关、预发布与通知设置照旧；`docs/guides/UPDATE-CHECK.md` 同步改写常量名和代码来源。
+  - `UpdateScheduleTest` 移到主包，改测 `DialogMenu.startUpdateChecks`：旧配置写 1、168 或非法值时，首次检查仍在 2060 tick（60 秒加按仓库名错开的 43 秒）后，此后每 432000 tick（6 小时）一次；关闭检测时不排任务。
+  - 只用 Paper Dialog，没有 Keystone 箱子菜单，0.3.3 的“菜单默认只读”不涉及本插件。
+  - 验证：120 项测试通过（与换代前相同）；JAR 不含 Kotlin、TabooLib 或未重定位的类，`plugin.yml` 与换代前相同；新 JAR 对 Paper 1.21.11 API 的静态引用检查无缺失；`api_contract_check` 对公开 0.1.23-papi.1 与对换代前的构建均为 0 问题（调用方为 test_server 中除私有 DialogMenu 外的全部插件），删去的 `updates.*` 类没有调用方。
+  - 沙盒 `server-dialogmenu` 用同一组命令对比换代前的构建（`runs/dialogmenu-final-real`、`-final-dialogs`、`-final-dialogs2`、`dialogmenu-new-ext`、`dialogmenu-12111-new` 对 `runs/dialogmenu-033-real-r2`、`-dialogs-r2`、`-dialogs2-r2`、`-ext-r2`、`-12111-r2`）：真实配置、两组对话框页面（含 Ambience 1.5.3）、External 资源包回执与 Paper 1.21.11，控制台与玩家输出、对话框 JSON 除随机会话 ID 与实时延迟 `{ping}` 外逐行相同。`check-interval-hours: 1` 的旧配置下，两版的更新检测任务周期都是 432000 tick（`runs/dialogmenu-033-interval-k032-r2`、`-k033-r2`）；同服不固定周期的 Waystone 1.2.0（同为 Keystone 0.3.3）按同样的配置排成 72000 tick（`runs/dialogmenu-033-interval-control-r3`）。
+- 源码由 Kotlin + TabooLib 改为纯 Java 与普通 Paper 工程，共享库 Keystone（最初 0.3.2，现为 0.3.3，见上一条）以 `online.toraka.dialogmenu.libs.keystone` 重定位打包；Kotlin 源码与旧构建脚本存档于 `plugins-dev/_refactor/kotlin-dialogmenu-0.1.23/`。包名、类名、主类静态 `getPluginInstance()`、命令 `/dialogmenu`（`dmenu`、`playersettings`、`settings`、`player-settings`）、权限 `playersettings.use` / `playersettings.admin`、PDC 键、配置与数据文件、菜单布局与点击语义保持不变。
+- 仍以 Paper 1.21.11 API 编译，`api-version` 保持 `1.13`；软依赖清单（PlaceholderAPI、Ambience、LootBeam、PickupNotifier 与 ItemBridge 的 39 个物品插件）照旧，ItemBridge 1.0.32 仍重定位到 `online.toraka.dialogmenu.library.itembridge`。帮助文字继续使用 `lang/*.yml`，Keystone 负责读取、补键和逐行发送；菜单自己的 i18n/l10n 翻译系统不变。
+- 资源包回执改为 Paper 连接初始化监听加 Netty 观察器 `dialogmenu_resource_pack_observer`：配置阶段（CraftEngine 等在进入游戏前发送）的回执照旧记录，游戏内回执仍走 Paper 事件；CraftEngine 处理器排在前面时另加一个观察器，不替换服务端类，不引入 packetevents。更新检测复查周期仍固定 6 小时（迁移时保留插件自带实现，换 Keystone 0.3.3 后改用 Keystone 的 `UpdateChecker`）。
+- 已验证：`build` 通过，120 项 JUnit 5 测试全部通过；JAR 不含 Kotlin、TabooLib 或未重定位的类；新 JAR 与 Keystone 0.3.2 对 Paper 1.21.11 API 的静态引用检查无缺失；`api_contract_check` 为 0 问题，对 Ambience `PrefsCache` / `NoticeEngine` 的反射目标仍存在。沙盒（Paper 26.2，模拟玩家）与旧 JAR 逐项对比：真实配置、全新安装、PlayerSettings 旧配置导入、旧语言文件升级、损坏配置回退、URL 与 External 资源包回执、各菜单页面、开关、密度、语言与主题切换、搜索、任务与设置演示、旧版模板、物品页、PAPI 变量、重载刷新已打开菜单，控制台与玩家输出一致；Paper 1.21.11 沙盒中的启动、帮助、检查、重载、Tab 补全、菜单翻页与模板也与旧 JAR 一致。
+- 行为差异：语言文件缺键时插入到对应位置并在控制台报告“已升级，新增 N 项”，文件顶部多出版本头；语言文件无法解析时备份原文件、本次改用内置文字（旧版显示 `{command-help-title}` 等原始键名）；与 PlayerSettings 同装时只输出拒绝启用的提示，不再附带 TabooLib 任务注册异常；Tab 补全按字母排序；参数错误提示改用 Paper 原生格式；启动时不再下载 TabooLib 运行库与 Minecraft 语言文件；JAR 增大约 0.9 MB（Keystone）。
+- 未验证：真实客户端的菜单观感与配置阶段资源包回执（沙盒只用模拟连接）、真实 CraftEngine / ItemsAdder / Nexo / Oraxen 联动。
+
 ## [0.1.23-papi.1-SNAPSHOT] - 2026-09-27
 
 - canvas 新增 `Placeholders`：在菜单根部或页面中把 PlaceholderAPI 变量声明为名称，文字写 `{名称}`，条件直接引用；Text 与 message 也可直接写 `%变量%` 及 `{ping}`、`{world}`。取值在打开、跳转、刷新时进行，点击时重新核对条件，条件不再成立只刷新界面。

@@ -4,7 +4,7 @@
 # Elements 内 text 的 Width 是文字换行宽度（像素），Rows 是预留高度（行）。
 # 文字按 Width 自动换行；Rows 容量不足时截断并显示 ..；大字每行会占用更多画布行。
 # FontSize 默认 8，仅 text 可自定义 6–24；Bold: true 加粗，false 常规。
-# 按钮和内置 sprite 的尺寸由 Sprite 贴图决定，修改 Width / Rows 不会拉伸贴图。
+# 内置 sprite 的尺寸由 Sprite 贴图决定；button / selected / wide-button 按钮可用 Width 改宽（16–960 像素），高度固定 2 行。
 # 自定义 Font 图标的 Width / Rows 声明占位尺寸，Advance 为字形实际前进宽度（像素）。
 # 自定义图标的实际大小由资源包字体定义决定；Advance 不准确会导致后续内容错位。
 # Color 仅接受六位十六进制颜色，如 '#55FF55'；不支持 settings 的 text / muted / heading 别名。

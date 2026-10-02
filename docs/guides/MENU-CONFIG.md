@@ -84,9 +84,12 @@ Pages:
 已有位置、颜色、贴图等自由布局需求请用下方 canvas 类型。
 更多控件字段见 [SIMPLE-CONFIG.md](../archive/SIMPLE-CONFIG.md)；该文档里的旧单页内容放到当前 `Pages.<页面ID>` 下即可。
 
+`Actions` 沿用 TrMenu 3 的动作写法，按顺序逐条执行，close、page、refresh 等可放在任意位置；完整列表、行尾选项（如 `{delay=2}`）和条件块见 [动作参考](../wiki/actions.md)。
 `page: 页面名` 只在当前菜单内跳转。`command: 指令` 以玩家身份执行，`console: 指令` 以控制台身份执行；不写开头的 `/`。
-settings 的 `close` 放在首项，可接命令；页面跳转、search、refresh 放最后。指令支持 `{player}`、`{uuid}`。
-例如跨菜单可写 `["close", "command: dmenu open demo-boss"]`。
+settings 的指令支持 `{player}`、`{uuid}` 和 `%PAPI变量%`（取不到时不执行）。
+跨菜单写 `open: demo-boss` 或 `open: demo-boss:confirm`。
+常用写法：`'sound: UI_BUTTON_CLICK-0.8-1.4'`、`'tell: &a文字'`、`'title: 主标题 副标题'`、`'delay: 20'`（tick）；带冒号的动作行加引号。
+条件块写 `condition` / `actions` / `deny`，条件如 `perm 节点`、`%player_level% >= 10`；不支持 Kether / JavaScript。
 需要实际物品时在子页内写 `Display.Material`，详见 [ITEM-SOURCES.md](ITEM-SOURCES.md)。
 玩家已有语言/主题偏好继续使用原 PDC；文件里的 Language/Theme 仅作默认值。
 
@@ -118,14 +121,14 @@ Pages:
 ```
 
 Skin、Canvas、Variables 可以写在菜单根部作为公共默认值，也可在某个 Pages 子页里覆盖对应的整个配置段。
-`page: confirm` 跳到本文件的 confirm 页；`menu: demo-boss` 跳到另一个 canvas 菜单的默认页。
+`page: confirm` 跳到本文件的 confirm 页；`open: demo-boss` 跳到另一个菜单的默认页（旧写法 `menu: demo-boss` 仍可用）。
 不同菜单允许使用相同子页名，互不冲突。
 同次跳转保留合法同名变量，重新用命令打开从默认值开始。
-canvas 动作支持 set、message、command、console、page、menu、refresh、close；跳转/刷新/关闭放最后。
+canvas 另有 `set: 变量=值`；`message:`（即 tell）可发提示。指令还能用 Variables / Placeholders 名称和 `%PAPI变量%`。动作按顺序执行，没有位置限制。
 首领 demo 的难度选项使用 `Variables`、`SelectedWhen`、`VisibleWhen`，可直接照文件中的中文注释改。
 
 画布默认 552×180：`Position: [X, Row]` 横向逐像素、纵向每行 9 像素。
-text 的 Width/Rows 控制排版，超长截断；按钮大小由 Sprite 决定。
+text 的 Width/Rows 控制排版，超长截断；按钮默认大小由 Sprite 决定，button / selected / wide-button 按钮可用 Width 改为 16–960 像素宽（高度固定 2 行，SelectedSprite: selected 自动同宽）。
 Skin 支持 amethyst、parchment；Sprite 支持 panel、button、selected、wide-button、close、divider、emblem、reward。
 button/selected 为 108×18，wide-button 为 144×18，close 为 18×18，reward 为 27×27。
 字体立绘使用 sprite 的 Font、Glyph、Width、Rows、Advance，示例见 demo-dialogue.yml。

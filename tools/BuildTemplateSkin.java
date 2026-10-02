@@ -12,6 +12,7 @@ public class BuildTemplateSkin {
     static Path output;
     static List<String> providers = new ArrayList<>();
     static StringBuilder metrics = new StringBuilder();
+    static Map<String, BufferedImage> images = new HashMap<>();
     static int glyph = 0xE000;
 
     public static void main(String[] args) throws Exception {
@@ -62,6 +63,9 @@ public class BuildTemplateSkin {
             register(theme + ".emblem", emblem, 1);
             register(theme + ".reward", panel(27, 27, parchment, false), 1);
         }
+        // Appended after the whole sprites so their code points never move.
+        for (String theme : List.of("amethyst", "parchment"))
+            slices(theme, List.of("button", "selected", "wide-button"));
         Files.writeString(
                 output.resolve("font/ui.json"),
                 "{\"providers\":[" + String.join(",", providers) + "]}\n");
@@ -81,6 +85,124 @@ public class BuildTemplateSkin {
         BufferedImage image = panel(width, 18, parchment, selected);
         if (parchment) clearLastColumn(image);
         return image;
+    }
+
+    /**
+     * Buttons of any width: each look's two edges plus power-of-two runs of its middle column.
+     * One texture per piece width, one row per look, so no glyph cell is wider than 256 px.
+     */
+    static void slices(String theme, List<String> names) throws Exception {
+        int height = 18, cap = 0;
+        List<int[]> edges = new ArrayList<>();
+        for (String name : names) {
+            int[] edge = edges(images.get(theme + "." + name));
+            edges.add(edge);
+            cap = Math.max(cap, Math.max(edge[0], edge[1]));
+        }
+        BufferedImage caps =
+                new BufferedImage(cap * 2, height * names.size(), BufferedImage.TYPE_INT_ARGB);
+        for (int row = 0; row < names.size(); row++) {
+            BufferedImage button = images.get(theme + "." + names.get(row));
+            int[] edge = edges.get(row);
+            copy(button, 0, edge[0], caps, 0, row * height);
+            copy(button, button.getWidth() - edge[1], edge[1], caps, cap, row * height);
+        }
+        List<int[]> edgeCells = grid(theme + "_button-edges", caps, 2, names.size());
+        Map<Integer, List<int[]>> fills = new LinkedHashMap<>();
+        for (int fill = 256; fill >= 1; fill /= 2) {
+            BufferedImage strip =
+                    new BufferedImage(fill, height * names.size(), BufferedImage.TYPE_INT_ARGB);
+            for (int row = 0; row < names.size(); row++) {
+                BufferedImage button = images.get(theme + "." + names.get(row));
+                for (int x = 0; x < fill; x++)
+                    copy(button, button.getWidth() / 2, 1, strip, x, row * height);
+            }
+            fills.put(fill, grid(theme + "_button-fill-" + fill, strip, 1, names.size()));
+        }
+        // slice.<theme>.<name>=glyph,width,advance per piece: left edge, right edge, then fills.
+        for (int row = 0; row < names.size(); row++) {
+            List<String> parts = new ArrayList<>();
+            for (int side = 0; side < 2; side++)
+                piece(parts, edgeCells.get(row * 2 + side), edges.get(row)[side]);
+            for (Map.Entry<Integer, List<int[]>> fill : fills.entrySet())
+                piece(parts, fill.getValue().get(row), fill.getKey());
+            metrics.append("slice.")
+                    .append(theme)
+                    .append('.')
+                    .append(names.get(row))
+                    .append('=')
+                    .append(String.join(",", parts))
+                    .append('\n');
+        }
+    }
+
+    static void piece(List<String> parts, int[] cell, int width) {
+        parts.add(Integer.toString(cell[0]));
+        parts.add(Integer.toString(width));
+        parts.add(Integer.toString(cell[1]));
+    }
+
+    /** Widths of the left and right edges around the run of columns equal to the middle one. */
+    static int[] edges(BufferedImage image) {
+        int middle = image.getWidth() / 2, left = middle, right = middle;
+        while (left > 0 && sameColumn(image, left - 1, middle)) left--;
+        while (right < image.getWidth() - 1 && sameColumn(image, right + 1, middle)) right++;
+        int[] edge = {left, image.getWidth() - 1 - right};
+        if (edge[0] > 8 || edge[1] > 8)
+            throw new IllegalStateException(
+                    "Button art needs edges of at most 8 px around one repeated middle column: "
+                            + Arrays.toString(edge));
+        return edge;
+    }
+
+    static boolean sameColumn(BufferedImage image, int a, int b) {
+        for (int y = 0; y < image.getHeight(); y++)
+            if (image.getRGB(a, y) != image.getRGB(b, y)) return false;
+        return true;
+    }
+
+    static void copy(BufferedImage from, int x, int width, BufferedImage to, int toX, int toY) {
+        for (int dx = 0; dx < width; dx++)
+            for (int y = 0; y < from.getHeight(); y++)
+                to.setRGB(toX + dx, toY + y, from.getRGB(x + dx, y));
+    }
+
+    /** Writes a glyph grid texture; returns {code point, measured advance} per cell, row by row. */
+    static List<int[]> grid(String name, BufferedImage image, int columns, int rows)
+            throws Exception {
+        ImageIO.write(image, "png", output.resolve("textures/ui/" + name + ".png").toFile());
+        int cellWidth = image.getWidth() / columns, cellHeight = image.getHeight() / rows;
+        List<int[]> cells = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
+        for (int row = 0; row < rows; row++) {
+            StringBuilder chars = new StringBuilder();
+            for (int col = 0; col < columns; col++) {
+                chars.append(String.format("\\u%04x", glyph));
+                cells.add(
+                        new int[] {
+                            glyph++,
+                            advance(image, col * cellWidth, row * cellHeight, cellWidth, cellHeight)
+                        });
+            }
+            lines.add("\"" + chars + "\"");
+        }
+        providers.add(
+                "{\"type\":\"bitmap\",\"file\":\"dialogmenu_dialogue:ui/"
+                        + name
+                        + ".png\",\"height\":"
+                        + cellHeight
+                        + ",\"ascent\":7,\"chars\":["
+                        + String.join(",", lines)
+                        + "]}");
+        return cells;
+    }
+
+    /** The client's bitmap advance: one past the last column with any opaque pixel, plus one. */
+    static int advance(BufferedImage image, int x0, int y0, int width, int height) {
+        for (int x = width - 1; x >= 0; x--)
+            for (int y = 0; y < height; y++)
+                if ((image.getRGB(x0 + x, y0 + y) >>> 24) != 0) return x + 2;
+        return 1;
     }
 
     static void clearLastColumn(BufferedImage image) {
@@ -179,6 +301,7 @@ public class BuildTemplateSkin {
 
     static void register(String id, BufferedImage image, int columns) throws Exception {
         String name = id.replace('.', '_');
+        images.put(id, image);
         ImageIO.write(image, "png", output.resolve("textures/ui/" + name + ".png").toFile());
         int first = glyph;
         List<String> advances = new ArrayList<>();
@@ -186,14 +309,7 @@ public class BuildTemplateSkin {
         int cell = image.getWidth() / columns;
         for (int col = 0; col < columns; col++) {
             chars.append(String.format("\\u%04x", glyph++));
-            int actual = 0;
-            for (int x = cell - 1; x >= 0 && actual == 0; x--)
-                for (int y = 0; y < image.getHeight(); y++)
-                    if ((image.getRGB(col * cell + x, y) >>> 24) != 0) {
-                        actual = x + 1;
-                        break;
-                    }
-            advances.add(Integer.toString(actual + 1));
+            advances.add(Integer.toString(advance(image, col * cell, 0, cell, image.getHeight())));
         }
         metrics.append(id)
                 .append('=')

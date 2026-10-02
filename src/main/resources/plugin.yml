@@ -1,0 +1,56 @@
+name: DialogMenu
+version: '${version}'
+main: online.toraka.dialogmenu.DialogMenu
+# Kept from the TabooLib build: the same jar must load on Paper 1.21.11 and 26.2.
+api-version: '1.13'
+description: Configurable Dialog menus with custom layouts and optional item sources
+folia-supported: false
+# PlaceholderAPI, Ambience (and its old module names), then every ItemBridge provider plugin in
+# itembridge-providers.properties, sorted (ItemBridgeSourceTest keeps the two lists equal).
+softdepend:
+  - 'PlaceholderAPI'
+  - 'Ambience'
+  - 'LootBeam'
+  - 'PickupNotifier'
+  - 'AdvancedItems'
+  - 'AzureFlow'
+  - 'Baikiruto'
+  - 'BreweryX'
+  - 'CraftEngine'
+  - 'CrazyVouchers'
+  - 'CustomCrafting'
+  - 'CustomFishing'
+  - 'DragonArmourers'
+  - 'EcoArmor'
+  - 'EcoCrates'
+  - 'EcoItems'
+  - 'EcoMobs'
+  - 'EcoPets'
+  - 'EcoScrolls'
+  - 'EmakiItem'
+  - 'ExecutableBlocks'
+  - 'ExecutableItems'
+  - 'HMCCosmetics'
+  - 'HeadDatabase'
+  - 'ItemEdit'
+  - 'ItemsAdder'
+  - 'ItemsXL'
+  - 'MMOItems'
+  - 'MagicGem'
+  - 'MythicMobs'
+  - 'NeigeItems'
+  - 'Nexo'
+  - 'Nova'
+  - 'Oraxen'
+  - 'PxRpg'
+  - 'Ratziel'
+  - 'Reforges'
+  - 'SX-Item'
+  - 'Sertraline'
+  - 'Slimefun'
+  - 'StatTrackers'
+  - 'Talismans'
+  - 'Zaphkiel'
+# No permissions section, as in the TabooLib build: playersettings.use (default true) is added
+# with the command and playersettings.admin (default op) in onEnable, each only when the server
+# does not know the node yet, so a leftover PlayerSettings jar never causes a duplicate error.

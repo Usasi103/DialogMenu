@@ -52,7 +52,7 @@ Pages:
 
 ## 从独立 templates 迁移
 
-给 canvas 模板加菜单外层，把每个模板除 Version 之外的内容放进 Pages 对应页。把同菜单的 `template: boss-confirm` 改为 `page: confirm`；跨 canvas 菜单跳转可用 `menu: 菜单ID`。
+给 canvas 模板加菜单外层，把每个模板除 Version 之外的内容放进 Pages 对应页。把同菜单的 `template: boss-confirm` 改为 `page: confirm`；跨菜单跳转用 `open: 菜单ID` 或 `open: 菜单ID:页面ID`（旧写法 `menu: 菜单ID` 仍可用）。
 
 新版读取 menus 文件中的画布页，不把旧 templates 自动并入。共同变量可移至根 Variables，但要理解子页是整段覆盖。
 
@@ -64,7 +64,7 @@ DialogMenu 从 0.1.14 更名。不要同时加载旧 PlayerSettings JAR 与新 D
 
 ## 对照 TrMenu 理解
 
-本 Wiki 参考 [TrMenu 文档](https://hhhhhy.gitbook.io/trmenu-v3) 的分章节配置手册形式。下表解释 DialogMenu 的实际机制，不承诺兼容 TrMenu 配置。
+本 Wiki 参考 [TrMenu 文档](https://hhhhhy.gitbook.io/trmenu-v3) 的分章节配置手册形式。下表解释 DialogMenu 的实际机制；除动作外不承诺兼容 TrMenu 配置。
 
 | 习惯中的概念 | DialogMenu 对应方式 |
 | --- | --- |
@@ -72,11 +72,11 @@ DialogMenu 从 0.1.14 更名。不要同时加载旧 PlayerSettings JAR 与新 D
 | 菜单标题 | settings 的 Title；canvas 可见标题用 text 元素 |
 | 布局 | settings 的 Layout 是控件名顺序；canvas 用像素 / 行坐标 |
 | 图标 | settings 用 Icons；canvas 用 Elements；真实物品用 Display.Material |
-| 点击动作 | Actions 字符串列表，动作名及顺序规则见本 Wiki |
+| 点击动作 | Actions 沿用 TrMenu 3 的动作行、行尾选项和条件块；差异与迁移步骤见 [动作参考](actions.md) |
 | 条件显示 | canvas 支持枚举变量与 Placeholders 声明值的比较、条件列表；不支持 JS / Kether 表达式 |
 | 自定义物品 | source:插件ID:物品ID，交给内置 ItemBridge 适配器 |
 | 变量 | settings 文本 / State 用 PAPI；canvas 用声明的枚举变量和 Placeholders |
 
-不要把箱子槽位网格、TrMenu 的嵌套动作组、JS / Kether、动态物品表达式、自动动画或点击类型配置直接贴进 DialogMenu。当前解析器只接受文档中列出的字段。
+TrMenu 的动作列表和条件块大多可以复制进 Actions，再按 [动作参考](actions.md) 改掉 Kether / JS 条件和 DialogMenu 没有的动作；点击类型只能写 all。不要把箱子槽位网格、JS / Kether 脚本、动态物品表达式或自动动画直接贴进 DialogMenu。当前解析器只接受文档中列出的字段。
 
 DialogMenu 当前没有内置经济交易、物品消耗、次数记录或定时刷新字段。需要这些业务时，通过命令接入对应插件。

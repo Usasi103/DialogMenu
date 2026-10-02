@@ -104,8 +104,8 @@ DialogMenu 在换行、居中、裁切前解析图片与翻译；图片按一个
 
 ## 可用字段与兼容规则
 
-支持 settings 的标题、导航名称、控件名/说明/选项，以及原生物品页面文字；canvas 的标题、正文和按钮文字也支持。图片标签写在文本字段，不能替代 `Icon`、`Sprite`、`Display.Material` 的原有配置格式。canvas 的 `message:` 动作也可使用标签；命令和权限字段保持原语义。
+支持 settings 的标题、导航名称、控件名/说明/选项，以及原生物品页面文字；canvas 的标题、正文和按钮文字也支持。图片标签写在文本字段，不能替代 `Icon`、`Sprite`、`Display.Material` 的原有配置格式。settings 与 canvas 的 tell（`message:`）、title、actionbar 动作也可使用标签；命令和权限字段保持原语义。
 
-只有包含 `<image:...>`、`<i18n:...>` 或 `<l10n:...>` 的文本才启用这套解析。其他既有文本仍为普通文字，不会突然把 `<red>` 或 `&a` 当作颜色。启用标签的文本支持 MiniMessage 颜色、文字装饰和 reset；不执行文本中的点击命令或悬浮事件。
+只有包含 `<image:...>`、`<i18n:...>` 或 `<l10n:...>` 的文本才启用这套解析。其他既有文本仍为普通文字，不会突然把 `<red>` 或 `&a` 当作颜色；例外是上述动作的文字，它们另按 `&` 颜色代码处理，见 [动作参考](actions.md)。启用标签的文本支持 MiniMessage 颜色、文字装饰和 reset；不执行文本中的点击命令或悬浮事件。
 
 测试示例见 [独立多语言菜单](examples/text-tags.yml)。将它复制到 `plugins/DialogMenu/menus/text-tags.yml`，执行 `/dmenu reload`、`/dmenu open text-tags`。默认示例只依赖随 JAR 提供的翻译，图片行需要替换成你已有的图片 ID。

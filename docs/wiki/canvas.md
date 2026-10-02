@@ -68,7 +68,7 @@ Canvas:
 
 元素必须完整位于画布中：`X + Width <= Canvas.Width`，`Row + Rows <= Canvas.Rows`。
 
-普通按钮宽 108、高 2 行，因此 `Position: [414, 17]` 可以放下；`[500, 19]` 会越界。
+普通按钮默认宽 108、高 2 行，因此 `Position: [414, 17]` 可以放下；`[500, 19]` 会越界。按钮写了 Width 时按 Width 计算，例如 `Width: 240` 的按钮 X 最大为 312；见 [button 的 Width](elements.md)。
 
 ## Skin 和 Theme 的区别
 

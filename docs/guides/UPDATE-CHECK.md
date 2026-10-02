@@ -1,6 +1,6 @@
 # GitHub Release 更新提示
 
-插件启动后读取本目录的 `update-check.yml`，默认在 60 秒之后再错开 0～119 秒检查 GitHub，此后固定每 6 小时复查。周期由源码中的 `CHECK_INTERVAL_HOURS = 6` 决定，旧配置中的 `check-interval-hours` 不再读取；启动延迟和检测开关仍可配置。请求在异步线程执行，连接超时 5 秒、读取超时 10 秒；失败不会影响游戏功能。
+插件启动后读取本目录的 `update-check.yml`，默认在 60 秒之后再错开 0～119 秒检查 GitHub，此后固定每 6 小时复查。周期由源码中的 `DialogMenu.UPDATE_CHECK_HOURS = 6` 决定，旧配置中的 `check-interval-hours` 不再读取；启动延迟和检测开关仍可配置。请求在异步线程执行，连接超时 5 秒、读取超时 10 秒；失败不会影响游戏功能。
 
 发现新版本后，控制台记录当前版本、最新版本和 Release 链接。OP 或持有 `toraka.update.notify` 权限的在线玩家收到相同提示；后来登录的管理员在上线 3 秒后收到已缓存的提示。同一版本每个在线会话提醒一次，控制台每个新标签提醒一次。仅提醒，不下载或替换 JAR。
 
@@ -12,6 +12,6 @@
 
 默认通过 GitHub `releases/latest` 检测正式 Release。`include-prereleases: true` 时读取最近 100 个 Release，选取首个非草稿且标签可比较的版本，适用于现有 CraftCosmetics packet 预发布渠道。数字版本逐段比较，支持 `v` 前缀、SemVer 预发布排序和构建元数据；本地版本等于或高于远端时不提示降级。非版本标签会报告无法比较。
 
-代码随各插件打包，无需额外安装插件。共享源码由工作区 `tools/templates/plugin-updates/` 和 `tools/sync_plugin_updates.py` 维护；各仓库独立构建不依赖这些工作区工具。
+代码随插件打包，无需额外安装插件。检测逻辑来自共享库 Keystone 的 `UpdateChecker`，与 Keystone 一起打包进 JAR 并重定位；DialogMenu 以固定 6 小时的周期调用它（`DialogMenu.startUpdateChecks` 调用 `UpdateChecker.start(plugin, "Usasi103/DialogMenu", UPDATE_CHECK_HOURS)`）。
 
 API 依据：[GitHub Release API](https://docs.github.com/en/rest/releases/releases#get-the-latest-release)。

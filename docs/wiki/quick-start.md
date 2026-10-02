@@ -71,7 +71,7 @@ check 只校验。reload 才应用，且所有菜单必须一起通过。打开�
 ## 避免第一次就踩坑
 
 - 缩进用空格，不用 Tab；字段名区分大小写。
-- Actions 是字符串列表，写 `Actions: [close]`，不要写成 `Actions: close`。
+- Actions 一般写成列表 `Actions: [close]`；带冒号的动作加引号，如 `"command: spawn"`。
 - `"off"`、`"on"`、`"yes"`、`"no"` 等用作字符串时加引号。
 - `Color: "#e7deed"` 中的颜色必须加引号，否则 `#` 开始 YAML 注释。
 - 多行文字用列表，不在单条文字中嵌入换行。

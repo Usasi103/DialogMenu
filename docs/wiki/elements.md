@@ -12,9 +12,9 @@
 | Color | 默认 "#e7deed" | `#RRGGBB`，作用于文字 |
 | VisibleWhen | 可省略 | 条件，如 difficulty=hard、"level>=30"，或条件列表；见 [条件语法](variables.md) |
 | SelectedWhen | 可省略 | 选中条件 |
-| SelectedSprite | 可省略 | 选中时替换的内置贴图，尺寸必须与原贴图相同 |
+| SelectedSprite | 可省略 | 选中时替换的内置贴图，尺寸必须与原贴图相同；可调宽度的按钮会把它拼成同一宽度，见下方 button |
 | Permission | 可省略 | button 点击权限；不使元素隐藏 |
-| Actions | button 必填，1–16 条 | [canvas 动作](actions.md) |
+| Actions | button 必填，最多 64 条 | [动作参考](actions.md) |
 
 配置只应使用对应类型有意义的字段。sprite 不绘制 Text，text 不使用 Sprite，Permission 对非按钮不提供可见性控制。
 
@@ -54,7 +54,32 @@ accept:
   Actions: ["message: 你接受了演示委托。", close]
 ```
 
-button 默认 Sprite 是 button，大小由贴图决定。设置 Width / Rows 不能把内置按钮拉伸；需要宽按钮时使用 wide-button。
+button 默认 Sprite 是 button，默认大小由贴图决定：button / selected 宽 108，wide-button 宽 144，高都是 2 行（18 像素）。
+
+| button 专用字段 | 默认 | 限制 |
+| --- | --- | --- |
+| Width | Sprite 的原宽（108 或 144） | 16–960 像素整数，仍需放得进画布：`X + Width <= Canvas.Width`；只有 Sprite 为 button / selected / wide-button 时可写 |
+
+放入 Elements 的片段：
+
+```yaml
+claim-all:
+  Type: button
+  Position: [156, 16]
+  Width: 240
+  Text: 领取全部奖励
+  Actions: ["message: 演示：已领取。", close]
+```
+
+Width 只改变宽度：贴图左右各 2 像素的边框保持原样，中间重复原贴图的中间一列，任何宽度都不会拉伸变形。高度固定 2 行，Rows 对按钮无效。按钮文字在新宽度内居中，可用宽度为 Width − 8，过长裁切；点击区域是整个 Width × 2 行，重叠检查也按新宽度计算。
+
+不写 Width，或 Width 等于贴图原宽时，按钮仍使用原来的整张贴图，发给客户端的内容与旧版完全相同。wide-button 只是原宽 144 的 button，写了 Width 后与 button 同样处理。
+
+close、emblem、divider、reward、panel 等其他贴图的按钮不能写 Width，`/dmenu check` 会报 `Width: 仅 button / selected / wide-button 贴图的按钮可设置宽度`。
+
+SelectedSprite 为 button / selected / wide-button 时，选中贴图按按钮的宽度拼出：写了 Width 用 Width，否则用 Sprite 的原宽。因此任意宽度的按钮、包括 wide-button，都可以配 `SelectedSprite: selected`。
+
+可调宽度依赖资源包中的按钮切片字形。更新插件后须重新合并资源包（CraftEngine：`/ce reload all` 后按现有流程执行 `/ce workflow default`），玩家重新加载资源包或重进服务器后才能正确显示；仍用旧资源包的玩家会看到缺字方块。
 
 按钮文字自动居中，过长裁切。按钮背景和文字都属于点击区域。按钮间不允许重叠，除非双方 VisibleWhen 能证明不会同时成立：同一名称的不同 `=` 值、`=值` 与 `!=值`，或 `"level<30"` 与 `"level>=30"` 这类不相交的数字范围。无法证明时 `/dmenu check` 拒绝。
 
@@ -133,7 +158,9 @@ Cases 只用于 sprite，不能与 SelectedSprite / SelectedWhen 同时使用；
 | emblem | 108 | 12 | 108 × 108 | 占位徽记 / 插图 |
 | reward | 27 | 3 | 27 × 27 | 奖励占位图 |
 
-wide-button 不能配 SelectedSprite: selected，因为 144 与 108 的宽度不同。标准 button 可以配 selected。
+表中是不写 Width 时的尺寸。button、selected、wide-button 用作按钮时可以用 Width 改成 16–960 像素宽（高度不变），其余贴图尺寸固定；sprite 元素的 Width 不会拉伸内置贴图。
+
+按钮的 SelectedSprite: selected 会拼成与按钮相同的宽度，所以 button、wide-button 以及任意 Width 的按钮都可以配 selected。其他贴图之间的 SelectedSprite 仍要求原尺寸相同。
 
 ## 接入已有资源包字体立绘
 
