@@ -1,3 +1,21 @@
+# DialogMenu 0.2.2 发布验证 · 2026-10-03
+
+正式发布：[v0.2.2](https://github.com/Usasi103/DialogMenu/releases/tag/v0.2.2)。发布收尾仅更新说明与标签，使用任务修复阶段已构建、已验证的同一份 JAR。
+
+- JAR：`DialogMenu-0.2.2.jar`，SHA-256 `636d2ad87cc1b8b3281443bc3b79a24ddbb8c9dd080f028203e4bcd7e90b66e1`。
+- 独立资源包：`DialogMenu-resourcepack-0.2.2.zip`，SHA-256 `6f3180accdbcfc6f982d2a38219ae249aba9028ab099a60666aa5beeb6254be0`；逐字节等于 JAR 内置资源包。
+- `formatSources`、完整 Shadow JAR、`build` 与 176 项单元测试通过，0 失败、0 错误、0 跳过；瘦身核验 0 问题。
+- 隔离 Paper 26.3 build 142 验证翻页、分类、模拟领取、追踪、关闭和重新打开，共捕获 7 次菜单报文，无异常错误。
+- 两版公共菜单的 21 个离线绘制场景一致；关闭符号与奖励图标使用已核验的实际字形及基线。未进行真人客户端最终观感复核。
+- 当前素材及 JAR 资源与旧菜单贴图逐像素比较无匹配；保留合法字体、Unifont 许可和历史版本凭据。公开与私有资源分别打包。
+- 附件 `SHA256SUMS.txt` 覆盖 JAR、独立资源包和最近邻 2× 预览。源码由标签提供；历史附件不覆盖。
+
+详细记录：[原创菜单](docs/development/ORIGINAL-UI-2026-10-03.md)、[任务菜单修正](docs/development/QUEST-UI-2026-10-03.md)。
+
+部署边界：本机 test_server 的私有版文件已在停服时更新；未启动服务器验证新版本运行加载。发布成功与运行加载分别核验。
+
+---
+
 # DialogMenu 0.2.0 发布验证
 
 本页记录 DialogMenu 0.2.0 正式版的 Paper 26.3 验证结果。
