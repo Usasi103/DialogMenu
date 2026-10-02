@@ -17,6 +17,9 @@ with zipfile.ZipFile(sys.argv[1]) as client:
         providers.append({'type': 'bitmap', 'file': f'minecraft:{texture}.png',
                           'height': 12, 'ascent': 4, 'chars': [chr(0xE000 + i)]})
         metrics.append(f'{name}={0xE000+i},{advance}\n')
-(project / 'resourcepack/assets/dialogmenu_dialogue/font/quest_items.json').write_text(
-    json.dumps({'providers': providers}, indent=2) + '\n', encoding='utf-8')
+# List icons center in an 18px button. Reward labels sit on the following 9px row;
+# move only reward icons down 4px so their 12px cells share the 8px text center.
+for font, ascent in [('quest_items', 4), ('quest_rewards', 0)]:
+    (project / f'resourcepack/assets/dialogmenu_dialogue/font/{font}.json').write_text(
+        json.dumps({'providers': [p | {'ascent': ascent} for p in providers]}, indent=2) + '\n', encoding='utf-8')
 (project / 'src/main/resources/quest-icons.properties').write_text(''.join(metrics), encoding='utf-8')

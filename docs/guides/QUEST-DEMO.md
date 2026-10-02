@@ -56,7 +56,7 @@ Layout:
 `Skin: stone` 使用原创灰石皮肤；`amethyst` 和 `parchment` 保留为旧配置兼容名称。任务控件使用独立的 `dialogmenu_dialogue:quest_ui` 字体，原有首领和设置菜单字形未重编号。进度条显示 20 个视觉档位，同时保留精确进度数字。
 
 内置图标：iron_sword、fishing_rod、nether_star、book、iron_ingot、gold_ingot、experience_bottle、amethyst_shard、cod、diamond_chestplate、bread、oak_sapling、compass。
-这些图标由 `dialogmenu_dialogue:quest_items` 引用客户端原版纹理；资源包不复制原版 PNG。
+列表图标由 `dialogmenu_dialogue:quest_items` 引用客户端原版纹理，奖励图标由 `dialogmenu_dialogue:quest_rewards` 引用相同纹理并使用独立基线；资源包不复制原版 PNG。
 
 自定义图标可直接改为：
 
@@ -64,7 +64,7 @@ Layout:
 Icon: {Font: "my_pack:icons", Glyph: "\uE001", Width: 12, Advance: 13}
 ```
 
-原版默认显示高 12、ascent 4。自定义图片应放在 18 像素高的条目内；`Width` 1–18，`Advance` 必须与实际字形一致，避免画布横向漂移。奖励同样支持该写法。图标是画布贴图；实际 ItemBridge 物品展示仍使用 settings 物品子页的 `Display.Material`。
+原版图标显示高 12；列表字体 ascent 为 4，奖励字体 ascent 为 0，使奖励图标与下一行的文字垂直居中。自定义图片应放在 18 像素高的条目内；`Width` 1–18，`Advance` 必须与实际字形一致，避免画布横向漂移。奖励同样支持该写法，文字从图标 Width 后留 5 像素开始；自定义字体沿用自己的 ascent，需要同样居中时使用单独的奖励字体。图标是画布贴图；实际 ItemBridge 物品展示仍使用 settings 物品子页的 `Display.Material`。
 
 ## 更换图标与非 CE 用法
 
@@ -76,7 +76,7 @@ Icon 是字体字形，不支持任意原版材质名，也不能填写 `source:
 
 ## 部署
 
-新增 `menus/demo-quests.yml` 和 0.1.18 JAR；保留自己的旧菜单。已有配置不会被自动覆盖或强行新增 demo，新装默认会导出四个完整菜单。
-合并本版资源包的 `quest_ui.json`、`quest_items.json` 和 `textures/ui/*_quest-*.png` 到 CraftEngine 资源源目录，运行 `/ce workflow default` 并让客户端接收新包。JAR 更新须正常重启；无需修改现有焦点着色器。
+使用同一版本的 JAR 与完整配套资源包；可从源码示例添加 `menus/demo-quests.yml`，保留自己的旧菜单。已有配置不会被自动覆盖或强行新增 demo，新装默认会导出四个完整菜单。
+CraftEngine 模式默认将资源安装到 `resources/dialogmenu/resourcepack/`；手动合并时应使用完整配套包，包含 `quest_ui.json`、`quest_items.json`、`quest_rewards.json` 和任务贴图。移除其他资源源中旧菜单的重复副本，运行 `/ce reload all`、`/ce workflow default`，让客户端接收新包。JAR 更新须正常重启；无需修改现有焦点着色器。
 
 需要重建几何素材时，用 JDK 编译 `tools/BuildTemplateSkin.java` 和 `tools/BuildQuestSkin.java` 后运行 `BuildQuestSkin <项目路径>`；`python -B tools/build_quest_icons.py <Minecraft客户端JAR>` 重建图标字体指标（需 Pillow，仅读取原版图片测量字宽）。输出只在项目资源目录内，开发类文件应放服务器外。

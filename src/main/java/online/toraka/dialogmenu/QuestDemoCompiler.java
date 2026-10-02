@@ -149,7 +149,10 @@ public final class QuestDemoCompiler {
                 rewards.add(
                         new Reward(
                                 text(reward.get("Text"), at + ".Rewards[" + index + "].Text", 30),
-                                icon(reward.get("Icon"), at + ".Rewards[" + index + "].Icon")));
+                                icon(
+                                        reward.get("Icon"),
+                                        at + ".Rewards[" + index + "].Icon",
+                                        true)));
             }
             tasks.add(
                     new Task(
@@ -161,7 +164,7 @@ public final class QuestDemoCompiler {
                             current,
                             total,
                             claimed,
-                            icon(value.get("Icon"), at + ".Icon"),
+                            icon(value.get("Icon"), at + ".Icon", false),
                             rewards));
         }
         ConfigurationSection layout = root.getConfigurationSection("Layout");
@@ -240,7 +243,8 @@ public final class QuestDemoCompiler {
                         "#b8b8b8",
                         1,
                         null);
-                button(elements, "close", 522, 1, "close", "×", Kt.listOf("close"), null, null);
+                button(elements, "close", 522, 1, "close", "X", Kt.listOf("close"), null, null);
+                elements.set("close.Bold", true);
                 int tabIndex = 0;
                 for (Map.Entry<String, String> entry : names.entrySet()) {
                     Task first = null;
@@ -439,9 +443,9 @@ public final class QuestDemoCompiler {
                     label(
                             elements,
                             "reward-label-" + rewardIndex,
-                            detail.x() + rewardIndex * 104 + 17,
+                            detail.x() + rewardIndex * 104 + reward.icon().width() + 5,
                             detail.row() + 9,
-                            86,
+                            98 - reward.icon().width(),
                             reward.text(),
                             "#eeeeee",
                             1,
@@ -647,7 +651,7 @@ public final class QuestDemoCompiler {
                         icon.advance()));
     }
 
-    private static Icon icon(Object raw, String path) {
+    private static Icon icon(Object raw, String path, boolean reward) {
         if (raw instanceof String name) {
             String metric =
                     Kt.requireNotNull(icons.getProperty(name), () -> path + ": 未知图标 " + name);
@@ -656,7 +660,9 @@ public final class QuestDemoCompiler {
                 data.add(Integer.parseInt(part));
             }
             return new Icon(
-                    "dialogmenu_dialogue:quest_items",
+                    reward
+                            ? "dialogmenu_dialogue:quest_rewards"
+                            : "dialogmenu_dialogue:quest_items",
                     String.valueOf((char) data.get(0).intValue()),
                     12,
                     data.get(1));

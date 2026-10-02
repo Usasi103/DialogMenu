@@ -1,22 +1,11 @@
-# DialogMenu publication
+# 公开版发布状态
 
-Current release: https://github.com/Usasi103/DialogMenu/releases/tag/v0.1.22
+仓库：[Usasi103/DialogMenu](https://github.com/Usasi103/DialogMenu)，分支 `main`。
 
-Previous cumulative test prerelease: https://github.com/Usasi103/DialogMenu/releases/tag/v0.1.22-text.1-SNAPSHOT
-The earlier prerelease reused the exact JAR verified by 106 tests, Paper + CraftEngine runtime probes,
-and the user's Minecraft 26.2 screenshot. Client language switching and real ItemsAdder validation remain pending.
-It includes the directory-junction installation fix and DialogMenu-owned translations.
+当前源码构建版本为 `0.2.2`，包含原创灰石菜单、关闭符号和奖励排版修正；本轮只累计同步源码，未新建标签或 Release。验证见[本次记录](QUEST-UI-2026-10-03.md)，完整历史见[更新日志](../../CHANGELOG.md)。
 
-Attachments are the actual tested JAR, source ZIP, distributable resource pack and SHA256SUMS.txt.
-Version 0.1.21 includes the resource pack in the JAR. The separate ZIP contains identical assets for manual merging.
-The resource pack uses original geometric skins; the downloaded third-party sheet and derived local UI images are excluded.
-Use BuildTemplateSkin.java with a locally downloaded sheet to compile the personal palette. Both palettes share font metrics.
+截至 2026-10-03，最近一次已发布版本为 [v0.2.0](https://github.com/Usasi103/DialogMenu/releases/tag/v0.2.0)（正式版）。历史 Releases 与附件保持原样，后续版本发布使用正式版本号和正式 Release。
 
-The repository is public at the owner's request; existing commits, tags and earlier Releases are preserved.
-Publication checks read back main/tag, release notes and all server-provided attachment SHA-256 digests.
-See [CHANGELOG](../../CHANGELOG.md), [templates](../guides/TEMPLATES.md),
-[asset licensing](../guides/TEMPLATE-ASSETS.md), and [1.21.11 validation](PAPER-1.21.11.md).
+当前菜单素材源位于 `design/original-ui/`，生成器只编译这些原创 PNG；不再从外部服务器图集生成皮肤。图标及字体来源见 `resourcepack/ARTWORK.txt` 和[素材说明](../guides/TEMPLATE-ASSETS.md)。
 
-Version 0.1.22 is the stable release of the same runtime code and resources, rebuilt and tested with the final version number.
-
-See the [0.1.22 validation record](RELEASE-0.1.22.md).
+公开版不包含私有衣帽间、HUD 代码或私人贴图。

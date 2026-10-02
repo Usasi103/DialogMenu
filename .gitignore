@@ -7,9 +7,3 @@
 *.class
 *.log
 *.tmp
-
-/design/hallow-source/
-
-/design/reference-overlay.png
-
-/docs/images/npc-dialogue.jpg
