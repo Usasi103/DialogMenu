@@ -10,6 +10,7 @@ import java.util.zip.ZipFile;
 /** Compile UI sprites into whole bitmap glyphs; no downloaded source sheet is copied. */
 public class BuildTemplateSkin {
     static Path output;
+    static Path source;
     static List<String> providers = new ArrayList<>();
     static StringBuilder metrics = new StringBuilder();
     static Map<String, BufferedImage> images = new HashMap<>();
@@ -17,51 +18,15 @@ public class BuildTemplateSkin {
 
     public static void main(String[] args) throws Exception {
         Path project = Path.of(args[0]);
-        BufferedImage source = args.length > 1 ? ImageIO.read(Path.of(args[1]).toFile()) : null;
+        if (args.length != 1) throw new IllegalArgumentException("Expected only the project directory");
+        source = project.resolve("design/original-ui/templates");
         output = project.resolve("resourcepack/assets/dialogmenu_dialogue");
         Files.createDirectories(output.resolve("textures/ui"));
         Files.createDirectories(output.resolve("font"));
         for (String theme : List.of("amethyst", "parchment")) {
-            boolean parchment = theme.equals("parchment");
-            BufferedImage panel = panel(552, 180, parchment, false);
-            if (parchment && source != null)
-                panel = nineSlice(source.getSubimage(178, 0, 78, 68), 552, 180, 7);
-            if (parchment && source == null) clearLastColumn(panel);
-            register(theme + ".panel", panel, 3);
-            register(theme + ".button", button(source, 108, parchment, false), 1);
-            register(theme + ".selected", button(source, 108, parchment, true), 1);
-            register(theme + ".wide-button", button(source, 144, parchment, false), 1);
-            register(theme + ".close", panel(18, 18, parchment, false), 1);
-            BufferedImage divider = new BufferedImage(348, 9, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g = divider.createGraphics();
-            g.setColor(new Color(parchment ? 0x9b8065 : 0x74548f));
-            g.drawLine(4, 4, 343, 4);
-            for (int x : new int[] {2, 345})
-                g.fillPolygon(new int[] {x, x + 2, x + 4, x + 2}, new int[] {4, 2, 4, 6}, 4);
-            g.dispose();
-            register(theme + ".divider", divider, 2);
-            BufferedImage emblem = new BufferedImage(108, 108, BufferedImage.TYPE_INT_ARGB);
-            g = emblem.createGraphics();
-            g.setColor(new Color(parchment ? 0x765d49 : 0x594071));
-            g.drawPolygon(
-                    new int[] {54, 96, 96, 54, 12, 12}, new int[] {4, 28, 80, 104, 80, 28}, 6);
-            g.setColor(new Color(parchment ? 0xc4ab90 : 0xb293d1));
-            g.drawPolygon(
-                    new int[] {54, 88, 88, 54, 20, 20}, new int[] {14, 34, 74, 94, 74, 34}, 6);
-            if (parchment && source != null) {
-                g.setRenderingHint(
-                        RenderingHints.KEY_INTERPOLATION,
-                        RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-                g.drawImage(source.getSubimage(54, 26, 20, 22), 34, 32, 40, 44, null);
-            } else {
-                // A replaceable abstract crest, not a supplied character portrait.
-                g.fillPolygon(new int[] {54, 72, 54, 36}, new int[] {29, 53, 79, 53}, 4);
-                g.setColor(new Color(0x24192f));
-                g.fillPolygon(new int[] {54, 64, 54, 44}, new int[] {39, 53, 69, 53}, 4);
+            for (String name : List.of("panel", "button", "selected", "wide-button", "close", "divider", "emblem", "reward")) {
+                register(theme + "." + name, source(theme, name), name.equals("panel") ? 3 : name.equals("divider") ? 2 : 1);
             }
-            g.dispose();
-            register(theme + ".emblem", emblem, 1);
-            register(theme + ".reward", panel(27, 27, parchment, false), 1);
         }
         // Appended after the whole sprites so their code points never move.
         for (String theme : List.of("amethyst", "parchment"))
@@ -75,15 +40,12 @@ public class BuildTemplateSkin {
                 StandardCharsets.UTF_8);
         compileSymbols(project);
         System.out.println(
-                "Compiled template skin glyphs; imported local sheet: " + (source != null));
+                "Compiled original Blockbench template skin glyphs.");
     }
 
-    static BufferedImage button(
-            BufferedImage source, int width, boolean parchment, boolean selected) {
-        if (parchment && source != null)
-            return nineSlice(source.getSubimage(3, selected ? 99 : 73, 109, 25), width, 18, 5);
-        BufferedImage image = panel(width, 18, parchment, selected);
-        if (parchment) clearLastColumn(image);
+    static BufferedImage source(String theme, String name) throws Exception {
+        BufferedImage image = ImageIO.read(source.resolve(theme + "_" + name + ".png").toFile());
+        if (image == null) throw new IllegalArgumentException("Invalid source texture: " + name);
         return image;
     }
 
@@ -205,10 +167,6 @@ public class BuildTemplateSkin {
         return 1;
     }
 
-    static void clearLastColumn(BufferedImage image) {
-        for (int y = 0; y < image.getHeight(); y++) image.setRGB(image.getWidth() - 1, y, 0);
-    }
-
     static void compileSymbols(Path project) throws Exception {
         String symbols = "·×•…—";
         Map<Integer, String> bits = new HashMap<>();
@@ -262,41 +220,6 @@ public class BuildTemplateSkin {
                             + name
                             + "\"}]}\n");
         }
-    }
-
-    static BufferedImage panel(int width, int height, boolean parchment, boolean selected) {
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-        g.setColor(
-                new Color(
-                        parchment
-                                ? (selected ? 0x806951 : 0x382b20)
-                                : (selected ? 0x5d406d : 0x100b17)));
-        g.fillRect(0, 0, width, height);
-        g.setColor(new Color(parchment ? 0xb3977b : 0x9271ac));
-        g.drawRect(0, 0, width - 1, height - 1);
-        g.setColor(new Color(parchment ? 0x67513d : 0x271b32));
-        g.drawRect(1, 1, width - 3, height - 3);
-        g.dispose();
-        return image;
-    }
-
-    static BufferedImage nineSlice(BufferedImage source, int width, int height, int border) {
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-        g.setRenderingHint(
-                RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        int[] sx = {0, border, source.getWidth() - border, source.getWidth()},
-                sy = {0, border, source.getHeight() - border, source.getHeight()};
-        int[] dx = {0, border, width - border, width}, dy = {0, border, height - border, height};
-        for (int y = 0; y < 3; y++)
-            for (int x = 0; x < 3; x++)
-                g.drawImage(
-                        source, dx[x], dy[y], dx[x + 1], dy[y + 1], sx[x], sy[y], sx[x + 1],
-                        sy[y + 1], null);
-        g.dispose();
-        return image;
     }
 
     static void register(String id, BufferedImage image, int columns) throws Exception {

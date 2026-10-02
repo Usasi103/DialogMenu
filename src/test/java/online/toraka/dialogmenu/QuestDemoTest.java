@@ -205,11 +205,9 @@ class QuestDemoTest {
     @Test
     @DisplayName("every generated page renders within the supported focus geometry")
     void everyGeneratedPageRendersWithinTheSupportedFocusGeometry() {
-        for (String skin : List.of("amethyst", "parchment")) {
+        for (String skin : List.of("stone", "amethyst", "parchment")) {
             for (DialogTemplate template :
-                    catalog(source.replace("Skin: amethyst", "Skin: " + skin))
-                            .templates()
-                            .values()) {
+                    catalog(source.replace("Skin: stone", "Skin: " + skin)).templates().values()) {
                 assertEquals(552, template.width());
                 assertEquals(20, template.rows());
                 Map<String, String> values = template.values(Collections.emptyMap());

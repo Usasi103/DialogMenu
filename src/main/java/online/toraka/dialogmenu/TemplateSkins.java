@@ -27,6 +27,10 @@ public final class TemplateSkins {
         return properties;
     }
 
+    private static String skinId(String theme) {
+        return "stone".equals(theme) ? "amethyst" : theme;
+    }
+
     public static Key font() {
         return font;
     }
@@ -35,7 +39,7 @@ public final class TemplateSkins {
         boolean quest = name.startsWith("quest-");
         String metric =
                 Kt.requireNotNull(
-                        (quest ? questMetrics : metrics).getProperty(theme + "." + name),
+                        (quest ? questMetrics : metrics).getProperty(skinId(theme) + "." + name),
                         () -> "未知贴图 " + theme + "." + name);
         List<Integer> parts = new ArrayList<>();
         for (String part : Kt.split(metric, ',')) {
@@ -52,7 +56,7 @@ public final class TemplateSkins {
 
     /** Button looks compiled with edge and fill slices, so they can take any width. */
     public static boolean resizable(String theme, String name) {
-        return metrics.getProperty("slice." + theme + "." + name) != null;
+        return metrics.getProperty("slice." + skinId(theme) + "." + name) != null;
     }
 
     /**
@@ -66,7 +70,7 @@ public final class TemplateSkins {
         }
         String metric =
                 Kt.requireNotNull(
-                        metrics.getProperty("slice." + theme + "." + name),
+                        metrics.getProperty("slice." + skinId(theme) + "." + name),
                         () -> "贴图不能调整宽度 " + theme + "." + name);
         // glyph,width,advance per piece: left edge, right edge, then the fills.
         List<Integer> parts = new ArrayList<>();

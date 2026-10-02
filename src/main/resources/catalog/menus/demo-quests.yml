@@ -6,7 +6,7 @@ Version: 1 # 配置格式版本，保持当前值
 Type: quest-demo # 任务列表演示；进度与奖励来自本文件
 Title: "任务列表" # 任务菜单的主标题
 Subtitle: "选择任务，查看目标与奖励" # 主标题下的说明文字
-Skin: amethyst # amethyst 紫色 / parchment 木色
+Skin: stone # stone 原创灰石（兼容 amethyst / parchment）
 HideFocusOutline: true # true 隐藏该菜单的焦点白框；需要配套资源包着色器，false 保留
 PageSize: 5 # 1–5；当前按每页 5 个任务排版
 

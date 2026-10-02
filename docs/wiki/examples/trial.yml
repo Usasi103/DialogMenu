@@ -1,7 +1,7 @@
 Version: 1
 Type: canvas
 DefaultPage: choose
-Skin: amethyst
+Skin: stone
 Variables:
   difficulty: [normal, hard]
 Pages:

@@ -59,10 +59,10 @@ public final class TemplateParser {
         Kt.require(Objects.equals(root.get("Version"), 1), () -> path + ".Version: 必须为 1");
         String configuredTitle = root.getString("Title");
         String title = line(configuredTitle != null ? configuredTitle : id, path);
-        String theme = Objects.requireNonNull(root.getString("Skin", "amethyst"));
+        String theme = Objects.requireNonNull(root.getString("Skin", "stone"));
         Kt.require(
-                Kt.setOf("amethyst", "parchment").contains(theme),
-                () -> path + ".Skin: amethyst 或 parchment");
+                Kt.setOf("stone", "amethyst", "parchment").contains(theme),
+                () -> path + ".Skin: stone（兼容 amethyst、parchment）");
         ConfigurationSection geometry = root.getConfigurationSection("Canvas");
         if (geometry != null) {
             keys(

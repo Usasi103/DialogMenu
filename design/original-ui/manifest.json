@@ -1,0 +1,797 @@
+{
+  "authoringTool": "Blockbench 5.2.1",
+  "method": "Texture + Painter.edit, independent pixel coordinates",
+  "approved": "2026-10-03: stone-v2 controls and icons-v4; public/private/template menus",
+  "textures": [
+    {
+      "file": "icons/icon_profile.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "icons/icon_sound.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "icons/icon_particles.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "icons/icon_notices.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "icons/icon_loot.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "icons/icon_appearance.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "icons/icon_search.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "icons/icon_return.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "icons/icon_down.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "icons/icon_up.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "file": "settings/panel_top.png",
+      "width": 336,
+      "height": 81
+    },
+    {
+      "file": "settings/panel_bottom.png",
+      "width": 336,
+      "height": 126
+    },
+    {
+      "file": "settings/nav.png",
+      "width": 102,
+      "height": 18
+    },
+    {
+      "file": "settings/nav_selected.png",
+      "width": 102,
+      "height": 18
+    },
+    {
+      "file": "settings/control.png",
+      "width": 114,
+      "height": 18
+    },
+    {
+      "file": "settings/control_selected.png",
+      "width": 114,
+      "height": 18
+    },
+    {
+      "file": "settings/search.png",
+      "width": 102,
+      "height": 18
+    },
+    {
+      "file": "settings/switch_on.png",
+      "width": 36,
+      "height": 18
+    },
+    {
+      "file": "settings/switch_off.png",
+      "width": 36,
+      "height": 18
+    },
+    {
+      "file": "settings/switch_unavailable.png",
+      "width": 36,
+      "height": 18
+    },
+    {
+      "file": "settings/density_slider_0.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/density_slider_1.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/density_slider_2.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/density_slider_3.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/density_slider_4.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/density_arrow_0.png",
+      "width": 18,
+      "height": 18
+    },
+    {
+      "file": "settings/density_arrow_0_disabled.png",
+      "width": 18,
+      "height": 18
+    },
+    {
+      "file": "settings/density_arrow_1.png",
+      "width": 18,
+      "height": 18
+    },
+    {
+      "file": "settings/density_arrow_1_disabled.png",
+      "width": 18,
+      "height": 18
+    },
+    {
+      "file": "settings/panel_top_light.png",
+      "width": 336,
+      "height": 81
+    },
+    {
+      "file": "settings/panel_bottom_light.png",
+      "width": 336,
+      "height": 126
+    },
+    {
+      "file": "settings/nav_light.png",
+      "width": 102,
+      "height": 18
+    },
+    {
+      "file": "settings/nav_selected_light.png",
+      "width": 102,
+      "height": 18
+    },
+    {
+      "file": "settings/control_light.png",
+      "width": 114,
+      "height": 18
+    },
+    {
+      "file": "settings/control_selected_light.png",
+      "width": 114,
+      "height": 18
+    },
+    {
+      "file": "settings/search_light.png",
+      "width": 102,
+      "height": 18
+    },
+    {
+      "file": "settings/switch_on_light.png",
+      "width": 36,
+      "height": 18
+    },
+    {
+      "file": "settings/switch_off_light.png",
+      "width": 36,
+      "height": 18
+    },
+    {
+      "file": "settings/switch_unavailable_light.png",
+      "width": 36,
+      "height": 18
+    },
+    {
+      "file": "settings/density_slider_0_light.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/density_slider_1_light.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/density_slider_2_light.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/density_slider_3_light.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/density_slider_4_light.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/density_arrow_0_light.png",
+      "width": 18,
+      "height": 18
+    },
+    {
+      "file": "settings/density_arrow_0_disabled_light.png",
+      "width": 18,
+      "height": 18
+    },
+    {
+      "file": "settings/density_arrow_1_light.png",
+      "width": 18,
+      "height": 18
+    },
+    {
+      "file": "settings/density_arrow_1_disabled_light.png",
+      "width": 18,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_2_0.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_2_1.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_2_2.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_3_0.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_3_1.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_3_2.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_3_3.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_4_0.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_4_1.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_4_2.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_4_3.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_4_4.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_5_0.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_5_1.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_5_2.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_5_3.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_5_4.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_5_5.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_6_0.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_6_1.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_6_2.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_6_3.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_6_4.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_6_5.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_6_6.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_7_0.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_7_1.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_7_2.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_7_3.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_7_4.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_7_5.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_7_6.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_7_7.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_8_0.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_8_1.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_8_2.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_8_3.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_8_4.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_8_5.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_8_6.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_8_7.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "settings/slider_8_8.png",
+      "width": 120,
+      "height": 18
+    },
+    {
+      "file": "templates/amethyst_panel.png",
+      "width": 552,
+      "height": 180
+    },
+    {
+      "file": "templates/amethyst_button.png",
+      "width": 108,
+      "height": 18
+    },
+    {
+      "file": "templates/amethyst_selected.png",
+      "width": 108,
+      "height": 18
+    },
+    {
+      "file": "templates/amethyst_wide-button.png",
+      "width": 144,
+      "height": 18
+    },
+    {
+      "file": "templates/amethyst_close.png",
+      "width": 18,
+      "height": 18
+    },
+    {
+      "file": "templates/amethyst_quest-row.png",
+      "width": 180,
+      "height": 18
+    },
+    {
+      "file": "templates/amethyst_quest-row-selected.png",
+      "width": 180,
+      "height": 18
+    },
+    {
+      "file": "templates/amethyst_quest-tab.png",
+      "width": 54,
+      "height": 18
+    },
+    {
+      "file": "templates/amethyst_quest-tab-selected.png",
+      "width": 54,
+      "height": 18
+    },
+    {
+      "file": "templates/amethyst_reward.png",
+      "width": 27,
+      "height": 27
+    },
+    {
+      "file": "templates/amethyst_divider.png",
+      "width": 348,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_emblem.png",
+      "width": 108,
+      "height": 108
+    },
+    {
+      "file": "templates/amethyst_quest-divider.png",
+      "width": 3,
+      "height": 108
+    },
+    {
+      "file": "templates/amethyst_quest-progress-0.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-1.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-2.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-3.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-4.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-5.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-6.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-7.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-8.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-9.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-10.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-11.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-12.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-13.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-14.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-15.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-16.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-17.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-18.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-19.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/amethyst_quest-progress-20.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_panel.png",
+      "width": 552,
+      "height": 180
+    },
+    {
+      "file": "templates/parchment_button.png",
+      "width": 108,
+      "height": 18
+    },
+    {
+      "file": "templates/parchment_selected.png",
+      "width": 108,
+      "height": 18
+    },
+    {
+      "file": "templates/parchment_wide-button.png",
+      "width": 144,
+      "height": 18
+    },
+    {
+      "file": "templates/parchment_close.png",
+      "width": 18,
+      "height": 18
+    },
+    {
+      "file": "templates/parchment_quest-row.png",
+      "width": 180,
+      "height": 18
+    },
+    {
+      "file": "templates/parchment_quest-row-selected.png",
+      "width": 180,
+      "height": 18
+    },
+    {
+      "file": "templates/parchment_quest-tab.png",
+      "width": 54,
+      "height": 18
+    },
+    {
+      "file": "templates/parchment_quest-tab-selected.png",
+      "width": 54,
+      "height": 18
+    },
+    {
+      "file": "templates/parchment_reward.png",
+      "width": 27,
+      "height": 27
+    },
+    {
+      "file": "templates/parchment_divider.png",
+      "width": 348,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_emblem.png",
+      "width": 108,
+      "height": 108
+    },
+    {
+      "file": "templates/parchment_quest-divider.png",
+      "width": 3,
+      "height": 108
+    },
+    {
+      "file": "templates/parchment_quest-progress-0.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-1.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-2.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-3.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-4.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-5.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-6.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-7.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-8.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-9.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-10.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-11.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-12.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-13.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-14.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-15.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-16.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-17.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-18.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-19.png",
+      "width": 312,
+      "height": 9
+    },
+    {
+      "file": "templates/parchment_quest-progress-20.png",
+      "width": 312,
+      "height": 9
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 Version: 1
 Type: canvas
 DefaultPage: main
-Skin: parchment
+Skin: stone
 Canvas:
   Width: 552
   Rows: 20
@@ -19,7 +19,7 @@ Pages:
         Position: [156, 3]
         Width: 330
         Text: 守门人 · 艾琳
-        Color: "#f0d8b9"
+        Color: "#eeeeee"
       dialogue:
         Position: [156, 7]
         Width: 348
@@ -52,7 +52,7 @@ Pages:
         Position: [30, 3]
         Width: 480
         Text: 消失的巡夜人
-        Color: "#f0d8b9"
+        Color: "#eeeeee"
       story:
         Position: [30, 6]
         Width: 480

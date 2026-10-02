@@ -8,15 +8,10 @@
 `design/minecraft-font/unifont.zip` 仍是字宽和位图字体的构建输入，生成器校验其 SHA-256 与已验证的客户端字库一致；升级目标客户端时需重新核对官方字库和字宽。生成器只移除与官方原件一致的旧发布 ZIP，发现自定义修改会报错。保留 `LICENSE-Unifont.txt`，其他位图字体仍使用该字库生成。
 
 
-紫色边框、分隔线和抽象徽记由项目构建器绘制，属于基础 UI 图元。
-木色本机皮肤从用户已下载的 UI_Sprite.png 编译。
-原作者：TararebaGani；来源：https://tararebagani.itch.io/pixel-art-uiset
+设置菜单、首领/对话模板和任务控件统一使用原创灰石美术。正式源文件为 `design/original-ui/original-ui.bbmodel`，使用 Blockbench 制作；导出的 PNG、来源清单和制作说明在同一目录。设置图标各为独立的 16×16 图片，按原尺寸显示；面板和控件属于 GUI，保持已有布局尺寸。
 
-截至 2026-09-24，原页面允许商业项目使用及修改，无须署名；
-同时禁止素材再分发（包括修改后的素材）。原图集不纳入源码仓库或源码附件。
-对外发布资源包使用构建器的基础几何木色皮肤；用户可从作者页面下载后在本地编译。
-本机定制贴图仅用于本次用户已有素材的安装与私有验证，不作为素材库再发布。
+菜单默认使用 `Skin: stone`，兼容旧名称 `amethyst` / `parchment` 及其字形编号。可变宽按钮只拼接原创边缘和中段，点击范围随原布局保留。旧外部图集导入参数已移除，重新生成也不会引入第三方服务器素材。
 
-字符字体、背景场景及角色立绘不包含在该图集中。示例没有截图中怪物的真实立绘或模型。
+在 Blockbench 修改并导出 PNG 后，使用 JDK 编译 `tools/BuildSkin.java`、`BuildSwitchSkin.java`、`BuildTemplateSkin.java`、`BuildQuestSkin.java` 到工程外的临时目录，再分别以工程路径为唯一参数运行四个类；最后执行 `python -B tools/build_label_metrics.py` 并重新构建插件。生成器只切分字形、测量宽度，不重绘美术。原有受限源图和展示旧图的截图已从当前源码移除，历史版本不改写。
 
 首领奖励字体 `dialogmenu_dialogue:rewards` 直接引用客户端的 `minecraft:item/amethyst_shard.png`、`nether_star.png`、`diamond_chestplate.png`。资源包只包含字体 JSON，不包含这些原版图片的副本。

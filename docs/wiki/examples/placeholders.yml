@@ -3,7 +3,7 @@
 # 取不到 PAPI 值时，相关条件都不成立：两个等级按钮都会隐藏，徽记保持默认贴图。
 Version: 1
 Type: canvas
-Skin: parchment
+Skin: stone
 Title: "占位符与条件演示"
 DefaultPage: main
 Placeholders: # 名称: "%PAPI变量%"；文字写 {level}，条件写 level>=30
@@ -18,7 +18,7 @@ Pages:
         Position: [24, 2]
         Width: 480
         Text: "你好，{player}"
-        Color: "#f0d8b9"
+        Color: "#eeeeee"
       info:
         Position: [24, 4]
         Width: 480

@@ -1,0 +1,11 @@
+DialogMenu original stone UI (2026-10-03)
+
+Settings controls, 16x16 settings icons, dialogue/template panels and quest controls
+were authored in Blockbench for DialogMenu. Editable sources and provenance are
+included in the source repository under design/original-ui.
+
+The settings and template artwork no longer uses the former third-party server
+sprite sources. Legacy skin names and glyph allocations remain compatible.
+
+Minecraft font/item references and Unifont keep their own attribution. See
+assets/dialogmenu_settings/font/LICENSE-Unifont.txt and the repository LICENSE.

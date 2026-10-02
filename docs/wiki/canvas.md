@@ -10,7 +10,7 @@
 | Type: canvas | 必填 |
 | DefaultPage | 默认子页，不填取第一页 |
 | Title | 子页未配置标题时使用的公共标题 |
-| Skin | 公共皮肤，默认 amethyst |
+| Skin | 公共皮肤，默认 stone |
 | Canvas | 公共画布设置 |
 | Variables | 公共枚举变量 |
 | Placeholders | 公共 PAPI 值声明，见 [变量、条件与占位符](variables.md) |
@@ -72,7 +72,7 @@ Canvas:
 
 ## Skin 和 Theme 的区别
 
-canvas 皮肤仅有 amethyst（紫晶）和 parchment（羊皮纸）。它们尺寸相同，颜色和美术不同。canvas 不读取 settings 的玩家 dark / light 主题偏好。
+canvas 默认使用 stone 原创灰石皮肤；旧名称 amethyst 和 parchment 仍可读取，现使用相同灰石外观。canvas 不读取 settings 的玩家 dark / light 主题偏好。
 
 同一菜单不同子页可以选择不同 Skin。Skin 选择的是已经在资源包里的贴图，不能写本地 PNG 文件路径。
 

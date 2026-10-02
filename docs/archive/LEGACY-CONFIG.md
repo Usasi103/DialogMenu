@@ -108,7 +108,7 @@ particles.density: "效果强度"
 
 按钮 `skin` 支持 `control`（114×18）、`nav` 或 `search`（102×18）。用 `state` 加 `selected: "值"` 可以按状态高亮。
 
-sprite 支持 `panel-top`（336×81）、`panel-bottom`（336×126）、`search-icon`、`refresh-icon`、`profile-icon`、`sound-icon`、`particles-icon`、`notices-icon`、`loot-icon`、`appearance-icon`，也可显示按钮底图。页面 `icon` 使用宽 9 像素的图标名称。
+sprite 支持 `panel-top`（336×81）、`panel-bottom`（336×126）、`search-icon`、`refresh-icon`、`profile-icon`、`sound-icon`、`particles-icon`、`notices-icon`、`loot-icon`、`appearance-icon`，也可显示按钮底图。页面 `icon` 使用16×16 像素的图标名称。
 
 控件不能超出画布；两个独立点击区域不能重叠。增加更多导航页时，检查 `navigation.row` / `navigation.step` 与 `common` 中返回、刷新按钮是否冲突。
 

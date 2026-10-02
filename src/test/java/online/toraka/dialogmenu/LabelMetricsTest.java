@@ -99,7 +99,7 @@ class LabelMetricsTest {
                     }
                 } else if (!text.isEmpty()) {
                     if (text.equals("界面与语言")) {
-                        assertEquals(20f, cursor);
+                        assertEquals(24f, cursor);
                     }
                     // Independent expected widths for this fixture, not the implementation's
                     // estimator.

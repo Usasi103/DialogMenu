@@ -4,7 +4,7 @@
 # 不写入玩家真实偏好。
 # 图标与材质：Icon（单数）是左侧分类字体贴图；Icons（复数）是本页控件集合。
 # 左侧 Icon 可选 profile-icon / sound-icon / particles-icon / notices-icon / loot-icon / appearance-icon。
-# Icon 不能填 DIAMOND、source:IA:... 或 Font/Glyph 配置段；换图片需改资源包对应的 9 像素贴图。
+# Icon 不能填 DIAMOND、source:IA:... 或 Font/Glyph 配置段；换图片需改资源包对应的 16×16 像素贴图。
 # 真实物品写在 Pages.<页>.Icons.<控件>.Display.Material；原版可写 DIAMOND 或 minecraft:diamond。
 # 不用 CE 也能用：source:IA:my_pack:sword、source:Nexo:my_sword、source:Oraxen:my_sword、source:NI:物品ID。
 # IA 是 ItemsAdder 的别名；安装实际使用的物品插件并填写真实 ID，无需另外安装 ItemBridge。

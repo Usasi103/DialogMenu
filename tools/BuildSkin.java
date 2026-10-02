@@ -10,20 +10,17 @@ import java.util.Comparator;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
 
-/** Compile Hallow reference primitives into whole UI glyphs and measured advances. */
+/** Compile Blockbench-authored original textures into whole UI glyphs and measured advances. */
 public class BuildSkin {
     private static final List<String> providers = new ArrayList<>();
     private static final StringBuilder metrics = new StringBuilder();
     private static Path root;
-    private static BufferedImage tiles;
-    private static BufferedImage frame;
+    private static Path source;
 
     public static void main(String[] args) throws Exception {
         Path project = Path.of(args[0]);
         root = project.resolve("resourcepack/assets/dialogmenu_settings");
-        Path source = project.resolve("design/hallow-source");
-        tiles = ImageIO.read(source.resolve("tiles_16x9.png").toFile());
-        frame = ImageIO.read(source.resolve("settings_toggle_enabled.png").toFile());
+        source = project.resolve("design/original-ui");
         Files.createDirectories(root.resolve("textures/ui"));
         Files.createDirectories(root.resolve("font"));
         skin("panel_top", 336, 81, false, true, 0xE000);
@@ -45,9 +42,8 @@ public class BuildSkin {
                 slider(selected, light);
             }
             for (int direction = 0; direction < 2; direction++) {
-                BufferedImage arrow = ImageIO.read(source.resolve(direction == 0 ? "menu_left.png" : "menu_right.png").toFile());
-                sliderArrow(arrow, direction, false, light);
-                sliderArrow(arrow, direction, true, light);
+                sliderArrow(direction, false, light);
+                sliderArrow(direction, true, light);
             }
         }
         int configurableGlyph = 0xE400;
@@ -56,17 +52,12 @@ public class BuildSkin {
                 configurableGlyph = configurableSlider(count, selected, configurableGlyph);
             }
         }
-        BufferedImage icons = ImageIO.read(source.resolve("dialog_icons.png").toFile());
-        int[] cells = {8, 26, 3, 9, 6, 11, 2, 8, 17, 16};
-        for (int i = 0; i < cells.length; i++) {
-            BufferedImage icon = i >= 8
-                    ? ImageIO.read(source.resolve(i == 8 ? "menu_down.png" : "menu_up.png").toFile())
-                    : icons.getSubimage(cells[i] % 8 * 18, cells[i] / 8 * 18, 18, 18);
-            if (i == 1) icon = ImageIO.read(source.resolve("settings_entry_voice_chat.png").toFile()).getSubimage(0, 0, 18, 18);
-            if (i == 6 || i == 7) icon = ImageIO.read(source.resolve(i == 6 ? "menu_filter.png" : "menu_back.png").toFile());
-            String name = "hallow_icon_" + i;
+        String[] icons = {"profile", "sound", "particles", "notices", "loot", "appearance", "search", "return", "down", "up"};
+        for (int i = 0; i < icons.length; i++) {
+            String name = "icon_" + icons[i];
+            BufferedImage icon = read("icons/" + name, 16, 16);
             ImageIO.write(icon, "png", root.resolve("textures/ui/" + name + ".png").toFile());
-            register(name, icon, 9, 0xE090 + i, 1);
+            register(name, icon, 16, 0xE090 + i, 1);
         }
         StringBuilder spaces = new StringBuilder("{\"type\":\"space\",\"advances\":{");
         for (int value = -512; value <= 512; value++) {
@@ -78,7 +69,7 @@ public class BuildSkin {
         Files.writeString(root.resolve("font/ui.json"),
                 "{\"providers\":[" + String.join(",", providers) + "]}\n", StandardCharsets.UTF_8);
         BufferedImage ascii = ImageIO.read(root.resolve("textures/ui/ascii.png").toFile());
-        List<String> asciiChars = Files.readAllLines(source.resolve("ascii-chars.txt"), StandardCharsets.UTF_8);
+        List<String> asciiChars = Files.readAllLines(project.resolve("design/minecraft-font/ascii-chars.txt"), StandardCharsets.UTF_8);
         int cell = ascii.getWidth() / 16;
         for (int row = 0; row < asciiChars.size(); row++) {
             for (int col = 0; col < 16; col++) {
@@ -175,81 +166,22 @@ public class BuildSkin {
 
     private static void skin(String name, int width, int height, boolean selected, boolean card, int glyph)
             throws Exception {
-        BufferedImage im = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        // Nine-slice the actual Hallow widget texture. Repeat its plain interior,
-        // excluding the baked checkbox, while preserving all border pixels.
-        int start = selected ? frame.getWidth() / 2 : 0;
-        int templateWidth = frame.getWidth() / 2;
-        int templateHeight = frame.getHeight() / 2;
-        for (int y = 0; y < height; y++) {
-            int sy = y < 3 ? y : y >= height - 3 ? templateHeight - (height - y) : 8;
-            for (int x = 0; x < width; x++) {
-                int sx = x < 3 ? x : x >= width - 3 ? templateWidth - (width - x) : 4;
-                int pixel = frame.getRGB(start + sx, sy);
-                // Palette variants belong to this compiled layout: preserve alpha,
-                // borders and glyph advances so changing themes never moves a hit area.
-                if (glyph >= 0xE100 && pixel != 0xFF7F7F00) pixel = lightPalette(pixel);
-                // This source uses a shader metadata marker in its corner.
-                im.setRGB(x, y, pixel == 0xFF7F7F00 ? 0 : pixel);
-            }
-        }
-        if (card) for (int x = 5; x < width - 5; x++) {
-            int pixel = tiles.getRGB(2, 4);
-            im.setRGB(x, 26, glyph >= 0xE100 ? lightPalette(pixel) : pixel);
-        }
+        BufferedImage im = read("settings/" + name, width, height);
         ImageIO.write(im, "png", root.resolve("textures/ui/" + name + ".png").toFile());
         // Glyph atlases are 256px wide: large panels use two columns, never rows.
         register(name, im, height, glyph, width > 256 ? 2 : 1);
     }
 
-    /** Rebuild the reference Dialog's ticked rail and light beveled thumb. */
+    /** Use the authored rail; only the glyph columns are cut during compilation. */
     private static void slider(int selected, boolean light) throws Exception {
-        BufferedImage image = new BufferedImage(120, 18, BufferedImage.TYPE_INT_ARGB);
-        bevel(image, 0, 0, 120, 18, false);
-        int tick = tiles.getRGB(2, 2 * 9 + 4);
-        for (int center = 15; center <= 105; center += 15) {
-            for (int y = 5; y < 12; y++) {
-                for (int x = center - 1; x <= center; x++) {
-                    image.setRGB(x, y, tick);
-                }
-            }
-        }
-        if (selected < 4) {
-            int left = selected * 30 + 6;
-            bevel(image, left, 0, 18, 18, true);
-            for (int y = 5; y < 12; y++) {
-                for (int x = left + 8; x < left + 10; x++) {
-                    image.setRGB(x, y, tick);
-                }
-            }
-        }
         String name = "density_slider_" + selected + (light ? "_light" : "");
+        BufferedImage image = read("settings/" + name, 120, 18);
         ImageIO.write(image, "png", root.resolve("textures/ui/" + name + ".png").toFile());
-        // Independent adjacent columns keep each click target attached to its
-        // painted glyph. Both palettes retain the reference's dark track.
         register(name, image, 18, (light ? 0xE300 : 0xE200) + selected * 4, 4);
     }
 
     private static int configurableSlider(int count, int selected, int glyph) throws Exception {
-        BufferedImage rail = new BufferedImage(120, 18, BufferedImage.TYPE_INT_ARGB);
-        bevel(rail, 0, 0, 120, 18, false);
-        int tick = tiles.getRGB(2, 2 * 9 + 4);
-        for (int index = 1; index < count * 2; index++) {
-            int center = 120 * index / (count * 2);
-            for (int y = 5; y < 12; y++) {
-                for (int x = center - 1; x <= center; x++) {
-                    rail.setRGB(x, y, tick);
-                }
-            }
-        }
-        if (selected < count) {
-            int center = Math.max(9, Math.min(111, 120 * (selected * 2 + 1) / (count * 2)));
-            bevel(rail, center - 9, 0, 18, 18, true);
-            for (int y = 5; y < 12; y++) {
-                rail.setRGB(center - 1, y, tick);
-                rail.setRGB(center, y, tick);
-            }
-        }
+        BufferedImage rail = read("settings/slider_" + count + "_" + selected, 120, 18);
         for (int column = 0; column < count; column++) {
             int start = 120 * column / count;
             int end = 120 * (column + 1) / count;
@@ -261,38 +193,18 @@ public class BuildSkin {
         return glyph;
     }
 
-    private static void sliderArrow(BufferedImage arrow, int direction, boolean disabled, boolean light) throws Exception {
-        BufferedImage image = new BufferedImage(18, 18, BufferedImage.TYPE_INT_ARGB);
-        bevel(image, 0, 0, 18, 18, true);
-        for (int y = 0; y < arrow.getHeight(); y++) {
-            for (int x = 0; x < arrow.getWidth(); x++) {
-                int pixel = arrow.getRGB(x, y);
-                if ((pixel >>> 24) == 0) {
-                    continue;
-                }
-                if (disabled) {
-                    int gray = (((pixel >>> 16) & 255) + ((pixel >>> 8) & 255) + (pixel & 255)) / 3;
-                    pixel = (pixel & 0xFF000000) | (gray << 16) | (gray << 8) | gray;
-                }
-                image.setRGB(x + (18 - arrow.getWidth()) / 2, y + (18 - arrow.getHeight()) / 2, pixel);
-            }
-        }
+    private static void sliderArrow(int direction, boolean disabled, boolean light) throws Exception {
         String name = "density_arrow_" + direction + (disabled ? "_disabled" : "") + (light ? "_light" : "");
+        BufferedImage image = read("settings/" + name, 18, 18);
         ImageIO.write(image, "png", root.resolve("textures/ui/" + name + ".png").toFile());
         register(name, image, 18, (light ? 0xE320 : 0xE220) + direction + (disabled ? 2 : 0), 1);
     }
 
-    private static void bevel(BufferedImage image, int left, int top, int width, int height, boolean raised) {
-        int fill = tiles.getRGB(raised ? 17 : 2, 4);
-        int bright = raised ? 0xFFFFFFFF : tiles.getRGB(2, 2 * 9 + 4);
-        int shade = tiles.getRGB(2, (raised ? 2 : 7) * 9 + 4);
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int pixel = x == 0 || y == 0 || x == width - 1 || y == height - 1 ? 0xFF000000
-                        : x == 1 || y == 1 ? bright : x == width - 2 || y == height - 2 ? shade : fill;
-                image.setRGB(left + x, top + y, pixel);
-            }
-        }
+    private static BufferedImage read(String name, int width, int height) throws Exception {
+        BufferedImage image = ImageIO.read(source.resolve(name + ".png").toFile());
+        if (image == null || image.getWidth() != width || image.getHeight() != height)
+            throw new IllegalArgumentException("Invalid source dimensions: " + name);
+        return image;
     }
 
     private static void register(String name, BufferedImage image, int height, int glyph, int columns) {
@@ -304,7 +216,7 @@ public class BuildSkin {
                     .append(advance(image.getSubimage(col * width, 0, width, image.getHeight()), height)).append('\n');
         }
         providers.add("{\"type\":\"bitmap\",\"file\":\"dialogmenu_settings:ui/" + name
-                + ".png\",\"height\":" + height + ",\"ascent\":" + (glyph >= 0xE090 && glyph <= 0xE099 ? 2 : 7)
+                + ".png\",\"height\":" + height + ",\"ascent\":" + (glyph >= 0xE090 && glyph <= 0xE099 ? 6 : 7)
                 + ",\"chars\":[\"" + chars + "\"]}");
     }
 
@@ -316,15 +228,6 @@ public class BuildSkin {
             }
         }
         return Math.round(actual * (float) height / cell.getHeight()) + 1;
-    }
-
-    private static int lightPalette(int pixel) {
-        int red = (pixel >>> 16) & 255;
-        int green = (pixel >>> 8) & 255;
-        int blue = pixel & 255;
-        if (red != green || green != blue) return pixel;
-        int value = Math.min(255, 176 + red / 2);
-        return (pixel & 0xFF000000) | (value << 16) | (value << 8) | value;
     }
 
     private static String escape(int value) { return String.format("\\u%04x", value); }

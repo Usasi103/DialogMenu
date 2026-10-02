@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 
 class ButtonWidthTest {
 
-    private static final List<String> THEMES = List.of("amethyst", "parchment");
+    private static final List<String> THEMES = List.of("stone", "amethyst", "parchment");
     private static final List<String> LOOKS = List.of("button", "selected", "wide-button");
     private static final Function<String, ClickEvent> CLICK =
             it -> DialogClicks.custom(Key.key("test", it));
@@ -66,6 +66,7 @@ class ButtonWidthTest {
     }
 
     private static BufferedImage texture(String name) throws IOException {
+        name = name.replace("stone_", "amethyst_");
         byte[] bytes = pack().get("assets/dialogmenu_dialogue/textures/ui/" + name + ".png");
         assertNotNull(bytes, name + ".png is in the bundled pack");
         return ImageIO.read(new ByteArrayInputStream(bytes));

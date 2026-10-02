@@ -52,7 +52,7 @@ Pages:
 Version: 1
 Type: canvas
 DefaultPage: main
-Skin: parchment
+Skin: stone
 Canvas:
   Width: 552
   Rows: 20
@@ -134,7 +134,7 @@ Pages:
 Version: 1
 Type: canvas
 DefaultPage: choose
-Skin: amethyst
+Skin: stone
 Variables:
   difficulty: [normal, hard]
 Pages:

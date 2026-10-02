@@ -70,12 +70,12 @@ public final class MenuConfigParser {
         map.put("search", DialogCanvas.SEARCH);
         map.put("search-icon", DialogCanvas.SEARCH_ICON);
         map.put("refresh-icon", DialogCanvas.PANEL_ACTION);
-        map.put("profile-icon", new DialogCanvas.Skin(0xE090, 9, 1));
-        map.put("sound-icon", new DialogCanvas.Skin(0xE091, 9, 1));
-        map.put("particles-icon", new DialogCanvas.Skin(0xE092, 9, 1));
-        map.put("notices-icon", new DialogCanvas.Skin(0xE093, 9, 1));
-        map.put("loot-icon", new DialogCanvas.Skin(0xE094, 9, 1));
-        map.put("appearance-icon", new DialogCanvas.Skin(0xE095, 9, 1));
+        map.put("profile-icon", new DialogCanvas.Skin(0xE090, 16, 2));
+        map.put("sound-icon", new DialogCanvas.Skin(0xE091, 16, 2));
+        map.put("particles-icon", new DialogCanvas.Skin(0xE092, 16, 2));
+        map.put("notices-icon", new DialogCanvas.Skin(0xE093, 16, 2));
+        map.put("loot-icon", new DialogCanvas.Skin(0xE094, 16, 2));
+        map.put("appearance-icon", new DialogCanvas.Skin(0xE095, 16, 2));
         return Collections.unmodifiableMap(map);
     }
 
@@ -228,8 +228,8 @@ public final class MenuConfigParser {
             DialogCanvas.Skin iconSkin = skins.get(icon);
             Kt.require(
                     icon.isEmpty()
-                            || (iconSkin != null && iconSkin.width() == 9 && iconSkin.rows() == 1),
-                    () -> "pages." + id + ".icon: 必须使用 9 像素图标");
+                            || (iconSkin != null && iconSkin.width() == 16 && iconSkin.rows() == 2),
+                    () -> "pages." + id + ".icon: 必须使用 16×16 像素图标");
             String label = text(translations, string(conf, "label"), "pages." + id + ".label");
             List<String> keywords = new ArrayList<>();
             for (String keyword : conf.getStringList("keywords")) {

@@ -14,7 +14,7 @@ In-game screenshots with Chinese menu text. Click an image to view the original.
 
 | Boss introduction | Quest list |
 | :---: | :---: |
-| [![DialogMenu boss introduction with background story, combat tips, and rewards](docs/images/boss-menu.jpg)](https://raw.githubusercontent.com/Usasi103/DialogMenu/main/docs/images/boss-menu.jpg) | [![DialogMenu quest list with category filters, quest details, progress, and rewards](docs/images/quest-menu.jpg)](https://raw.githubusercontent.com/Usasi103/DialogMenu/main/docs/images/quest-menu.jpg) |
+| [![DialogMenu boss introduction with background story, combat tips, and rewards](docs/images/boss-menu.png)](https://raw.githubusercontent.com/Usasi103/DialogMenu/main/docs/images/boss-menu.png) | [![DialogMenu quest list with category filters, quest details, progress, and rewards](docs/images/quest-menu.png)](https://raw.githubusercontent.com/Usasi103/DialogMenu/main/docs/images/quest-menu.png) |
 | Background story, combat tips, and rewards | Categories, pagination, and quest progress |
 
 ## What you can build

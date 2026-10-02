@@ -24,10 +24,10 @@
 # /dmenu template npc-dialogue
 # 独立对话模板，不占用 config.yml 的 Pages。修改后 /dmenu check、/dmenu reload。
 # Position: [X 像素, Row 行号]，Row 每格 9 像素；按钮默认尺寸由 Sprite 决定，可用 Width 改宽。
-# parchment 使用本地 UI_Sprite.png 编译的框与按钮；仅改文字和位置无需重做资源包。
+# stone 使用 Blockbench 原创灰石框与按钮；仅改文字和位置无需重做资源包。
 Version: 1 # 配置格式版本，保持当前值
 Title: "守门人的委托" # 此页的 Dialog 标题；画布中的大标题在 Elements 中单独定义
-Skin: parchment # 内置皮肤：amethyst 紫色 / parchment 木色；需要对应资源包
+Skin: stone # 内置皮肤：stone 原创灰石（兼容 amethyst / parchment）；需要对应资源包
 Canvas: # 画布尺寸、背景及焦点白框设置
   Width: 552 # 画布宽度（像素），180–960；隐藏焦点框时必须为 552
   Rows: 20 # 画布高度（行），8–28；每行 9 像素，隐藏焦点框时必须为 20
@@ -48,12 +48,12 @@ Elements: # 画布元素定义；每个元素 ID 唯一，按书写顺序绘制
     Position: [156, 3] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
     Width: 330 # 文字区域宽度（像素），超出按此宽度自动换行
     Text: "守门人 · 艾琳" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
-    Color: "#f0d8b9" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
+    Color: "#eeeeee" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   subtitle:
     Position: [156, 5] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
     Width: 330 # 文字区域宽度（像素），超出按此宽度自动换行
     Text: "古堡入口 / 初次相遇" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
-    Color: "#bda58d" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
+    Color: "#b8b8b8" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
   divider:
     Type: sprite # 资源包贴图或字体图标
     Position: [156, 6] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素

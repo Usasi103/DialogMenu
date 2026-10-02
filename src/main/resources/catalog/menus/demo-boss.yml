@@ -33,7 +33,7 @@ DefaultPage: intro # 打开菜单时首先显示的页面 ID，必须存在于 P
 Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用此 ID
   intro:
     Title: "夜巡者 · 试炼档案" # 此页的 Dialog 标题；画布中的大标题在 Elements 中单独定义
-    Skin: amethyst # 内置皮肤：amethyst 紫色 / parchment 木色；需要对应资源包
+    Skin: stone # 内置皮肤：stone 原创灰石（兼容 amethyst / parchment）；需要对应资源包
     Canvas: # 画布尺寸、背景及焦点白框设置
       Width: 552 # 画布宽度（像素），180–960；隐藏焦点框时必须为 552
       Rows: 20 # 画布高度（行），8–28；每行 9 像素，隐藏焦点框时必须为 20
@@ -51,19 +51,19 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
         Position: [33, 15] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Width: 102 # 文字区域宽度（像素），超出按此宽度自动换行
         Text: "夜巡者徽记" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
-        Color: "#a28ab6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
+        Color: "#b8b8b8" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
       title:
         Position: [156, 1] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
         Text: "夜巡者" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
         FontSize: 16 # 6–24 像素；默认 8，插件自动预留行高
         Bold: true # true 加粗 / false 常规
-        Color: "#d9bfef" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
+        Color: "#eeeeee" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
       subtitle:
         Position: [156, 4] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
         Text: "放弃存在，只为守护之人" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
-        Color: "#a28ab6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
+        Color: "#b8b8b8" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
       divider:
         Type: sprite # 资源包贴图或字体图标
         Position: [156, 5] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
@@ -72,7 +72,7 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
         Position: [156, 6] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
         Text: "背景故事" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
-        Color: "#ba98d6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
+        Color: "#c6c6c6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
       story:
         Position: [156, 7] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
@@ -82,7 +82,7 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
         Position: [156, 11] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
         Text: "战斗建议" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
-        Color: "#ba98d6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
+        Color: "#c6c6c6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
       advice:
         Position: [156, 12] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Width: 348 # 文字区域宽度（像素），超出按此宽度自动换行
@@ -92,7 +92,7 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
         Position: [156, 14] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Width: 100 # 文字区域宽度（像素），超出按此宽度自动换行
         Text: "可能奖励" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
-        Color: "#bca4d0" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
+        Color: "#c6c6c6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
       reward-shard:
         Type: sprite # 资源包贴图或字体图标
         Position: [156, 16] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
@@ -155,7 +155,7 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
         Actions: ["close"] # 点击后按顺序执行的动作列表；命令不带 /
   confirm:
     Title: "开启挑战" # 此页的 Dialog 标题；画布中的大标题在 Elements 中单独定义
-    Skin: amethyst # 内置皮肤：amethyst 紫色 / parchment 木色；需要对应资源包
+    Skin: stone # 内置皮肤：stone 原创灰石（兼容 amethyst / parchment）；需要对应资源包
     Canvas: # 画布尺寸、背景及焦点白框设置
       Width: 552 # 画布宽度（像素），180–960；隐藏焦点框时必须为 552
       Rows: 20 # 画布高度（行），8–28；每行 9 像素，隐藏焦点框时必须为 20
@@ -168,12 +168,12 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
         Position: [240, 2] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Width: 130 # 文字区域宽度（像素），超出按此宽度自动换行
         Text: "开启挑战" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
-        Color: "#d9bfef" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
+        Color: "#eeeeee" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
       requirement:
         Position: [192, 4] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Width: 250 # 文字区域宽度（像素），超出按此宽度自动换行
         Text: "所需物品：虚空钥匙 × 1" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
-        Color: "#bca4d0" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
+        Color: "#c6c6c6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
       divider:
         Type: sprite # 资源包贴图或字体图标
         Position: [102, 5] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
@@ -207,7 +207,7 @@ Pages: # 本菜单的子页面；键是页面 ID，DefaultPage / page 动作用�
         Position: [282, 9] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Width: 222 # 文字区域宽度（像素），超出按此宽度自动换行
         Text: "难度修正" # 显示文字；正文可用字符串或列表，按钮须为单行字符串
-        Color: "#ba98d6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
+        Color: "#c6c6c6" # 文字颜色，只接受 '#RRGGBB'；必须加引号，不支持 &a 或颜色别名
       normal-description:
         Position: [282, 11] # [X 像素, Y 行号]，从 0 开始；Y 每行 9 像素
         Width: 222 # 文字区域宽度（像素），超出按此宽度自动换行

@@ -62,7 +62,7 @@ public final class MenuRenderer {
                     menu.navBold());
             if (!page.icon().isEmpty()) {
                 canvas.sprite(
-                        menu.navX() + 6,
+                        menu.navX() + 4,
                         row,
                         Kt.getValue(MenuConfigParser.skins(), page.icon()),
                         "page/" + page.id());
@@ -301,7 +301,7 @@ public final class MenuRenderer {
                             widget.textSize(),
                             widget.bold());
                     canvas.sprite(
-                            widget.x() + 98,
+                            widget.x() + 96,
                             widget.row(),
                             opened ? DialogCanvas.DROPDOWN_UP : DialogCanvas.DROPDOWN_DOWN,
                             route);

@@ -181,7 +181,7 @@ public final class QuestDemoCompiler {
                 "Title",
                 text(configuredTitle != null ? configuredTitle : "任务列表", path + ".Title", 40));
         Object configuredSkin = root.get("Skin");
-        result.set("Skin", configuredSkin != null ? configuredSkin : "amethyst");
+        result.set("Skin", configuredSkin != null ? configuredSkin : "stone");
         Object configuredHide = root.get("HideFocusOutline");
         Map<String, Object> canvas = new LinkedHashMap<>();
         canvas.put("Width", 552);
@@ -223,7 +223,7 @@ public final class QuestDemoCompiler {
                         1,
                         300,
                         Objects.requireNonNull(result.getString("Title")),
-                        "#d9bfef",
+                        "#eeeeee",
                         1,
                         null);
                 Object configuredSubtitle = root.get("Subtitle");
@@ -237,7 +237,7 @@ public final class QuestDemoCompiler {
                                 configuredSubtitle != null ? configuredSubtitle : "选择任务，查看目标与奖励",
                                 path + ".Subtitle",
                                 80),
-                        "#a28ab6",
+                        "#b8b8b8",
                         1,
                         null);
                 button(elements, "close", 522, 1, "close", "×", Kt.listOf("close"), null, null);
@@ -314,7 +314,7 @@ public final class QuestDemoCompiler {
                         pagination.row() + 1,
                         45,
                         (pageIndex + 1) + " / " + pages,
-                        "#af90c8",
+                        "#c6c6c6",
                         1,
                         null);
                 if (pageIndex > 0) {
@@ -357,7 +357,7 @@ public final class QuestDemoCompiler {
                             list.row() + 4,
                             145,
                             "此分类暂无任务",
-                            "#a28ab6",
+                            "#b8b8b8",
                             1,
                             null);
                     label(
@@ -367,7 +367,7 @@ public final class QuestDemoCompiler {
                             detail.row() + 3,
                             300,
                             "请切换到其他任务分类。",
-                            "#a28ab6",
+                            "#b8b8b8",
                             1,
                             null);
                     continue;
@@ -379,7 +379,7 @@ public final class QuestDemoCompiler {
                         detail.row(),
                         220,
                         chosen.name(),
-                        "#d9bfef",
+                        "#eeeeee",
                         1,
                         null);
                 label(
@@ -389,7 +389,7 @@ public final class QuestDemoCompiler {
                         detail.row() + 2,
                         312,
                         chosen.description(),
-                        "#a28ab6",
+                        "#b8b8b8",
                         2,
                         null);
                 label(
@@ -399,7 +399,7 @@ public final class QuestDemoCompiler {
                         detail.row() + 4,
                         232,
                         chosen.objective(),
-                        "#d9bfef",
+                        "#eeeeee",
                         1,
                         null);
                 label(
@@ -409,7 +409,7 @@ public final class QuestDemoCompiler {
                         detail.row() + 4,
                         75,
                         chosen.current() + "/" + chosen.total(),
-                        "#d9bfef",
+                        "#eeeeee",
                         1,
                         null);
                 sprite(
@@ -425,7 +425,7 @@ public final class QuestDemoCompiler {
                         detail.row() + 7,
                         160,
                         "任务奖励",
-                        "#af90c8",
+                        "#c6c6c6",
                         1,
                         null);
                 for (int rewardIndex = 0; rewardIndex < chosen.rewards().size(); rewardIndex++) {
@@ -443,7 +443,7 @@ public final class QuestDemoCompiler {
                             detail.row() + 9,
                             86,
                             reward.text(),
-                            "#d9bfef",
+                            "#eeeeee",
                             1,
                             null);
                 }
@@ -499,7 +499,7 @@ public final class QuestDemoCompiler {
                             detail.row(),
                             63,
                             "进行中",
-                            "#af90c8",
+                            "#c6c6c6",
                             1,
                             null);
                     button(

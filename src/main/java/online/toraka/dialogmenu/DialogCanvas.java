@@ -47,10 +47,10 @@ public final class DialogCanvas {
     public static final Skin CONTROL = new Skin(0xE060, 114, 2);
     public static final Skin SELECTED_CONTROL = new Skin(0xE070, 114, 2);
     public static final Skin SEARCH = new Skin(0xE080, 102, 2);
-    public static final Skin SEARCH_ICON = new Skin(0xE096, 9, 1);
-    public static final Skin PANEL_ACTION = new Skin(0xE097, 9, 2);
-    public static final Skin DROPDOWN_DOWN = new Skin(0xE098, 9, 1);
-    public static final Skin DROPDOWN_UP = new Skin(0xE099, 9, 1);
+    public static final Skin SEARCH_ICON = new Skin(0xE096, 16, 2);
+    public static final Skin PANEL_ACTION = new Skin(0xE097, 16, 2);
+    public static final Skin DROPDOWN_DOWN = new Skin(0xE098, 16, 2);
+    public static final Skin DROPDOWN_UP = new Skin(0xE099, 16, 2);
 
     /** Non-empty {@code slices} replace the glyph columns, e.g. a button stretched to a width. */
     public record Skin(
@@ -260,15 +260,13 @@ public final class DialogCanvas {
         // from the painted glyph instead of the preceding spacing component.
         // Having both representations makes the whole visible button reliable.
         sprite(x, row, skin, action);
-        int inset = skin.equals(NAV) || skin.equals(SELECTED_NAV) || skin.equals(SEARCH) ? 20 : 6;
+        int inset = skin.equals(NAV) || skin.equals(SELECTED_NAV) || skin.equals(SEARCH) ? 24 : 6;
         labels.add(
                 new Label(
                         (float) (x + inset),
                         row + (textSize == 8 ? 1 : 0),
                         prepare(label, textSize, bold, true).fit(skin.width() - inset - rightInset),
-                        skin.equals(SELECTED_NAV) || skin.equals(SELECTED_CONTROL)
-                                ? 0x122408
-                                : theme.text(),
+                        0xF0F0F0,
                         action,
                         true,
                         textSize,

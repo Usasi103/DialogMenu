@@ -19,7 +19,7 @@
 Version: 1
 Type: quest-demo
 Title: 任务列表
-Skin: amethyst
+Skin: stone
 HideFocusOutline: true
 PageSize: 5
 Categories:
@@ -53,7 +53,7 @@ Layout:
 
 坐标为 `[横向像素, 纵向行号]`，每行 9 像素。画布为 552×180；列表行宽 180、高 18，详情宽 312。修改整体区域位置会连同其控件移动；越界和按钮重叠会拒绝重载。需要完全自由的逐元素布局仍可使用 `Type: canvas`。
 
-`Skin: amethyst` 为紫色，`parchment` 为木色。任务控件使用独立的 `dialogmenu_dialogue:quest_ui` 字体，原有首领和设置菜单字形未重编号。进度条显示 20 个视觉档位，同时保留精确进度数字。
+`Skin: stone` 使用原创灰石皮肤；`amethyst` 和 `parchment` 保留为旧配置兼容名称。任务控件使用独立的 `dialogmenu_dialogue:quest_ui` 字体，原有首领和设置菜单字形未重编号。进度条显示 20 个视觉档位，同时保留精确进度数字。
 
 内置图标：iron_sword、fishing_rod、nether_star、book、iron_ingot、gold_ingot、experience_bottle、amethyst_shard、cod、diamond_chestplate、bread、oak_sapling、compass。
 这些图标由 `dialogmenu_dialogue:quest_items` 引用客户端原版纹理；资源包不复制原版 PNG。

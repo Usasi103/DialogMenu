@@ -103,12 +103,12 @@ settings 的 `Pages.<页>.Icon` 只接受内置名称，不接受 Material 或 F
 
 | Icon | `assets/dialogmenu_settings/textures/ui/` 下的文件 |
 | --- | --- |
-| profile-icon | hallow_icon_0.png |
-| sound-icon | hallow_icon_1.png |
-| particles-icon | hallow_icon_2.png |
-| notices-icon | hallow_icon_3.png |
-| loot-icon | hallow_icon_4.png |
-| appearance-icon | hallow_icon_5.png |
+| profile-icon | icon_profile.png |
+| sound-icon | icon_sound.png |
+| particles-icon | icon_particles.png |
+| notices-icon | icon_notices.png |
+| loot-icon | icon_loot.png |
+| appearance-icon | icon_appearance.png |
 
 换成已有图标只需改 Icon 名称。换全新图片时，修改合并资源包源目录中的对应 PNG，保留原尺寸和字形指标；字体映射在 `assets/dialogmenu_settings/font/ui.json`。同名图标被其他页面引用时也会一起变化。仅增加 PNG 或编造一个新的 Icon 名称不会自动注册导航图标。
 

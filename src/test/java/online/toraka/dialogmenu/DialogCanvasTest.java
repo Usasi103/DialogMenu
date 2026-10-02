@@ -44,7 +44,7 @@ class DialogCanvasTest {
                     i == 2 ? DialogCanvas.SELECTED_NAV : DialogCanvas.NAV,
                     tabs.get(i),
                     "tab_" + i);
-            canvas.sprite(6, 3 + i * 2, new DialogCanvas.Skin(0xE090 + i, 9, 1));
+            canvas.sprite(4, 3 + i * 2, new DialogCanvas.Skin(0xE090 + i, 16, 2));
         }
         canvas.text(123, 1, "环境粒子");
         canvas.text(123, 11, "粒子分类与密度");
