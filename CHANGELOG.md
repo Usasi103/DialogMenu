@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.4] - 2026-10-03
+
+- 合并 Dialog 与全屏资源：一个生产 JAR、一个 `DialogMenu-resourcepack-0.2.4.zip`。JAR 内置、自动导出、全屏 HTTP 返回与 Release ZIP 逐字节一致，不再提供第二个 fullscreen ZIP。
+- 修正 Dialog GUI 着色器的 26.3 DynamicTransforms 布局与显式接口位置；不包含私人素材、衣帽间或 TorakaHud。
+- 菜单文件头继续选择 `MenuType: dialog` / `fullscreen`，禁止同文件混用；全屏仍为固定 diagnostic 布局，可与 Dialog 通过 open 动作互相跳转。
+- 删除第二个 ZIP 的生产打包入口；保留仅用于组装的中间任务和测试探针。 更新中英文说明、配置指南、离线 Wiki 与生成器。
+- 验证：192 项单元测试、78 项目标 Paper 协议断言、GPU 576 个视角场景及七种分辨率的 112 帧抗锯齿检查通过；API 与瘦身检查 0 问题。未新增真人鼠标延迟测量。详见 [发布验证](RELEASE-VALIDATION.md)。
+- 正式发布 [v0.2.4](https://github.com/Usasi103/DialogMenu/releases/tag/v0.2.4)，附 JAR、统一资源包和 SHA256SUMS.txt，历史标签与附件保留。
+
 ## [0.2.3] - 2026-10-03
 
 - 一个 DialogMenu JAR 合并 Dialog 菜单与全屏诊断方案，统一 menus 目录、打开动作、重载和生命周期；无需另装全屏插件或 TorakaHud。

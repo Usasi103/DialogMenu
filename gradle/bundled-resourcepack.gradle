@@ -1,14 +1,16 @@
 // Ship the same reviewed assets in every JAR; normal installations need no Python tools.
 def bundledMenuPack = tasks.register('bundleMenuResourcePack', Zip) {
-    from(layout.projectDirectory.dir('resourcepack'))
+    dependsOn('fullscreenPack')
+    from(layout.projectDirectory.dir('resourcepack')) { exclude('pack.mcmeta') }
+    from({ zipTree(layout.buildDirectory.file('generated/fullscreen/DialogMenu-fullscreen.zip').get().asFile) })
     archiveFileName = 'DialogMenu-resourcepack.zip'
     destinationDirectory = layout.buildDirectory.dir('generated/bundled-resourcepack')
     preserveFileTimestamps = false
     reproducibleFileOrder = true
     duplicatesStrategy = DuplicatesStrategy.FAIL
     doFirst {
-        if (!file('resourcepack/pack.mcmeta').isFile()) {
-            throw new GradleException('DialogMenu resourcepack/pack.mcmeta is missing')
+        if (!file('resourcepack/assets').isDirectory()) {
+            throw new GradleException('DialogMenu resourcepack/assets is missing')
         }
     }
 }

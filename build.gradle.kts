@@ -111,11 +111,6 @@ val fullscreenPack = tasks.register<Exec>("fullscreenPack") {
     commandLine("py", "-3", "-B", "-X", "utf8", "tools/build_fullscreen_pack.py",
         "--client", client.get(), "--version", project.version.toString(), "--output", output.get().asFile.absolutePath)
 }
-tasks.processResources {
-    dependsOn(fullscreenPack)
-    from(layout.buildDirectory.file("generated/fullscreen/DialogMenu-fullscreen.zip")) { into("bundled") }
-}
-
 // Protocol validation is an isolated test plugin, never included in the production JAR.
 val probe = sourceSets.create("probe")
 probe.compileClasspath += sourceSets.main.get().compileClasspath

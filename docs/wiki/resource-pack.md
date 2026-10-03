@@ -4,6 +4,8 @@ DialogMenu 的字体画布需要配套资源包。ResourcePack 配置决定资�
 
 CraftEngine 不是必需依赖。使用 IA / Nexo / Oraxen 等来源的物品，和由哪个插件发送资源包，是两项独立设置；物品源写在 Display.Material，字体图标写 Font/Glyph，发送方式写这里的 Provider。换图标及自定义 PNG 的完整步骤见 [图标与材质](icons.md)。
 
+一个插件 JAR 内置一份 `DialogMenu-resourcepack.zip`，同时包含 Dialog 与全屏所需字体、贴图和着色器；Release 也只提供这一份 ZIP。全屏 HTTP 入口与自动导出使用相同字节。`fullscreen.yml` 控制服务地址，具体配置见[全屏指南](../guides/FULLSCREEN.md)。
+
 ## 0.1.21 起：自动安装内置资源
 
 0.1.21 起，JAR 包含配套资源包，启动后导出为 `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip`。发布版 0.1.20 及更早版本仍需单独下载同版本 ZIP。

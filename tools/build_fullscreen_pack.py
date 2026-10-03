@@ -66,7 +66,7 @@ def build(client_path, output, version):
     files['assets/dialogmenu_fullscreen/layout.json'] = json.dumps({
         'columns': columns, 'rows': rows, 'tile_width': tile_width, 'tile_height': tile_height,
         'border': border, 'width': width, 'height': height}).encode()
-    files['pack.mcmeta'] = json.dumps({'pack': {'description': 'DialogMenu local cursor ' + version,
+    files['pack.mcmeta'] = json.dumps({'pack': {'description': 'DialogMenu Dialog + fullscreen ' + version,
                                              'min_format': [97, 1], 'max_format': [97, 1]}}).encode()
     source_v = client.read('assets/minecraft/shaders/core/text.vsh').decode('utf-8-sig')
     source_f = client.read('assets/minecraft/shaders/core/text.fsh').decode('utf-8-sig')

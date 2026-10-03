@@ -1,7 +1,13 @@
 {
   "pack": {
-    "description": "DialogMenu",
-    "min_format": 75,
-    "max_format": 88
+    "description": "DialogMenu Dialog + fullscreen",
+    "min_format": [
+      97,
+      1
+    ],
+    "max_format": [
+      97,
+      1
+    ]
   }
 }

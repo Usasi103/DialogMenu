@@ -47,7 +47,7 @@ Settings demo choices last for the current preview and reset when reopened. Bala
 
 ## Installation
 
-**DialogMenu 0.2.3** targets **Paper and vanilla client 26.3**, uses Java 25 for the build and server, and emits Java 21 bytecode for its main source. Menu skins require the matching resource pack; players can use the vanilla client. The older 1.21.11 / 26.2 checks remain in the [historical compatibility record](docs/development/PAPER-1.21.11.md).
+**DialogMenu 0.2.4** targets **Paper and vanilla client 26.3**, uses Java 25 for the build and server, and emits Java 21 bytecode for its main source. Menu skins require the matching resource pack; players can use the vanilla client. The older 1.21.11 / 26.2 checks remain in the [historical compatibility record](docs/development/PAPER-1.21.11.md).
 
 The source is plain Java with bundled Keystone helpers and version-matched NMS. No separate fullscreen plugin or TorakaHud is required. Before upgrading, add `MenuType: dialog` as the first key of existing menu files; do not add it to the Version 3 global config.yml. See the [release validation record (Chinese)](RELEASE-VALIDATION.md) for tested boundaries.
 

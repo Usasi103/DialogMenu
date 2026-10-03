@@ -1,11 +1,11 @@
 # 公开版发布状态
 
-仓库：[Usasi103/DialogMenu](https://github.com/Usasi103/DialogMenu)，分支 `main`。
+仓库：[Usasi103/DialogMenu](https://github.com/Usasi103/DialogMenu)，分支 `main`。当前正式版本：[v0.2.4](https://github.com/Usasi103/DialogMenu/releases/tag/v0.2.4)。
 
-当前正式版本：[v0.2.3](https://github.com/Usasi103/DialogMenu/releases/tag/v0.2.3)。一个 DialogMenu JAR 同时提供 Dialog 菜单和全屏诊断方案；每份菜单用 MenuType 选择显示方式。全屏当前为固定演示布局，使用前配置 fullscreen.yml；无需额外全屏插件或 TorakaHud。
+只需一个生产 JAR 和一份合并资源包；两种菜单都由 DialogMenu 提供。Release 附 JAR、统一 ZIP 和 SHA256SUMS.txt，JAR 内置 ZIP 与下载附件相同。历史 Releases、标签、附件和仓库可见性保持。
 
-附件为实际构建 JAR、与内置字节相同的 Dialog / 全屏资源包，以及 SHA256SUMS.txt。标签对应累计源码，历史 Releases 和附件保持原样。升级旧菜单需在文件首项补 MenuType: dialog，Version 3 全局配置不加。
+修正 Dialog GUI 着色器的 26.3 DynamicTransforms 布局与显式接口位置；不包含私人素材、衣帽间或 TorakaHud。
 
-验证和限制见[发布记录](../../RELEASE-VALIDATION.md)，完整历史见[更新日志](../../CHANGELOG.md)，使用方式见[全屏指南](../guides/FULLSCREEN.md)。
+目标为 Paper / 原版客户端 26.3，服务器 Java 25。全屏使用前配置 fullscreen.yml 中玩家可访问的基础 URL；固定 diagnostic 布局尚不支持任意 YAML 背景和按钮。见[全屏指南](../guides/FULLSCREEN.md)、[验证边界](../../RELEASE-VALIDATION.md)及[累计更新日志](../../CHANGELOG.md)。
 
-公开版不包含私有 HUD 实现、衣帽间或私人贴图。Dialog 原创素材源位于 design/original-ui/，全屏包从官方原版 26.3 客户端和公开诊断布局生成；第三方代码引用见 THIRD_PARTY_NOTICES.md。
+公开版未部署到私有测试服。

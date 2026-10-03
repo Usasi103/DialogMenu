@@ -48,7 +48,8 @@ final class CursorPack implements Listener, AutoCloseable {
         byte[] bytes;
         try (var stream =
                 java.util.Objects.requireNonNull(
-                        plugin.getResource("bundled/DialogMenu-fullscreen.zip"))) {
+                        plugin.getResource(
+                                online.toraka.dialogmenu.BundledResourcePack.RESOURCE))) {
             bytes = stream.readAllBytes();
         }
         var config = MenuRuntime.fullscreenSettings();
@@ -78,7 +79,7 @@ final class CursorPack implements Listener, AutoCloseable {
                     }
                 });
         server.start();
-        plugin.getLogger().info("本地光标资源包：" + url + " (" + bytes.length + " bytes)");
+        plugin.getLogger().info("DialogMenu 统一资源包：" + url + " (" + bytes.length + " bytes)");
     }
 
     void open(Player player) {

@@ -327,6 +327,17 @@ public class FullscreenShaderProbe {
         }
         System.out.println(
                 "PASS: 24 text and 4 position_color variants compile/link, including OIT phases");
+        int gui = program("", "gui");
+        String vanillaGui = new String(client.getInputStream(client.getEntry("assets/minecraft/shaders/core/gui.fsh")).readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        String shippedGui = read("assets/minecraft/shaders/core/gui.fsh");
+        var block = Pattern.compile("uniform DynamicTransforms\\s*\\{([^}]+)\\}");
+        var expected = block.matcher(vanillaGui);
+        var actual = block.matcher(shippedGui);
+        if (!expected.find() || !actual.find()
+                || !expected.group(1).replaceAll("\\s+", "").equals(actual.group(1).replaceAll("\\s+", "")))
+            throw new AssertionError("GUI DynamicTransforms differs from the target client");
+        glDeleteProgram(gui);
+        System.out.println("PASS: merged Dialog GUI compiles/links with the client uniform layout");
         int program = program("");
         glUseProgram(program);
         float[] dynamic = new float[40];

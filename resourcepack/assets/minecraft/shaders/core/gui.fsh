@@ -1,17 +1,18 @@
 #version 330
+#extension GL_ARB_separate_shader_objects : require
 
 layout(std140) uniform DynamicTransforms {
     mat4 ModelViewMat;
+    mat4 TextureMat;
     vec4 ColorModulator;
     vec3 ModelOffset;
-    mat4 TextureMat;
 };
 
-in vec4 vertexColor;
-in vec2 settingsGuiPosition;
-in vec2 settingsQuadCorner;
-flat in vec2 settingsGuiExtent;
-out vec4 fragColor;
+layout(location = 0) in vec4 vertexColor;
+layout(location = 1) in vec2 settingsGuiPosition;
+layout(location = 2) in vec2 settingsQuadCorner;
+layout(location = 3) flat in vec2 settingsGuiExtent;
+layout(location = 0) out vec4 fragColor;
 
 bool nearValue(float value, float target) { return abs(value - target) < 0.6; }
 bool nearSize(vec2 value, vec2 target) { return all(lessThan(abs(value - target), vec2(0.15))); }

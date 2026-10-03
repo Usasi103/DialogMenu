@@ -1,6 +1,6 @@
 # 同一插件中的 Dialog 与全屏菜单
 
-DialogMenu 0.2.3 的一个 JAR 同时提供两种显示方式，无需另装全屏插件或客户端 Mod。当前目标是 Paper / 原版客户端 26.3，服务器使用 Java 25。
+DialogMenu 0.2.4 的一个 JAR 同时提供两种显示方式，无需另装全屏插件或客户端 Mod。当前目标是 Paper / 原版客户端 26.3，服务器使用 Java 25。
 
 每份菜单的第一个配置项选择 `MenuType: dialog` 或 `MenuType: fullscreen`。注释可放在它前面，同一文件不能混用两种类型的字段或按钮。Dialog 下的 `Type: settings` / `Type: canvas` 继续表示内容结构。
 
@@ -43,6 +43,12 @@ Dialog 按钮可使用 `Actions: ["open: demo-fullscreen"]`。不同菜单之间
 
 成功重载关闭全屏会话并释放旧资源服务，下次打开使用新配置。任何菜单类型、引用或配置错误都会取消整次重载，保留旧状态和原文件。
 
+## 一份资源包
+
+Release 只提供一个插件 JAR、一份 `DialogMenu-resourcepack-0.2.4.zip` 和校验文件。JAR 内置、启动后导出的 ZIP 与全屏 HTTP 服务返回的都是同一份资源；不用再下载或合并第二份 fullscreen ZIP。
+
+Dialog 的 `ResourcePack` 配置继续控制现有资源管理插件接入；`fullscreen.yml` 是内置 HTTP 服务的地址设置，不代表另一份资源包。全屏入口仍按自己的加载回执确认可用，因此已经由其他插件发送服务器整包的玩家可能收到一次追加请求；本次没有把不同发送方的加载状态视为等价。
+
 ## 分辨率、资源与限制
 
 - 背景原图为 1920×1080，按当前窗口宽高完整铺满；不同宽高比会拉伸。服务器点击坐标与客户端显示均采用 320×180 逻辑坐标，四角按钮贴到窗口边缘。
@@ -60,4 +66,4 @@ Dialog 按钮可使用 `Actions: ["open: demo-fullscreen"]`。不同菜单之间
 ./gradlew.bat --no-daemon formatSources build -PfullscreenClientJar=C:/path/to/26.3/client.jar
 ```
 
-最终生产产物只有 `dist/DialogMenu-0.2.3.jar`，内含 Dialog 与全屏两份资源包。`fullscreenProbeJar` 是开发者在隔离服务器中运行的测试探针，不是安装所需的第二个插件。
+最终生产产物只有 `dist/DialogMenu-0.2.4.jar`，内含一份同时包含 Dialog 与全屏资源的 `DialogMenu-resourcepack.zip`。`fullscreenProbeJar` 是开发者在隔离服务器中运行的测试探针，不是安装所需的第二个插件。

@@ -47,7 +47,7 @@ Dialog 菜单使用配置中的原始画布尺寸。显示不全时，可在 Min
 
 ## 安装
 
-**DialogMenu 0.2.3** 面向 **Paper / 原版客户端 26.3**，使用 Java 25 构建并运行服务器，主源码输出 Java 21 字节码。菜单皮肤需要配套资源包，玩家使用原版客户端即可；旧的 1.21.11 / 26.2 验证记录见[历史兼容记录](docs/development/PAPER-1.21.11.md)。
+**DialogMenu 0.2.4** 面向 **Paper / 原版客户端 26.3**，使用 Java 25 构建并运行服务器，主源码输出 Java 21 字节码。菜单皮肤需要配套资源包，玩家使用原版客户端即可；旧的 1.21.11 / 26.2 验证记录见[历史兼容记录](docs/development/PAPER-1.21.11.md)。
 
 源码为 Java，共享库 Keystone 已打包在插件内。全屏通过匹配 26.3 的 NMS 和资源包实现，不需要额外全屏插件或 TorakaHud。现有菜单升级前必须在第一个配置项补上 `MenuType: dialog`；Version 3 全局 config.yml 不加该字段。具体测试边界见[发布验证](RELEASE-VALIDATION.md)。
 
