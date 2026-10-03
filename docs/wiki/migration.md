@@ -34,6 +34,7 @@ Icons:
 
 <!-- example: migrated-help.yml -->
 ```yaml
+MenuType: dialog
 Version: 1
 Type: settings
 Title: 玩家设置

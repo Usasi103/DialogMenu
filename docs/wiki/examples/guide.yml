@@ -1,3 +1,4 @@
+MenuType: dialog
 Version: 1
 Type: canvas
 DefaultPage: main
@@ -19,7 +20,7 @@ Pages:
         Position: [156, 3]
         Width: 330
         Text: 守门人 · 艾琳
-        Color: "#eeeeee"
+        Color: "#f0d8b9"
       dialogue:
         Position: [156, 7]
         Width: 348
@@ -52,7 +53,7 @@ Pages:
         Position: [30, 3]
         Width: 480
         Text: 消失的巡夜人
-        Color: "#eeeeee"
+        Color: "#f0d8b9"
       story:
         Position: [30, 6]
         Width: 480

@@ -1,10 +1,10 @@
-# DialogMenu · Minecraft 对话菜单
+# DialogMenu · Minecraft 对话与全屏菜单
 
 **简体中文** · [English](README.en.md)
 
-DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 制作玩家设置、NPC 对话、首领介绍和确认界面，把文字、图标与交互按钮放进同一套菜单中。
+DialogMenu 在一个插件中提供 Minecraft Dialog 菜单和资源包全屏演示。你可以用 YAML 制作玩家设置、NPC 对话、首领介绍和确认界面，把文字、图标与交互按钮放进同一套菜单中。
 
-一个文件就是一个完整菜单，相关子页面统一写在 `Pages` 下。简单的设置界面按顺序排列控件，需要自己设计版式时则使用画布坐标。插件附带可直接修改的示例，方便从现有菜单开始制作。
+每份菜单在开头用 `MenuType: dialog` 或 `MenuType: fullscreen` 选择显示方式。Dialog 的相关子页面统一写在 `Pages` 下；全屏目前提供固定诊断布局，详见[全屏说明](docs/guides/FULLSCREEN.md)。简单的设置界面按顺序排列控件，需要自己设计版式时则使用画布坐标。插件附带可直接修改的示例，方便从现有菜单开始制作。
 
 [下载插件与资源包](https://github.com/Usasi103/DialogMenu/releases/latest) · [配置指南](docs/guides/MENU-CONFIG.md) · [更新日志](CHANGELOG.md)
 
@@ -29,7 +29,7 @@ DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 
 
 设置菜单支持简体中文、英文以及暗色、亮色主题，玩家的语言与主题选择会保存。二元选项可使用绿色开启、灰色关闭的小开关，也可以保留宽按钮。档位滑条通过点击刻度或两侧箭头切换。
 
-菜单使用配置中的原始画布尺寸。显示不全时，可在 Minecraft 视频设置中调小 GUI 比例。
+Dialog 菜单使用配置中的原始画布尺寸。显示不全时，可在 Minecraft 视频设置中调小 GUI 比例。
 
 ## 自带菜单
 
@@ -38,6 +38,7 @@ DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 
 | 设置演示 | `/dmenu open demo-settings` | 与玩家设置相同的布局；开关、滑条和下拉框独立演示，无需业务插件 |
 | 对话演示 | `/dmenu open demo-dialogue` | NPC 对话和后续选项 |
 | 首领演示 | `/dmenu open demo-boss` | 首领介绍、难度选择与进入确认 |
+| 全屏演示 | `/dmenu open demo-fullscreen` | 本地黄色光标、四角按钮、点击与返回 Dialog；先配置 fullscreen.yml |
 | 任务演示 | `/dmenu open demo-quests` | 任务分类、分页、详情与模拟领取 |
 
 这些示例都能复制、改名和修改。首领确认不会自动召唤首领；任务演示不读取真实任务进度，也不发放物品或货币奖励。实际玩法可以通过按钮动作接入自己的插件。
@@ -46,9 +47,9 @@ DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 
 
 ## 安装
 
-**DialogMenu 0.2.0** 以 **Paper 26.3** 为当前编译和验证目标，使用 Java 25 构建并输出 Java 21 字节码。菜单皮肤需要配套资源包，玩家使用原版客户端即可；旧的 1.21.11 / 26.2 验证记录见[历史兼容记录](docs/development/PAPER-1.21.11.md)。
+**DialogMenu 0.2.3** 面向 **Paper / 原版客户端 26.3**，使用 Java 25 构建并运行服务器，主源码输出 Java 21 字节码。菜单皮肤需要配套资源包，玩家使用原版客户端即可；旧的 1.21.11 / 26.2 验证记录见[历史兼容记录](docs/development/PAPER-1.21.11.md)。
 
-源码为 Java，并使用 Keystone 共享库构建，不依赖 TabooLib 运行库；配置格式、指令与权限保持不变。0.2.0 已按 Paper 26.3 API 重新构建并验证，具体结果见 [Paper 26.3 兼容记录](docs/development/PAPER-26.3.md)。
+源码为 Java，共享库 Keystone 已打包在插件内。全屏通过匹配 26.3 的 NMS 和资源包实现，不需要额外全屏插件或 TorakaHud。现有菜单升级前必须在第一个配置项补上 `MenuType: dialog`；Version 3 全局 config.yml 不加该字段。具体测试边界见[发布验证](RELEASE-VALIDATION.md)。
 
 1. 将插件 JAR 放入服务器的 `plugins` 目录。0.1.21 起已内置配套资源，启动时导出到 `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip`。
 2. 新安装默认使用 `ResourcePack.Provider: Auto`，按 **CraftEngine → ItemsAdder → Nexo → Oraxen** 的顺序选择已启用的资源管理插件，并将资源放入其源目录。再次启动会更新由 DialogMenu 管理的文件，保留服主修改过的文件；冲突会在控制台列出。
@@ -57,13 +58,14 @@ DialogMenu 是一个基于 Minecraft Dialog 的菜单插件。你可以用 YAML 
 
 发布版 0.1.20 及更早版本仍需另下载同版本资源包并手动合入。完整的自动安装目录、冲突处理和发送配置见[资源包指南](docs/wiki/resource-pack.md)。
 
-首次安装会生成默认配置和四个示例菜单。已有配置会保留，修改后可用 `/dmenu check` 检查，再用 `/dmenu reload` 应用；检查失败时继续使用上一份有效配置。
+首次安装会生成默认配置和五个示例菜单。全屏资源内置于同一个 JAR，首次使用前在 fullscreen.yml 填写可访问的基础 URL，见[全屏安装步骤](docs/guides/FULLSCREEN.md)。已有配置会保留，修改后可用 `/dmenu check` 检查，再用 `/dmenu reload` 应用；检查失败时继续使用上一份有效配置。
 
 ## 写一个菜单
 
 将下面的内容保存为 `plugins/DialogMenu/menus/my-menu.yml`，执行检查与重载后，用 `/dmenu open my-menu` 打开。文件名就是菜单 ID，无需额外注册。
 
 ```yaml
+MenuType: dialog
 Version: 1
 Type: settings
 Title: "我的菜单"
@@ -118,7 +120,7 @@ Pages:
 
 [文档目录](docs/README.md)：配置指南、旧版迁移资料与开发记录统一收录在 `docs/`。
 
-中文详细 Wiki：[阅读手册](docs/wiki/README.md) · [离线网页版（下载后打开）](docs/wiki/index.html) · [完整目录](docs/wiki/SUMMARY.md)。覆盖新版 menus 的两类菜单、配置字段、动作、变量、物品源、资源包与可复制示例。
+中文详细 Wiki：[阅读手册](docs/wiki/README.md) · [离线网页版（下载后打开）](docs/wiki/index.html) · [完整目录](docs/wiki/SUMMARY.md)。覆盖 Dialog 菜单的 settings / canvas 内容结构、配置字段、动作、变量、物品源、资源包与可复制示例。
 
 - [settings 坐标、字号与加粗](docs/guides/SETTINGS-LAYOUT.md)
 

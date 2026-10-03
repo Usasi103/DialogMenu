@@ -35,6 +35,15 @@ public final class MenuCatalogParser {
             Kt.require(identifier.matcher(id).matches(), () -> "menus: 无效菜单文件名 " + id);
             String path = "menus/" + id + ".yml";
             YamlConfiguration root = MenuConfigParser.yaml(source, path);
+            MenuType menuType = MenuType.read(root, path);
+            if (menuType == MenuType.FULLSCREEN) {
+                keys(root, Kt.setOf("MenuType", "Preset"), path);
+                Kt.require(
+                        "diagnostic".equals(root.get("Preset")),
+                        () -> path + ".Preset: 当前只支持 diagnostic 固定全屏布局");
+                roots.put(id, root);
+                continue;
+            }
             if (Objects.equals(root.getString("Type"), "quest-demo")) {
                 roots.put(id, QuestDemoCompiler.compile(root, path));
             } else {
@@ -45,6 +54,10 @@ public final class MenuCatalogParser {
         for (Map.Entry<String, YamlConfiguration> entry : roots.entrySet()) {
             String id = entry.getKey();
             YamlConfiguration root = entry.getValue();
+            if (MenuType.read(root, "menus/" + id + ".yml") == MenuType.FULLSCREEN) {
+                defaults.put(id, "main");
+                continue;
+            }
             ConfigurationSection pages =
                     Kt.requireNotNull(
                             root.getConfigurationSection("Pages"),
@@ -59,6 +72,14 @@ public final class MenuCatalogParser {
                 Kt.require(
                         pages.isConfigurationSection(page),
                         () -> "menus/" + id + ".yml.Pages." + page + ": 需要配置段");
+                Kt.require(
+                        !pages.contains(page + ".MenuType"),
+                        () ->
+                                "menus/"
+                                        + id
+                                        + ".yml.Pages."
+                                        + page
+                                        + ".MenuType: 页面继承文件头的菜单类型，不能单独声明");
             }
             String configured = root.getString("DefaultPage");
             String defaultPage =
@@ -74,6 +95,13 @@ public final class MenuCatalogParser {
             String id = entry.getKey();
             YamlConfiguration root = entry.getValue();
             String path = "menus/" + id + ".yml";
+            if (MenuType.read(root, path) == MenuType.FULLSCREEN) {
+                menus.put(
+                        id,
+                        new CatalogMenu(
+                                id, "main", null, Collections.emptyMap(), MenuType.FULLSCREEN));
+                continue;
+            }
             Kt.require(Objects.equals(root.get("Version"), 1), () -> path + ".Version: 必须为 1");
             ConfigurationSection pages =
                     Objects.requireNonNull(root.getConfigurationSection("Pages"));
@@ -83,6 +111,7 @@ public final class MenuCatalogParser {
                 keys(
                         root,
                         Kt.setOf(
+                                "MenuType",
                                 "Version",
                                 "Type",
                                 "Title",
@@ -125,6 +154,7 @@ public final class MenuCatalogParser {
                 keys(
                         root,
                         Kt.setOf(
+                                "MenuType",
                                 "Version",
                                 "Type",
                                 "Title",
@@ -150,6 +180,7 @@ public final class MenuCatalogParser {
                                     "Elements"),
                             path + ".Pages." + page);
                     YamlConfiguration compiled = new YamlConfiguration();
+                    compiled.set("MenuType", MenuType.DIALOG.id());
                     compiled.set("Version", 1);
                     for (String key :
                             Kt.listOf("Title", "Skin", "Canvas", "Variables", "Placeholders")) {
@@ -218,6 +249,9 @@ public final class MenuCatalogParser {
         YamlConfiguration destination = roots.get(menu);
         if (destination == null || page == null) {
             return null;
+        }
+        if ("fullscreen".equals(destination.getString("MenuType"))) {
+            return page.equals("main") ? new ReactionParser.Target("open", menu + "/main") : null;
         }
         ConfigurationSection pages = destination.getConfigurationSection("Pages");
         if (pages == null || !pages.getKeys(false).contains(page)) {

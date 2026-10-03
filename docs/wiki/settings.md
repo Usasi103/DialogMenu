@@ -8,6 +8,7 @@
 
 | 字段 | 类型 | 默认值 / 要求 | 说明 |
 | --- | --- | --- | --- |
+| MenuType | 字符串 | 必填 dialog，放在文件开头 | 整个菜单的显示方案，页面与按钮不能覆盖 |
 | Version | 整数 | 必填 1 | 菜单格式版本 |
 | Type | 字符串 | 必填 settings / settings-demo | 真实设置或独立演示 |
 | Title | 文本 / 双语映射 | 内置“玩家设置 / Player Settings” | 整个菜单的标题 |

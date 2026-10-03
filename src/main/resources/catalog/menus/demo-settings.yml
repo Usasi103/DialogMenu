@@ -1,3 +1,4 @@
+MenuType: dialog
 # 独立设置模板；真实服务器 settings.yml 继续使用 Type: settings。
 # Type: settings-demo 让开关/滑条/下拉框独立运行，无需 Ambience 或 PAPI。
 # 示例资产为静态演示数据；模拟选项重新打开重置，不执行业务命令。

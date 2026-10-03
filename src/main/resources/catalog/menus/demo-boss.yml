@@ -1,3 +1,4 @@
+MenuType: dialog
 # 画布字段说明：
 # Position: [X, Y]：相对画布左上角；X 是像素，Y 是从 0 开始的行号，每行 9 像素。
 # Canvas.Width 是整个画布的宽度；Canvas.Rows 是画布行数，20 行等于 180 像素。

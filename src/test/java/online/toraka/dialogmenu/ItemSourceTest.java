@@ -48,7 +48,8 @@ class ItemSourceTest {
     }
 
     private MenuDefinition parse(String source) {
-        return SimpleMenuParser.parse("Version: 2\nPages: [items]\n", id -> source);
+        return SimpleMenuParser.parse(
+                "MenuType: dialog\nVersion: 2\nPages: [items]\n", id -> source);
     }
 
     @Test

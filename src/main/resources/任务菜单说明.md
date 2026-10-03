@@ -16,6 +16,7 @@
 ## 修改任务
 
 ```yaml
+MenuType: dialog
 Version: 1
 Type: quest-demo
 Title: 任务列表

@@ -73,7 +73,13 @@ class MenuCatalogTest {
         }
         assertEquals(old, current.withPages(pages));
         assertEquals(
-                Set.of("settings", "demo-settings", "demo-dialogue", "demo-boss", "demo-quests"),
+                Set.of(
+                        "settings",
+                        "demo-settings",
+                        "demo-dialogue",
+                        "demo-boss",
+                        "demo-quests",
+                        "demo-fullscreen"),
                 catalog.menus().keySet());
         assertEquals(Set.of("intro", "confirm"), catalog.menus().get("demo-boss").pages());
         assertFalse(current.demo());
@@ -152,12 +158,12 @@ class MenuCatalogTest {
     }
 
     @Test
-    @DisplayName("new installation creates four complete menus and preserves edits on restart")
-    void newInstallationCreatesFourCompleteMenusAndPreservesEditsOnRestart() throws IOException {
+    @DisplayName("new installation creates five complete menus and preserves edits on restart")
+    void newInstallationCreatesFiveCompleteMenusAndPreservesEditsOnRestart() throws IOException {
         CatalogRepository.exportIfNew(directory.toFile());
         assertTrue(CatalogRepository.selected(directory.toFile()));
         assertEquals(
-                4, Objects.requireNonNull(directory.resolve("menus").toFile().listFiles()).length);
+                5, Objects.requireNonNull(directory.resolve("menus").toFile().listFiles()).length);
         assertFalse(directory.resolve("menus/settings.yml").toFile().exists());
         assertTrue(directory.resolve("menus/demo-settings.yml").toFile().exists());
         assertFalse(directory.resolve("templates").toFile().exists());

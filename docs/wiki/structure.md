@@ -32,10 +32,17 @@ plugins/DialogMenu/
 
 ## 每份菜单文件
 
-两类菜单都需要：
+第一个配置项必须写 `MenuType: dialog` 或 `MenuType: fullscreen`，注释可以放在它前面。一个文件只能声明一种显示方案，不能写列表、重复键，也不能在 `Pages` 或按钮内覆盖类型。`Type` 区分内容结构，不能拿它代替 `MenuType`。
+
+一个 DialogMenu JAR 同时加载两种菜单，不需要另装全屏插件。全屏文件只写 `MenuType: fullscreen` 和 `Preset: diagnostic`，目前为固定测试布局，不能混入 Dialog 的 Pages、Canvas、Elements 或按钮定义。不同菜单通过 `open: 菜单ID` 切换；见[全屏配置](../guides/FULLSCREEN.md)。
+
+现有菜单升级时只在文件开头补上声明，保留其余内容。缺失、未知或混用类型会使 `/dmenu check` 报错、整次 `/dmenu reload` 取消并保留旧状态；启动失败仍按现有配置恢复规则处理。不要在 Version 3 的全局 `config.yml` 添加该字段。
+
+Dialog 的 settings / canvas 两种内容结构都需要：
 
 | 字段 | 类型 | 要求 |
 | --- | --- | --- |
+| MenuType | 字符串 | 第一个配置项，必填 dialog |
 | Version | 整数 | 必填 1 |
 | Type | 字符串 | 必填 settings 或 canvas |
 | DefaultPage | 字符串 | 不填取 Pages 中第一项；填写时必须存在 |
@@ -67,7 +74,7 @@ check 和 reload 会读全部菜单，包括当前没打开的菜单。一个坏
 
 启动时配置无效与热重载失败不同：启动尚无旧快照可用，插件记录错误并暂用内置默认菜单。不要把“还能打开菜单”当成这次编辑已成功加载。
 
-首次安装、没有 config.yml / menu.yml 且没有既存菜单目录时，才导出默认的三个菜单。正常重启不会覆盖已有文件；缺失引用页会报错。
+首次安装、没有 config.yml / menu.yml 且没有既存菜单目录时，才导出默认的五个示例菜单。正常重启不会覆盖已有文件；缺失引用页会报错。
 
 ## 新增、复制和移除
 

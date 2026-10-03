@@ -1,4 +1,10 @@
-# 一个菜单一个文件（0.1.17）
+# 一个菜单一个文件
+
+每份菜单第一个配置项必须是 `MenuType: dialog` 或 `MenuType: fullscreen`。同一个 DialogMenu JAR 同时支持两种显示方式，但一个文件只能选一种，页面和按钮不能覆盖类型。Dialog 下的 `Type: settings` / `Type: canvas` 仅表示内容结构。
+
+全屏演示文件只包含 `MenuType: fullscreen` 与 `Preset: diagnostic`，通过 `/dmenu open demo-fullscreen` 打开；先在 fullscreen.yml 配置资源包服务地址。当前为固定诊断布局，不支持混入 Dialog 的 Pages、Elements 或 Icons。
+
+升级旧菜单时在开头补 `MenuType: dialog`，不要在 Version 3 全局 config.yml 添加。缺失、未知、重复或混用类型会让 check 报错并取消整次 reload，保留旧状态与原文件。
 
 详细中文 Wiki：[开始阅读](../wiki/README.md) · [完整目录](../wiki/SUMMARY.md) · [完整示例](../wiki/examples.md) · [离线网页版](../wiki/index.html)。本文保留为简明入口。
 
@@ -42,6 +48,7 @@ DefaultMenu: demo-settings # 已有服务器可继续使用 settings
 ## 玩家设置样式：子页写在 Pages 里
 
 ```yaml
+MenuType: dialog
 Version: 1
 Type: settings
 Title: 我的菜单
@@ -96,6 +103,7 @@ settings 的指令支持 `{player}`、`{uuid}` 和 `%PAPI变量%`（取不到时
 ## 自由画布：对话和首领 demo
 
 ```yaml
+MenuType: dialog
 Version: 1
 Type: canvas
 DefaultPage: main
@@ -140,13 +148,9 @@ button/selected 为 108×18，wide-button 为 144×18，close 为 18×18，rewar
 
 ## 资源包与升级
 
-当前使用 CraftEngine 合并资源：`test_server/plugins/CraftEngine/resources/toranca_pack/resourcepack/`。
-保留 dialogmenu_settings、dialogmenu_dialogue 和配套 gui 着色器；无需放到 BetterHud。
-0.1.17 新增首领奖励字体，需合入新资源，执行 `/ce workflow default` 并加载新包。其余贴图和焦点着色器保持原有版本。
-本机 UI_Sprite.png 皮肤与可分发基础皮肤具有相同尺寸；许可和本地编译方式见 [TEMPLATE-ASSETS.md](TEMPLATE-ASSETS.md)。
+Dialog 资源随 JAR 导出，资源管理插件安装和手动加载见资源包指南。全屏资源使用独立 fullscreen.yml 地址配置，两种菜单都由同一个 DialogMenu 插件管理。
 
-旧 `config.yml Version: 2 + menus 单页文件 + templates` 及旧 `menu.yml` 继续读取，不会自动覆盖现有文件。
-当前 test_server 已按原内容合并；旧文件备份在服务器目录外。新版全新安装直接导出上述三个菜单。
+旧 `config.yml Version: 2 + menus 单页文件 + templates` 及旧 `menu.yml` 继续支持，但需要在菜单文件首项补 `MenuType: dialog`。全新安装导出五个示例菜单；已有文件不会被主动覆盖。
 不要只把旧 config.yml 的 Version 改成 3；需要同时把旧页面移入完整菜单的 Pages。
 
 ## 明确指定菜单资源包
@@ -166,7 +170,7 @@ ResourcePack:
 
 `CraftEngine` 模式：`Pack` 对应 CraftEngine 配置中 `resource-pack.packs` 的包 ID；当前为 `default`。
 DialogMenu 从 CraftEngine 当前托管信息读取实际 UUID，不用复制易变的下载地址；包仍由 CraftEngine 合并和发送。
-菜单资源源文件仍放在 `plugins/CraftEngine/resources/toranca_pack/resourcepack/`，这个源文件目录由 CraftEngine 管理。
+启用自动安装时，菜单资源放在所选资源管理插件的 DialogMenu 源目录，实际路径以控制台提示为准，见[资源包指南](../wiki/resource-pack.md)。
 
 `URL` 模式：填写 ZIP 直链，可填 SHA1；UUID 留空按 URL 生成，也可指定固定 UUID。
 玩家使用 `/dmenu pack` 下载这个包。插件以追加方式发送，不移除已有包，不因拒绝下载踢人。

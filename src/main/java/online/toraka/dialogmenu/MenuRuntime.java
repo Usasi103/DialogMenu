@@ -19,6 +19,11 @@ public final class MenuRuntime {
     private static CatalogRepository catalogRepository;
     private static File directory;
     private static MenuTranslations translations = new MenuTranslations();
+    private static FullscreenPackSettings fullscreenSettings;
+
+    public static FullscreenPackSettings fullscreenSettings() {
+        return fullscreenSettings;
+    }
 
     private MenuRuntime() {}
 
@@ -135,9 +140,20 @@ public final class MenuRuntime {
     }
 
     public static void open(Player player, String id, String page) {
+        if (!player.hasPermission("playersettings.use")) return;
         MenuCatalog catalog = catalog();
         String requested = id != null ? id : catalog != null ? catalog.defaultMenu() : "settings";
         CatalogMenu menu = catalog != null ? catalog.menus().get(requested) : null;
+        if (menu != null && menu.menuType() == MenuType.FULLSCREEN) {
+            if (page != null && !menu.pages().contains(page)) {
+                player.sendMessage("DialogMenu：全屏菜单仅有 main 页面。");
+            } else if (DialogMenu.fullscreen() != null) {
+                DialogMenu.fullscreen().request(player);
+            } else {
+                player.sendMessage("DialogMenu：当前服务器不支持全屏菜单，需要 Paper 26.3。");
+            }
+            return;
+        }
         if (menu != null && menu.settings() != null) {
             MenuDialog.open(player, page != null ? page : menu.defaultPage(), requested);
         } else if (menu != null) {
@@ -169,6 +185,27 @@ public final class MenuRuntime {
         Startup startup = prepareStartup(folder);
         applyStartup(startup);
         initialize(startup);
+    }
+
+    /** The diagnostic fullscreen return button always selects a Dialog, even if fullscreen is default. */
+    public static void openDialog(Player player) {
+        MenuCatalog catalog = catalog();
+        if (catalog != null) {
+            CatalogMenu preferred = catalog.menus().get(catalog.defaultMenu());
+            if (preferred != null && preferred.menuType() == MenuType.DIALOG) {
+                open(player, preferred.id());
+                return;
+            }
+            for (CatalogMenu menu : catalog.menus().values()) {
+                if (menu.menuType() == MenuType.DIALOG) {
+                    open(player, menu.id());
+                    return;
+                }
+            }
+            player.sendMessage("DialogMenu：当前没有配置 Dialog 类型菜单。");
+        } else {
+            open(player);
+        }
     }
 
     record Startup(File folder, MenuFiles files, MenuCandidate candidate) {}
@@ -216,6 +253,7 @@ public final class MenuRuntime {
     }
 
     private static void install(MenuCandidate next, boolean refresh) {
+        fullscreenSettings = next.fullscreen();
         if (next.catalog() != null) {
             CatalogRepository store = new CatalogRepository(directory);
             store.install(next.catalog());
@@ -231,6 +269,7 @@ public final class MenuRuntime {
         MenuResources.install(
                 next.catalog() != null ? next.catalog().resourcePack() : MenuResourcePack.legacy());
         if (refresh) {
+            if (DialogMenu.fullscreen() != null) DialogMenu.fullscreen().reloaded();
             MenuDialog.reloaded();
             TemplateDialog.reloaded();
         }

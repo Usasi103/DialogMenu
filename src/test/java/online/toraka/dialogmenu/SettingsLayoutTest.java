@@ -22,7 +22,8 @@ class SettingsLayoutTest {
 
     private MenuDefinition parse(String page, String navigation) {
         return SimpleMenuParser.parse(
-                "Version: 2\nPages: [test]\n" + navigation, id -> trimIndent(page));
+                "MenuType: dialog\nVersion: 2\nPages: [test]\n" + navigation,
+                id -> trimIndent(page));
     }
 
     @Test

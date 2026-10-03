@@ -31,6 +31,7 @@ class TemplatePlaceholderTest {
 
     private final String base =
             """
+            MenuType: dialog
             Version: 1
             Skin: parchment
             Variables:
@@ -426,6 +427,7 @@ class TemplatePlaceholderTest {
     void oneFileCanvasMenusAcceptRootPlaceholdersAndPageOverrides() {
         String menu =
                 """
+                MenuType: dialog
                 Version: 1
                 Type: canvas
                 DefaultPage: main

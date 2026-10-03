@@ -1,0 +1,11 @@
+name: FullscreenProbe
+version: '1'
+main: online.toraka.fullscreenprobe.FullscreenProbe
+api-version: '26.3'
+depend: [DialogMenu]
+commands:
+  fvisual:
+    description: Arm isolated graphical client verification
+    permission: op
+  fprobe:
+    permission: op

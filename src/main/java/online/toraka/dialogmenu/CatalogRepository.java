@@ -13,7 +13,12 @@ import java.util.Objects;
 public final class CatalogRepository {
 
     private static final List<String> defaults =
-            Kt.listOf("demo-settings", "demo-dialogue", "demo-boss", "demo-quests");
+            Kt.listOf(
+                    "demo-settings",
+                    "demo-dialogue",
+                    "demo-boss",
+                    "demo-quests",
+                    "demo-fullscreen");
 
     private final File directory;
     private MenuCatalog current = null;

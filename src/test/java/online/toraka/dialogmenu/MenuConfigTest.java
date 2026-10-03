@@ -71,7 +71,7 @@ class MenuConfigTest {
         File langFile = directory.resolve("languages/zh_cn.yml").toFile();
         MenuDefinition original = repository.current();
         String source = Files.readString(menuFile.toPath());
-        assertTrue(source.startsWith("# DialogMenu"));
+        assertTrue(source.startsWith("MenuType: dialog"));
         Files.writeString(
                 langFile.toPath(), Files.readString(langFile.toPath()).replace("玩家设置", "我的菜单"));
         Files.writeString(menuFile.toPath(), "pages: [\n");

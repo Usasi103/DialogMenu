@@ -63,9 +63,11 @@ public final class QuestDemoCompiler {
     }
 
     public static YamlConfiguration compile(ConfigurationSection root, String path) {
+        MenuType.require(root, MenuType.DIALOG, path);
         keys(
                 root,
                 Kt.setOf(
+                        "MenuType",
                         "Version",
                         "Type",
                         "Title",
@@ -177,6 +179,7 @@ public final class QuestDemoCompiler {
         Position detail = position(layout, path, "Detail", 222, 6);
         Position pagination = position(layout, path, "Pagination", 16, 17);
         YamlConfiguration result = new YamlConfiguration();
+        result.set("MenuType", MenuType.DIALOG.id());
         result.set("Version", 1);
         result.set("Type", "canvas");
         Object configuredTitle = root.get("Title");

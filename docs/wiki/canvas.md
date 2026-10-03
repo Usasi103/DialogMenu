@@ -6,6 +6,7 @@
 
 | 菜单根字段 | 用途 |
 | --- | --- |
+| MenuType: dialog | 第一个配置项；整个菜单使用 Dialog，页面与按钮不能覆盖 |
 | Version: 1 | 必填 |
 | Type: canvas | 必填 |
 | DefaultPage | 默认子页，不填取第一页 |

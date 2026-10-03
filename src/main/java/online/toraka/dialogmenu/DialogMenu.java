@@ -38,6 +38,11 @@ public final class DialogMenu extends JavaPlugin {
     private static volatile DialogMenu instance;
 
     private Exception migrationFailure;
+    private online.toraka.dialogmenu.fullscreen.FullscreenMenus fullscreen;
+
+    public static online.toraka.dialogmenu.fullscreen.FullscreenMenus fullscreen() {
+        return instance != null ? instance.fullscreen : null;
+    }
 
     /**
      * The running plugin. Other plugins look it up by name through {@code <main
@@ -112,6 +117,11 @@ public final class DialogMenu extends JavaPlugin {
                             PermissionDefault.OP));
         }
         MenuRuntime.initialize(startup);
+        if (getServer().getMinecraftVersion().equals("26.3")) {
+            fullscreen = new online.toraka.dialogmenu.fullscreen.FullscreenMenus(this);
+        } else {
+            MenuLog.warning("全屏菜单需要 Paper 26.3；当前仅启用 Dialog 菜单。");
+        }
         MenuResources.initializeResources(getDataFolder());
         Tasks.later(1L, () -> ItemSources.changed());
         ConfigProblems.notifyAdmins();
@@ -128,6 +138,10 @@ public final class DialogMenu extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (fullscreen != null) {
+            fullscreen.close();
+            fullscreen = null;
+        }
         MenuResources.shutdown();
         TemplateDialog.shutdown();
         MenuDialog.shutdown();

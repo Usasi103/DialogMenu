@@ -1,3 +1,4 @@
+MenuType: dialog
 # DialogMenu 简化配置：日常修改各页请打开 menus/ 对应文件。
 # Pages 是左侧页面顺序；新增页面后在此加入它的文件名（不含 .yml）。
 # Language / Theme 只设置新玩家默认偏好，不覆盖已保存的选择。

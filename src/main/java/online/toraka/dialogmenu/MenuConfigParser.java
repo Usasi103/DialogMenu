@@ -85,9 +85,11 @@ public final class MenuConfigParser {
 
     public static MenuDefinition parse(String menu, Map<MenuLanguage, String> languages) {
         YamlConfiguration root = yaml(menu, "menu.yml");
+        MenuType.require(root, MenuType.DIALOG, "menu.yml");
         keys(
                 root,
                 Kt.setOf(
+                        "MenuType",
                         "version",
                         "title",
                         "default-page",

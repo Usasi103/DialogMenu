@@ -10,6 +10,7 @@
 
 <!-- example: preferences.yml -->
 ```yaml
+MenuType: dialog
 Version: 1
 Type: settings
 Title: 我的偏好
@@ -49,6 +50,7 @@ Pages:
 
 <!-- example: guide.yml -->
 ```yaml
+MenuType: dialog
 Version: 1
 Type: canvas
 DefaultPage: main
@@ -131,6 +133,7 @@ Pages:
 
 <!-- example: trial.yml -->
 ```yaml
+MenuType: dialog
 Version: 1
 Type: canvas
 DefaultPage: choose
@@ -208,6 +211,7 @@ Pages:
 
 <!-- example: item-preview.yml -->
 ```yaml
+MenuType: dialog
 Version: 1
 Type: settings
 Title: 物品预览

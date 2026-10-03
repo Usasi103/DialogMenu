@@ -1,0 +1,6 @@
+# 全屏资源包按需托管；首次打开全屏菜单时才启动 HTTP 服务。
+pack-bind: 0.0.0.0
+pack-port: 22335
+# 填写玩家能访问的基础 URL（含端口）；例如 https://pack.example.com/fullscreen。
+# 若经反向代理，转发到上述 pack-port。修改后 /dmenu reload。
+pack-url: ''

@@ -29,7 +29,7 @@ class SimpleMenuTest {
     private static final Function<String, ClickEvent> CLICK =
             action -> DialogClicks.custom(Key.key("test", action));
 
-    private final String config = "Version: 2\nPages: [example]\n";
+    private final String config = "MenuType: dialog\nVersion: 2\nPages: [example]\n";
 
     private MenuDefinition parse(String page) {
         return SimpleMenuParser.parse(config, id -> trimIndent(page));
@@ -182,7 +182,7 @@ class SimpleMenuTest {
                 Exception.class,
                 () ->
                         SimpleMenuParser.parse(
-                                "Version: 2\nPages: ['../secrets']",
+                                "MenuType: dialog\nVersion: 2\nPages: ['../secrets']",
                                 id -> {
                                     throw new IllegalStateException("must not read");
                                 }));

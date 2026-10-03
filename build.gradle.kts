@@ -3,6 +3,7 @@ import org.gradle.api.attributes.java.TargetJvmVersion
 plugins {
     java
     id("com.gradleup.shadow") version "9.0.0"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
 }
 
 // Keep transient Gradle outputs outside OneDrive; only the final jar is exported to dist/.
@@ -17,9 +18,8 @@ repositories {
 }
 
 dependencies {
-    // Compile against the current Paper 26.3 API. The plugin keeps its stable public
-    // configuration and command contract while probing optional server integrations by reflection.
-    compileOnly("io.papermc.paper:paper-api:26.3.build.142-beta")
+    // Exact Paper 26.3 API/NMS boundary for fullscreen packets and the existing Dialog renderer.
+    paperweight.paperDevBundle("26.3.build.142-beta")
     // Read-only resource-pack observer on the player's Netty channel (the server provides Netty).
     compileOnly("io.netty:netty-transport:4.2.15.Final")
     // Other plugins' API jars (PlaceholderAPI), never shipped.
@@ -73,16 +73,17 @@ tasks.shadowJar {
     exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA", "META-INF/maven/**")
     exclude("META-INF/versions/*/module-info.class", "module-info.class")
     from("LICENSE")
+    from("THIRD_PARTY_NOTICES.md")
+    manifest.attributes["paperweight-mappings-namespace"] = "mojang"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 // Ship only the Keystone classes this plugin actually reaches (Shadow minimize).
 // - Keystone is the only files(...) dependency. Shadow's minimize filter sees Maven-coordinate
-//   dependencies only, so `exclude { true }` keeps each of those whole (Nashorn and its ASM,
-//   itembridge, ...) while the Keystone jar is still trimmed.
+//   dependencies only, so `exclude { true }` keeps ItemBridge whole while Keystone is trimmed.
 // - Roots are the main classes. Shadow's default also roots the test classes, which would ship
 //   Keystone classes that only the tests use.
-// - Keystone 0.3.3/0.3.4 load none of their own classes by name, so no keep list is needed.
+// - Keystone 0.3.5's language/update reflection adapters are verified by tests and minimize_check.
 // Verify with tools/minimize_check.py (see plugins-dev/refactor/notes/shadow-minimize.md).
 tasks.shadowJar {
     minimize {
@@ -97,3 +98,31 @@ tasks.assemble { dependsOn(tasks.shadowJar) }
 
 apply(from = rootProject.file("gradle/source-quality.gradle"))
 apply(from = rootProject.file("gradle/bundled-resourcepack.gradle"))
+
+val fullscreenPack = tasks.register<Exec>("fullscreenPack") {
+    val client = providers.gradleProperty("fullscreenClientJar").orElse(
+        "${System.getenv("LOCALAPPDATA")}/TorakaSelfdev/fullscreen-client-26.3/client.jar"
+    )
+    inputs.files("tools/build_fullscreen_pack.py", "design/fullscreen",
+        "src/main/java/online/toraka/dialogmenu/fullscreen/DemoLayout.java", client.get())
+    inputs.property("version", project.version)
+    val output = layout.buildDirectory.file("generated/fullscreen/DialogMenu-fullscreen.zip")
+    outputs.file(output)
+    commandLine("py", "-3", "-B", "-X", "utf8", "tools/build_fullscreen_pack.py",
+        "--client", client.get(), "--version", project.version.toString(), "--output", output.get().asFile.absolutePath)
+}
+tasks.processResources {
+    dependsOn(fullscreenPack)
+    from(layout.buildDirectory.file("generated/fullscreen/DialogMenu-fullscreen.zip")) { into("bundled") }
+}
+
+// Protocol validation is an isolated test plugin, never included in the production JAR.
+val probe = sourceSets.create("probe")
+probe.compileClasspath += sourceSets.main.get().compileClasspath
+tasks.register<Jar>("fullscreenProbeJar") {
+    dependsOn(tasks.named(probe.classesTaskName))
+    from(probe.output)
+    archiveFileName.set("FullscreenProbe.jar")
+    destinationDirectory.set(layout.buildDirectory.dir("probe"))
+    manifest.attributes["paperweight-mappings-namespace"] = "mojang"
+}

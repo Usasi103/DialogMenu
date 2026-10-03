@@ -8,6 +8,7 @@
 
 | 文档 | 内容 |
 | --- | --- |
+| [全屏菜单](guides/FULLSCREEN.md) | 同一 JAR 的两种菜单类型、本地光标、资源包服务和限制 |
 | [菜单配置入门](guides/MENU-CONFIG.md) | 一个菜单一个文件、子页面、动作与资源包 |
 | [图标与材质](wiki/icons.md) | 区分 Icon / Icons / Material，使用 IA / Nexo / Oraxen、自定义 PNG 与非 CE 资源包 |
 | [中文详细 Wiki](wiki/README.md) | 字段参考、完整示例和可搜索的离线网页 |

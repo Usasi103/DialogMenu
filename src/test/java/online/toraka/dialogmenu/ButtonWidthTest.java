@@ -187,7 +187,8 @@ class ButtonWidthTest {
 
     private static DialogTemplate parse(String theme, String elements) {
         return TemplateParser.parse(
-                "width-test", "Version: 1\nSkin: " + theme + "\nElements:\n" + elements);
+                "width-test",
+                "MenuType: dialog\nVersion: 1\nSkin: " + theme + "\nElements:\n" + elements);
     }
 
     private static String button(String id, int x, String extra) {
@@ -501,7 +502,7 @@ class ButtonWidthTest {
             DialogTemplate before =
                     TemplateParser.parse(
                             "width-test",
-                            "Version: 1\nSkin: "
+                            "MenuType: dialog\nVersion: 1\nSkin: "
                                     + theme
                                     + "\n"
                                     + variables
@@ -510,7 +511,7 @@ class ButtonWidthTest {
             DialogTemplate same =
                     TemplateParser.parse(
                             "width-test",
-                            "Version: 1\nSkin: "
+                            "MenuType: dialog\nVersion: 1\nSkin: "
                                     + theme
                                     + "\n"
                                     + variables

@@ -4,8 +4,16 @@ main: online.toraka.dialogmenu.DialogMenu
 # The public build targets Paper 26.3; the legacy api-version value remains valid for
 # servers that load the unchanged Bukkit plugin descriptor.
 api-version: '1.13'
-description: Configurable Dialog menus with custom layouts and optional item sources
+description: Dialog and fullscreen menus in one plugin, with explicit menu types
 folia-supported: false
+commands:
+  dfullscreen:
+    description: Open the diagnostic fullscreen menu or inspect its sessions
+    usage: /dfullscreen [legacy|close|status]
+    permission: dialogmenu.fullscreen.test
+permissions:
+  dialogmenu.fullscreen.test:
+    default: op
 # PlaceholderAPI, Ambience (and its old module names), then every ItemBridge provider plugin in
 # itembridge-providers.properties, sorted (ItemBridgeSourceTest keeps the two lists equal).
 softdepend:

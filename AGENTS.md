@@ -2,12 +2,12 @@
 
 - 此仓库是公开的通用 DialogMenu。私有 HUD 的实现、配置、专用资源，以及私人贴图不得合入本仓库，也不得出现在公开 JAR、资源包或源码附件中。
 - 通用图片标签、本地多语言、资源安装和兼容修复可同步至私有分支；逐项核对差异，保留私有素材，不反向整体复制私有目录。
-- 累计同步时核对发布附件中的实际内容；测试版本保持独立版本号与预发布状态，保留已有版本和附件。
+- 累计同步时核对发布附件中的实际内容；本地验证产物使用独立版本标识，正式 GitHub Release 不标为 Pre-release，保留已有版本和附件。
 
 # 构建
 
 - 源码为纯 Java（`src/main/java`、JUnit 5 测试在 `src/test/java`），不使用 Kotlin 或 TabooLib；共享库 Keystone 放在 `libs/`，打包时重定位到 `online.toraka.dialogmenu.libs.keystone`，ItemBridge 重定位到 `online.toraka.dialogmenu.library.itembridge`。
-- 以 Paper 26.3 API 编译与验证；Gradle 命令加 `--no-daemon`，先 `formatSources` 再 `build`。稳定发布版本不使用 `SNAPSHOT` 或 GitHub Pre-release 标记。
+- 以 Paper 26.3 API/NMS 编译与验证，paperweight 开发包为 26.3.build.142-beta；全屏包从官方 26.3 客户端生成（fullscreenClientJar 属性），不读取私有包；Gradle 命令加 `--no-daemon`，先 `formatSources` 再 `build`。稳定发布版本不使用 `SNAPSHOT` 或 GitHub Pre-release 标记。
 - 打包时用 Shadow `minimize` 只保留用到的 Keystone 类（根为 main 源码，Maven 坐标依赖如 ItemBridge 不裁剪）。核对：先 `./gradlew --no-daemon shadowJar --no-minimize-jar` 把不瘦身的 jar 另存，再 `build`，然后 `python -B <工作区>/tools/minimize_check.py dist/<jar> --full <不瘦身的 jar>` 须为 `0 problem(s)`。
 
 # 文件校验与恢复（Keystone 0.3.5）

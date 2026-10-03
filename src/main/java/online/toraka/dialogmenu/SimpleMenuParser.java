@@ -10,7 +10,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -34,7 +33,6 @@ public final class SimpleMenuParser {
     private static final Map<String, Binding> bindings = createBindings();
 
     private static final Pattern PAGE_ID = Pattern.compile("[a-z][a-z0-9_-]{0,47}");
-    private static final Pattern PLACEHOLDER = Pattern.compile("\\{[^}]*}");
     private static final Pattern STATE_VARIABLE = Pattern.compile("%[a-zA-Z0-9_:.\\-]+%");
 
     private SimpleMenuParser() {}
@@ -89,9 +87,11 @@ public final class SimpleMenuParser {
             Function<String, String> readPage,
             Function<String, ReactionParser.Target> open) {
         YamlConfiguration config = MenuConfigParser.yaml(source, "config.yml");
+        MenuType.require(config, MenuType.DIALOG, "config.yml");
         keys(
                 config,
                 Kt.setOf(
+                        "MenuType",
                         "Version",
                         "Title",
                         "DefaultPage",
@@ -376,9 +376,12 @@ public final class SimpleMenuParser {
         /** The body of the Kotlin page loop; errors are prefixed with the file by the caller. */
         void page(String id, String file, YamlConfiguration page) {
             this.file = file;
+            // v2 page files may repeat the inherited backend; catalog pages cannot override it.
+            if (page.contains("MenuType")) MenuType.require(page, MenuType.DIALOG, file);
             keys(
                     page,
                     Kt.setOf(
+                            "MenuType",
                             "Title",
                             "TitleStyle",
                             "Icon",
@@ -743,17 +746,6 @@ public final class SimpleMenuParser {
             }
             row += height;
         }
-    }
-
-    /** Every {@code {...}} in a command is {@code {player}} or {@code {uuid}}. */
-    private static boolean placeholdersOnly(String argument) {
-        Matcher matcher = PLACEHOLDER.matcher(argument);
-        while (matcher.find()) {
-            if (!Kt.setOf("{player}", "{uuid}").contains(matcher.group())) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private static Position position(ConfigurationSection section, String key, String path) {

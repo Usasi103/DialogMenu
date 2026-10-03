@@ -12,9 +12,15 @@ record MenuCandidate(
         MenuDefinition definition,
         Map<String, DialogTemplate> templates,
         MenuTranslations translations,
+        FullscreenPackSettings fullscreen,
         List<String> warnings) {
 
     static MenuCandidate parse(MenuFiles files) {
+        FullscreenPackSettings fullscreen =
+                FullscreenPackSettings.parse(
+                        files.has("fullscreen.yml")
+                                ? files.text("fullscreen.yml")
+                                : MenuRepository.resource("fullscreen.yml"));
         MenuTranslations translations =
                 MenuTranslations.read(files.text("text.yml"), files.group("translations"));
         List<String> warnings = new ArrayList<>();
@@ -36,7 +42,7 @@ record MenuCandidate(
                     }
                 }
                 return new MenuCandidate(
-                        catalog, null, catalog.templates(), translations, warnings);
+                        catalog, null, catalog.templates(), translations, fullscreen, warnings);
             }
         }
         Map<String, DialogTemplate> templates = new LinkedHashMap<>();
@@ -64,7 +70,12 @@ record MenuCandidate(
         }
         warnings.addAll(ItemSources.validate(definition, itemSources));
         return new MenuCandidate(
-                null, definition, Collections.unmodifiableMap(templates), translations, warnings);
+                null,
+                definition,
+                Collections.unmodifiableMap(templates),
+                translations,
+                fullscreen,
+                warnings);
     }
 
     String count() {

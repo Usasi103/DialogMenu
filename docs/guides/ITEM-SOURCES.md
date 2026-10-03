@@ -55,6 +55,7 @@ CE、IA、NI、SI/SX-Item 旧写法继续可用；另有 MM=MythicMobs、MI=MMOI
 每个菜单一个文件。下面保存为 `menus/items-demo.yml` 后执行 `/dmenu check`、`/dmenu reload`，再 `/dmenu open items-demo`：
 
 ```yaml
+MenuType: dialog
 Version: 1
 Type: settings
 Title: 物品演示

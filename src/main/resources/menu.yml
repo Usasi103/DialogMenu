@@ -1,3 +1,4 @@
+MenuType: dialog
 # DialogMenu 玩家菜单配置（UTF-8）
 # 修改后执行 /dialogmenu reload；权限 playersettings.admin（默认 OP），控制台可直接执行。
 # 重载失败会保留上一份有效配置，并显示出错文件 / 字段；不会覆盖你修改的文件。

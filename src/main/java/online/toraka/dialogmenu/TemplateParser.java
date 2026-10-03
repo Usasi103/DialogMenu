@@ -45,9 +45,11 @@ public final class TemplateParser {
                 Kt.split(id, '/').size() <= 2 && allMatch(Kt.split(id, '/'), idPattern),
                 () -> "无效菜单页面 ID " + id);
         YamlConfiguration root = MenuConfigParser.yaml(source, path);
+        MenuType.require(root, MenuType.DIALOG, path);
         keys(
                 root,
                 Kt.setOf(
+                        "MenuType",
                         "Version",
                         "Title",
                         "Skin",

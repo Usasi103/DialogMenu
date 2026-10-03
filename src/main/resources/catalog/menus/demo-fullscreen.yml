@@ -1,0 +1,4 @@
+MenuType: fullscreen
+# 固定诊断布局；不接受 Dialog 的 Type、Pages、Elements 或 Icons。
+# /dmenu open demo-fullscreen；需在 fullscreen.yml 设置资源包访问地址。
+Preset: diagnostic

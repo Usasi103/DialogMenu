@@ -164,6 +164,8 @@ public final class MenuResources {
     }
 
     public static void open(Player player, Runnable action) {
+        if (DialogMenu.fullscreen() != null
+                && DialogMenu.fullscreen().beforeDialog(player, () -> open(player, action))) return;
         UUID request = UUID.randomUUID();
         REQUESTS.put(player.getUniqueId(), request);
         MenuResourcePack configured = current;
@@ -230,6 +232,11 @@ public final class MenuResources {
                                         }
                                     });
                         });
+    }
+
+    /** A fullscreen request supersedes an asynchronous Dialog resource-pack check. */
+    public static void cancelOpen(Player player) {
+        REQUESTS.remove(player.getUniqueId());
     }
 
     private static void missing(Player player, MenuResourcePack config) {

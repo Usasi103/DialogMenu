@@ -27,7 +27,7 @@ class ToggleSwitchTest {
 
     private MenuDefinition parse(String style, String binding) {
         return SimpleMenuParser.parse(
-                "Version: 2\nPages: [test]",
+                "MenuType: dialog\nVersion: 2\nPages: [test]",
                 id ->
                         "Title: 测试\nLayout: [开关]\nIcons:\n  开关:\n    Type: toggle\n    "
                                 + binding
@@ -61,7 +61,7 @@ class ToggleSwitchTest {
                 Exception.class,
                 () ->
                         SimpleMenuParser.parse(
-                                "Version: 2\nPages: [test]",
+                                "MenuType: dialog\nVersion: 2\nPages: [test]",
                                 id ->
                                         "Title: 测试\nLayout: [按钮]\nIcons:\n  按钮: {Type: button, Style: switch, Actions: [close]}"));
     }

@@ -1,3 +1,4 @@
+MenuType: dialog
 # 任务列表 demo：每页 5 个；/dmenu open demo-quests。
 # 修改后 /dmenu check、/dmenu reload。分类和任务均可直接增删，自动分页。
 # 这是界面演示：进度来自下面的配置，不会统计击杀、钓鱼或发放真实奖励。

@@ -69,6 +69,53 @@ class MenuPreflightTest {
     }
 
     @Test
+    void fullscreenSettingsAreCapturedInCandidateAndInvalidChangesNeverReplaceIt()
+            throws Exception {
+        String valid = "pack-bind: 127.0.0.1\npack-port: 22335\npack-url: http://127.0.0.1:22335\n";
+        write("fullscreen.yml", valid);
+        try (var ignored = providers()) {
+            MenuCandidate previous =
+                    MenuCandidate.parse(MenuFiles.collect(directory.toFile(), false));
+            write("fullscreen.yml", valid.replace("22335", "invalid"));
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () -> MenuCandidate.parse(MenuFiles.collect(directory.toFile(), false)));
+            assertEquals(22335, previous.fullscreen().port());
+            assertEquals("http://127.0.0.1:22335", previous.fullscreen().url());
+            assertEquals(
+                    valid.replace("22335", "invalid"),
+                    Files.readString(directory.resolve("fullscreen.yml")));
+        }
+    }
+
+    @Test
+    void invalidMenuTypeCancelsReloadAndKeepsActiveCatalogAndOriginalBytes() throws Exception {
+        Path menu = directory.resolve("menus/demo-settings.yml");
+        try (var ignored = providers()) {
+            CatalogRepository repository = new CatalogRepository(directory.toFile());
+            repository.install(repository.read());
+            MenuCatalog previous = repository.current();
+            String bad = Files.readString(menu).replace("MenuType: dialog", "MenuType: fullscreen");
+            Files.writeString(menu, bad);
+            byte[] original = Files.readAllBytes(menu);
+            try (ReloadTransaction tx = ReloadTransaction.begin()) {
+                MenuFiles files = MenuFiles.collect(directory.toFile(), false);
+                var error =
+                        assertThrows(
+                                IllegalArgumentException.class, () -> MenuCandidate.parse(files));
+                tx.problem(files.problem(error));
+                assertFalse(tx.valid());
+                assertTrue(
+                        tx.problems().stream()
+                                .anyMatch(p -> p.path().equals("menus/demo-settings.yml")));
+            }
+            assertSame(previous, repository.current());
+            assertArrayEquals(original, Files.readAllBytes(menu));
+            assertNull(FileBackup.identical(menu.toFile(), original));
+        }
+    }
+
+    @Test
     void illegalResourceProviderIsPreflightedThenBackedUpExactly() throws Exception {
         String bad =
                 MenuRepository.resource("catalog/config.yml")
@@ -109,14 +156,14 @@ class MenuPreflightTest {
         String path = "menus/demo-dialogue.yml";
         write(
                 path,
-                "Version: 1\nType: canvas\nPages:\n  main:\n    Canvas: {Width: 1}\n    Elements: []\n");
+                "MenuType: dialog\nVersion: 1\nType: canvas\nPages:\n  main:\n    Canvas: {Width: 1}\n    Elements: []\n");
         String settings = Files.readString(directory.resolve("menus/demo-settings.yml"));
         try (var ignored = providers()) {
             MenuFiles files = MenuFiles.collect(directory.toFile(), true);
-            assertEquals(4, files.startupCandidate().catalog().menus().size());
+            assertEquals(5, files.startupCandidate().catalog().menus().size());
             LoadProblem problem = apply(files).getFirst();
             assertEquals(path, problem.path());
-            assertEquals(5, problem.line(), "inline Width uses the original source mark");
+            assertEquals(6, problem.line(), "inline Width uses the original source mark");
             assertTrue(problem.replaced());
             assertEquals(settings, Files.readString(directory.resolve("menus/demo-settings.yml")));
         }
@@ -125,7 +172,8 @@ class MenuPreflightTest {
     @Test
     void customBusinessErrorIsSkippedWithoutChangingItsBytes() throws Exception {
         String path = "menus/custom.yml";
-        String bad = "Version: 1\nType: impossible\nPages:\n  main: {Elements: []}\n";
+        String bad =
+                "MenuType: dialog\nVersion: 1\nType: impossible\nPages:\n  main: {Elements: []}\n";
         write(path, bad);
         try (var ignored = providers()) {
             MenuFiles files = MenuFiles.collect(directory.toFile(), true);
@@ -212,7 +260,9 @@ class MenuPreflightTest {
     void brokenCustomDefaultDependencyDoesNotReplaceGoodSettings() throws Exception {
         String config = "Version: 3\nDefaultMenu: custom\n";
         write("config.yml", config);
-        write("menus/custom.yml", "Version: 1\nType: impossible\nPages: {main: {Elements: []}}\n");
+        write(
+                "menus/custom.yml",
+                "MenuType: dialog\nVersion: 1\nType: impossible\nPages: {main: {Elements: []}}\n");
         try (var ignored = providers()) {
             MenuFiles files = MenuFiles.collect(directory.toFile(), true);
             assertThrows(IllegalArgumentException.class, files::startupCandidate);
@@ -280,14 +330,14 @@ class MenuPreflightTest {
         String path = "menus/demo-dialogue.yml";
         write(
                 path,
-                "Version: 1\nType: canvas\nPages:\n  main:\n    Elements:\n      first:\n        Type: button\n        Position: [12, 0]\n        Text: first\n        Actions: ['tell: valid']\n      second:\n        Type: button\n        Position: [124, 0]\n        Text: second\n        Actions: ['nonsense: invalid']\n");
+                "MenuType: dialog\nVersion: 1\nType: canvas\nPages:\n  main:\n    Elements:\n      first:\n        Type: button\n        Position: [12, 0]\n        Text: first\n        Actions: ['tell: valid']\n      second:\n        Type: button\n        Position: [124, 0]\n        Text: second\n        Actions: ['nonsense: invalid']\n");
         try (var ignored = providers()) {
             MenuFiles files = MenuFiles.collect(directory.toFile(), true);
             files.startupCandidate();
             LoadProblem problem = apply(files).getFirst();
-            assertEquals(15, problem.line());
+            assertEquals(16, problem.line());
             assertEquals(9, problem.column());
-            assertEquals(1, problem.cause().split("第 15 行", -1).length - 1);
+            assertEquals(1, problem.cause().split("第 16 行", -1).length - 1);
         }
     }
 

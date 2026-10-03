@@ -58,6 +58,7 @@ final class MenuFiles {
     static MenuFiles collect(File directory, boolean startup) {
         MenuFiles result = new MenuFiles(directory);
         Map<String, String> names = new LinkedHashMap<>(BrokenFiles.candidates(directory));
+        if (startup) names.putIfAbsent("fullscreen.yml", "fullscreen.yml");
         if (startup || new File(directory, "update-check.yml").exists()) {
             names.put("update-check.yml", "update-check.yml");
         }

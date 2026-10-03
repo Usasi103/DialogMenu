@@ -148,7 +148,7 @@ def dump(value, indent=0):
 
 folder = resources / 'simple'
 (folder / 'menus').mkdir(parents=True, exist_ok=True)
-config = dict(Version=2, Title=label('menu.title'), DefaultPage='profile', Language='zh_cn', Theme='dark',
+config = dict(MenuType="dialog", Version=2, Title=label('menu.title'), DefaultPage='profile', Language='zh_cn', Theme='dark',
               HideFocusOutline=True, Pages=list(pages), MainMenu=['close', 'command: menu'])
 (folder / 'config.yml').write_text(
     '# DialogMenu 简化配置：日常修改各页请打开 menus/ 对应文件。\n'
@@ -162,5 +162,5 @@ for id, value in pages.items():
     header += '# Name / Description 可直接写中文；{zh_cn: 中文, en_us: English} 用于双语。\n'
     header += '# 默认位置自动计算，可用 Position: [X像素, Y行号] 覆盖；每行9像素；FontSize / Bold 控制文字。\n'
     header += '# Bind 自动读取和保存设置；修改后 /dialogmenu reload。\n'
-    (folder / f'menus/{id}.yml').write_text(header + dump(value) + '\n', encoding='utf-8', newline='\n')
+    (folder / f'menus/{id}.yml').write_text('MenuType: dialog\n' + header + dump(value) + '\n', encoding='utf-8', newline='\n')
 print('Generated config.yml and seven simple menu files.')

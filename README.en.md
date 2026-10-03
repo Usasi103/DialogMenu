@@ -1,10 +1,10 @@
-# DialogMenu · Minecraft Dialog Menus
+# DialogMenu · Minecraft Dialog and Fullscreen Menus
 
 [Simplified Chinese](README.md) · **English**
 
-DialogMenu lets you build menus with Minecraft's Dialog interface and YAML. Create player settings, NPC conversations, boss introductions, and confirmation screens with text, icons, and interactive controls.
+DialogMenu combines Minecraft Dialog menus and a resource-pack fullscreen diagnostic interface in one plugin. Create player settings, NPC conversations, boss introductions, and confirmation screens with text, icons, and interactive controls.
 
-Each file defines a complete menu, with related pages grouped under `Pages`. Arrange settings controls in a simple list, or use canvas coordinates to design your own layout. Bundled examples give you a starting point to copy and customize.
+Begin every menu file with `MenuType: dialog` or `MenuType: fullscreen`. Dialog pages are grouped under `Pages`. Fullscreen currently supports a fixed diagnostic layout; it does not automatically convert Dialog layouts. Arrange settings controls in a simple list, or use canvas coordinates to design your own layout. Bundled examples give you a starting point to copy and customize.
 
 [Download the plugin and resource pack](https://github.com/Usasi103/DialogMenu/releases/latest) · [Configuration guide (Chinese)](docs/guides/MENU-CONFIG.md) · [Changelog (Chinese)](CHANGELOG.md)
 
@@ -29,7 +29,7 @@ In-game screenshots with Chinese menu text. Click an image to view the original.
 
 Settings menus support English and Simplified Chinese, with dark and light themes. Each player's language and theme choices are saved. Boolean options can use compact green/gray On/Off switches or full-width buttons. Stepped sliders accept clicks on the track and arrow buttons.
 
-Menus use their configured canvas dimensions. If a menu does not fit, lower GUI Scale in Minecraft's video settings.
+Dialog menus use their configured canvas dimensions. If a menu does not fit, lower GUI Scale in Minecraft's video settings.
 
 ## Included menus
 
@@ -38,6 +38,7 @@ Menus use their configured canvas dimensions. If a menu does not fit, lower GUI 
 | Settings demo | `/dmenu open demo-settings` | The player settings layout with independent toggles, sliders, and dropdowns; no gameplay plugins required |
 | Conversation demo | `/dmenu open demo-dialogue` | NPC dialogue and follow-up choices |
 | Boss demo | `/dmenu open demo-boss` | Boss introduction, difficulty selection, and entry confirmation |
+| Fullscreen demo | `/dmenu open demo-fullscreen` | Local cursor, corner buttons, clicks, and return to Dialog; configure fullscreen.yml first |
 | Quest demo | `/dmenu open demo-quests` | Categories, pagination, details, and simulated reward claims |
 
 You can copy, rename, and edit every example. Boss confirmation does not spawn a boss automatically. The quest demo does not track live quest progress or award items or currency. Connect your own gameplay plugins through button actions.
@@ -46,9 +47,9 @@ Settings demo choices last for the current preview and reset when reopened. Bala
 
 ## Installation
 
-**DialogMenu 0.2.0** targets the **Paper 26.3** API, is built with Java 25, and emits Java 21 bytecode. Menu skins require the matching resource pack; players can use the vanilla client. The older 1.21.11 / 26.2 checks remain in the [historical compatibility record](docs/development/PAPER-1.21.11.md).
+**DialogMenu 0.2.3** targets **Paper and vanilla client 26.3**, uses Java 25 for the build and server, and emits Java 21 bytecode for its main source. Menu skins require the matching resource pack; players can use the vanilla client. The older 1.21.11 / 26.2 checks remain in the [historical compatibility record](docs/development/PAPER-1.21.11.md).
 
-The source is plain Java built with the shared Keystone library, and the TabooLib runtime is no longer required. The configuration format, commands, and permissions are unchanged. The 0.2.0 build was compiled and verified against Paper 26.3; see the [Paper 26.3 compatibility record](docs/development/PAPER-26.3.md).
+The source is plain Java with bundled Keystone helpers and version-matched NMS. No separate fullscreen plugin or TorakaHud is required. Before upgrading, add `MenuType: dialog` as the first key of existing menu files; do not add it to the Version 3 global config.yml. See the [release validation record (Chinese)](RELEASE-VALIDATION.md) for tested boundaries.
 
 1. Place the plugin JAR in your server's `plugins` directory. Version 0.1.21 and later include the matching resources and export them to `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip` on startup.
 2. Fresh installations use `ResourcePack.Provider: Auto`. DialogMenu selects an enabled provider in this order: **CraftEngine → ItemsAdder → Nexo → Oraxen**, then installs its resources into that provider's source directory. Later starts update managed files while preserving administrator edits; conflicts are reported in the console.
@@ -57,13 +58,14 @@ The source is plain Java built with the shared Keystone library, and the TabooLi
 
 Release 0.1.20 and earlier still require the separate matching resource pack and a manual merge. See the [resource-pack guide](docs/wiki/resource-pack.md) for installation paths, conflict handling, and delivery configuration.
 
-A fresh installation creates the default configuration and four example menus. Existing configurations are preserved. After editing, run `/dmenu check`, then `/dmenu reload` to apply the changes. Invalid configuration leaves the previous working menu active.
+A fresh installation creates the default configuration and five example menus. To enable fullscreen, set pack-bind, pack-port, and a player-accessible HTTP(S) base pack-url in fullscreen.yml. The embedded fullscreen pack is offered when opening the interface and must load first. See the [fullscreen guide (Chinese)](docs/guides/FULLSCREEN.md). Existing configurations are preserved. After editing, run `/dmenu check`, then `/dmenu reload` to apply the changes. Invalid configuration leaves the previous working menu active.
 
 ## Create a menu
 
 Save this example as `plugins/DialogMenu/menus/my-menu.yml`. Check and reload the configuration, then run `/dmenu open my-menu`. The filename is the menu ID; no separate registration is needed.
 
 ```yaml
+MenuType: dialog
 Version: 1
 Type: settings
 Title: "My Menu"
@@ -130,4 +132,4 @@ The detailed configuration guides below are currently written in Chinese. This E
 - [Migration from PlayerSettings](docs/guides/MIGRATION.md)
 - [Resource artwork and usage scope](docs/guides/TEMPLATE-ASSETS.md)
 
-[Validation notes](docs/development/VALIDATION.md) and [publication notes](docs/development/PUBLICATION.md) are available in English. See the [changelog](CHANGELOG.md) for version history.
+[Validation notes](docs/development/VALIDATION.md) and [publication notes](docs/development/PUBLICATION.md) describe the development and release history. See the [changelog](CHANGELOG.md) for version history.

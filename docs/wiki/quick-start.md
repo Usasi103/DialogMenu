@@ -10,6 +10,7 @@
 
 <!-- example: hello.yml -->
 ```yaml
+MenuType: dialog
 Version: 1
 Type: settings
 Title: 我的第一个菜单
