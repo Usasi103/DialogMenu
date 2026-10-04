@@ -158,7 +158,7 @@ class MenuPreferencesTest {
                                     ? code - 0xEA00
                                     : DialogCanvas.glyphWidth(code);
                 } else {
-                    width += DialogCanvas.textWidth(part.content());
+                    width += NativeMenuFontTest.width(part);
                 }
                 assertTrue(
                         width >= 0 && width <= DialogCanvas.LINE_WIDTH,

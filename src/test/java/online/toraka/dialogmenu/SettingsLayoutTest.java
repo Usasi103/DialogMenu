@@ -69,17 +69,20 @@ class SettingsLayoutTest {
                 parts.add(part);
             }
         }
-        TextComponent renderedText = single(parts, part -> part.content().equals("文字预览"));
-        assertEquals(TitleFont.font(16), renderedText.font());
-        assertEquals(TextDecoration.State.TRUE, renderedText.decoration(TextDecoration.BOLD));
-        assertEquals(0x12ABCD, Objects.requireNonNull(renderedText.color()).value());
+        TextComponent renderedText =
+                single(parts, part -> NativeMenuFontTest.visible(part).equals("文字预览"));
+        assertEquals(72f, NativeMenuFontTest.width(renderedText));
+        for (TextComponent leaf : NativeMenuFontTest.leaves(renderedText)) {
+            if (!NativeMenuFont.FONT.equals(leaf.font())) continue;
+            assertEquals(TextDecoration.State.TRUE, leaf.decoration(TextDecoration.BOLD));
+            assertEquals(0x12ABCD, Objects.requireNonNull(leaf.color()).value());
+        }
         assertTrue(
                 parts.stream()
                         .anyMatch(
                                 part ->
-                                        part.content().equals("开启")
-                                                && Objects.equals(
-                                                        part.font(), TitleFont.font(10, true))
+                                        NativeMenuFontTest.visible(part).equals("开启")
+                                                && NativeMenuFontTest.width(part) == 24f
                                                 && part.clickEvent() != null));
         assertTrue(
                 canvas.hits().stream()

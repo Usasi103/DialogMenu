@@ -9,10 +9,10 @@ import java.util.Map;
 import java.util.Properties;
 import net.kyori.adventure.key.Key;
 
-/** The same bitmap rounding and one-pixel bold advance used by the client. */
+/** Authored layout advances: small Latin bitmaps and client CJK restored by NativeMenuFont. */
 public final class TitleFont {
 
-    private record Glyph(int inkWidth, int cellHeight, boolean padded) {}
+    private record Glyph(int inkWidth, int cellHeight) {}
 
     private static final Map<Integer, Glyph> METRICS = load();
 
@@ -32,10 +32,7 @@ public final class TitleFont {
             List<String> parts = Kt.split(entry.getValue().toString(), ',');
             result.put(
                     Integer.parseInt(entry.getKey().toString()),
-                    new Glyph(
-                            Integer.parseInt(parts.get(0)),
-                            Integer.parseInt(parts.get(1)),
-                            Integer.parseInt(parts.get(2)) == 1));
+                    new Glyph(Integer.parseInt(parts.get(0)), Integer.parseInt(parts.get(1))));
         }
         return Collections.unmodifiableMap(result);
     }
@@ -57,19 +54,24 @@ public final class TitleFont {
         if (character == ' ') {
             return (size + 1) / 2;
         }
+        if (NativeMenuFont.contains(character)) {
+            return (int) Math.floor(((size * 3 + 1) / 2) * (2.0 / 3.0) + 0.5) + 1;
+        }
         Glyph glyph = METRICS.get((int) character);
         if (glyph == null) {
             glyph = Kt.getValue(METRICS, 63);
         }
-        int height = glyph.padded() ? (size * 3 + 1) / 2 : size;
-        return (int) Math.floor((double) glyph.inkWidth() * height / glyph.cellHeight() + 0.5) + 1;
+        return (int) Math.floor((double) glyph.inkWidth() * size / glyph.cellHeight() + 0.5) + 1;
     }
 
     public static String normalize(String text) {
         StringBuilder result = new StringBuilder(text.length());
         for (int i = 0; i < text.length(); i++) {
             char character = text.charAt(i);
-            result.append(METRICS.containsKey((int) character) ? character : '?');
+            result.append(
+                    METRICS.containsKey((int) character) || NativeMenuFont.contains(character)
+                            ? character
+                            : '?');
         }
         return result.toString();
     }

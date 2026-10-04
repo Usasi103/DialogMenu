@@ -1,13 +1,10 @@
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.IndexColorModel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Comparator;
-import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
 
 /** Compile Blockbench-authored original textures into whole UI glyphs and measured advances. */
@@ -91,77 +88,11 @@ public class BuildSkin {
         raisedGraphics.dispose();
         ImageIO.write(raised, "png", root.resolve("textures/ui/ascii_raised.png").toFile());
         String labelFont = Files.readString(root.resolve("font/labels.json"));
-        writeCjkFont(project.resolve("design/minecraft-font"));
         Files.writeString(root.resolve("font/button_labels.json"),
                 labelFont.replace("ui/ascii.png", "ui/ascii_raised.png")
-                        .replace("\"ascent\": 7", "\"ascent\": 11, \"height\": 12")
-                        .replace("{\"type\": \"reference\", \"id\": \"dialogmenu_settings:unifont\"}",
-                                "{\"type\":\"reference\",\"id\":\"dialogmenu_settings:button_cjk\"},"
-                                + "{\"type\":\"reference\",\"id\":\"dialogmenu_settings:unifont\"}"));
+                        .replace("\"ascent\": 7", "\"ascent\": 11, \"height\": 12"));
         Files.writeString(project.resolve("src/main/resources/ui-metrics.properties"), metrics, StandardCharsets.UTF_8);
         System.out.println("Compiled whole glyphs and measured advances: " + root);
-    }
-
-    private record HexGlyph(int codepoint, String bits) {}
-
-    /** Match the vanilla full-width CJK ranges, with the same -4px button offset as ASCII. */
-    private static void writeCjkFont(Path source) throws Exception {
-        List<HexGlyph> glyphs = new ArrayList<>();
-        try (ZipFile zip = new ZipFile(source.resolve("unifont.zip").toFile())) {
-            var entries = zip.entries();
-            while (entries.hasMoreElements()) {
-                var entry = entries.nextElement();
-                if (!entry.getName().endsWith(".hex")) continue;
-                for (String line : new String(zip.getInputStream(entry).readAllBytes(), StandardCharsets.UTF_8).split("\\R")) {
-                    int colon = line.indexOf(':');
-                    if (colon < 0) continue;
-                    int cp = Integer.parseInt(line.substring(0, colon), 16);
-                    if ((cp >= 0x3001 && cp <= 0x9FFF) || (cp >= 0xF900 && cp <= 0xFAFF)
-                            || (cp >= 0xFF01 && cp <= 0xFF5E) || (cp >= 0x20A0 && cp <= 0x20CF) || cp == 0x26C2) {
-                        glyphs.add(new HexGlyph(cp, line.substring(colon + 1)));
-                    }
-                }
-            }
-        }
-        glyphs.sort(Comparator.comparingInt(HexGlyph::codepoint));
-        List<String> cjkProviders = new ArrayList<>();
-        for (int start = 0, page = 0; start < glyphs.size(); start += 1024, page++) {
-            int count = Math.min(1024, glyphs.size() - start);
-            int rows = (count + 31) / 32;
-            byte[] white = {(byte) 255, (byte) 255, (byte) 255};
-            IndexColorModel palette = new IndexColorModel(2, 3, white, white, white, new byte[] {0, 1, (byte) 255});
-            BufferedImage atlas = new BufferedImage(32 * 16, rows * 24, BufferedImage.TYPE_BYTE_BINARY, palette);
-            List<String> chars = new ArrayList<>();
-            for (int row = 0; row < rows; row++) {
-                StringBuilder codes = new StringBuilder("\"");
-                for (int col = 0; col < 32; col++) {
-                    int index = row * 32 + col;
-                    if (index >= count) { codes.append(escape(0)); continue; }
-                    HexGlyph glyph = glyphs.get(start + index);
-                    codes.append(escape(glyph.codepoint()));
-                    int digits = glyph.bits().length() / 16;
-                    int sourceWidth = digits * 4;
-                    for (int y = 0; y < 16; y++) {
-                        long bits = Long.parseUnsignedLong(glyph.bits().substring(y * digits, (y + 1) * digits), 16);
-                        for (int x = 0; x < Math.min(16, sourceWidth); x++) {
-                            if ((bits & (1L << (sourceWidth - x - 1))) != 0) atlas.setRGB(col * 16 + x, row * 24 + y, 0xFFFFFFFF);
-                        }
-                    }
-                    // Unihex reserves 16 source pixels for these ranges. Bitmap
-                    // providers trim transparent columns, so pin that advance
-                    // with an alpha-1 pixel below the ink, invisible to the shader.
-                    atlas.setRGB(col * 16 + 15, row * 24 + 23, 0x01FFFFFF);
-                }
-                chars.add(codes.append('"').toString());
-            }
-            String filename = "button_cjk_" + page + ".png";
-            ImageIO.write(atlas, "png", root.resolve("textures/ui/" + filename).toFile());
-            cjkProviders.add("{\"type\":\"bitmap\",\"file\":\"dialogmenu_settings:ui/" + filename
-                    + "\",\"height\":12,\"ascent\":11,\"chars\":[" + String.join(",", chars) + "]}");
-        }
-        Files.writeString(root.resolve("font/button_cjk.json"), "{\"providers\":[" + String.join(",", cjkProviders) + "]}\n", StandardCharsets.UTF_8);
-        Files.copy(source.resolve("LICENSE.txt"), root.resolve("font/LICENSE-Unifont.txt"), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-        System.out.println("Aligned " + glyphs.size() + " full-width CJK glyphs with the button baseline.");
     }
 
     private static void skin(String name, int width, int height, boolean selected, boolean card, int glyph)

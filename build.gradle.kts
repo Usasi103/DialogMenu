@@ -103,7 +103,7 @@ val fullscreenPack = tasks.register<Exec>("fullscreenPack") {
     val client = providers.gradleProperty("fullscreenClientJar").orElse(
         "${System.getenv("LOCALAPPDATA")}/TorakaSelfdev/fullscreen-client-26.3/client.jar"
     )
-    inputs.files("tools/build_fullscreen_pack.py", "design/fullscreen",
+    inputs.files("tools/build_fullscreen_pack.py", "design/fullscreen", "design/font/native_cjk.vsh",
         "src/main/java/online/toraka/dialogmenu/fullscreen/DemoLayout.java", client.get())
     inputs.property("version", project.version)
     val output = layout.buildDirectory.file("generated/fullscreen/DialogMenu-fullscreen.zip")

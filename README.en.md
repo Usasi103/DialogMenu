@@ -8,6 +8,8 @@ Begin every menu file with `MenuType: dialog` or `MenuType: fullscreen`. Dialog 
 
 [Download the plugin and resource pack](https://github.com/Usasi103/DialogMenu/releases/latest) · [Configuration guide (Chinese)](docs/guides/MENU-CONFIG.md) · [Changelog (Chinese)](CHANGELOG.md)
 
+Version 0.2.5 reuses the vanilla client's Unihex CJK glyphs while preserving menu sizes and button baselines. The unified pack no longer ships CJK atlases. Keep the public font shader hook when merging with BetterHud; see the [font and pack guide (Chinese)](docs/guides/NATIVE-FONT.md).
+
 ## Screenshots
 
 In-game screenshots with Chinese menu text. Click an image to view the original.

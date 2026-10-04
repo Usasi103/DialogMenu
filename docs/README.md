@@ -20,6 +20,7 @@
 | [图片标签与独立多语言](wiki/text-tags.md) | CE/IA 图片、DialogMenu 本地 i18n / l10n 文件与示例 |
 | [迁移到 DialogMenu](guides/MIGRATION.md) | 旧插件名称、指令和数据兼容 |
 | [资源素材](guides/TEMPLATE-ASSETS.md) | 字体生成、素材来源和使用范围 |
+| [原版 CJK 字体](guides/NATIVE-FONT.md) | 客户端 Unihex、字号/基线、资源精简与 BetterHud 合包入口 |
 | [更新检测](guides/UPDATE-CHECK.md) | 匿名检查和配置方式 |
 
 ## 旧版资料

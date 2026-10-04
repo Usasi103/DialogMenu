@@ -80,7 +80,9 @@ def build(client_path, output, version):
         own = own.replace('DM_TILE_GRID', f'vec2({columns}.0, {rows}.0)')
         own = own.replace('DM_TILE_SIZE', f'vec2({tile_width}.0, {tile_height}.0)')
         own = own.replace('DM_TILE_BORDER', str(border))
-        tail = ('void main() { dm_previous_main(); dm_local_vertex(); }' if suffix == 'vsh'
+        if suffix == 'vsh':
+            own += '\n' + (ROOT / 'design/font/native_cjk.vsh').read_text('utf-8')
+        tail = ('void main() { dm_previous_main(); dm_local_vertex(); dm_native_cjk_vertex(); }' if suffix == 'vsh'
                 else 'void main() { if (!dm_local_fragment()) dm_previous_main(); }')
         files[f'assets/minecraft/shaders/core/text.{suffix}'] = (source+'\n'+own+'\n'+tail+'\n').encode()
 

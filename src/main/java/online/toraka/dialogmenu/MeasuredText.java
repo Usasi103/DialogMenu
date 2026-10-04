@@ -24,6 +24,10 @@ public record MeasuredText(List<MeasuredGlyph> glyphs) {
         if (glyphs.isEmpty()) {
             return Component.empty();
         }
+        Component nativeText = NativeMenuFont.render(glyphs);
+        if (nativeText != null) {
+            return nativeText;
+        }
         Component first = glyphs.get(0).component();
         boolean plain = true;
         for (MeasuredGlyph glyph : glyphs) {

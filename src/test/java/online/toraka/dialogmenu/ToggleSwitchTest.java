@@ -104,7 +104,7 @@ class ToggleSwitchTest {
                             parts.stream()
                                     .anyMatch(
                                             part ->
-                                                    part.content().equals(status)
+                                                    NativeMenuFontTest.visible(part).equals(status)
                                                             && Objects.equals(
                                                                     part.clickEvent(),
                                                                     glyph.clickEvent())));
@@ -133,7 +133,7 @@ class ToggleSwitchTest {
                                             ? code - 0xEA00
                                             : DialogCanvas.glyphWidth(code);
                         } else {
-                            width += DialogCanvas.textWidth(part.content());
+                            width += NativeMenuFontTest.width(part);
                         }
                         assertTrue(
                                 width >= 0 && width <= 452,

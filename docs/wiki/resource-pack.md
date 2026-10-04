@@ -6,6 +6,8 @@ CraftEngine 不是必需依赖。使用 IA / Nexo / Oraxen 等来源的物品，
 
 一个插件 JAR 内置一份 `DialogMenu-resourcepack.zip`，同时包含 Dialog 与全屏所需字体、贴图和着色器；Release 也只提供这一份 ZIP。全屏 HTTP 入口与自动导出使用相同字节。`fullscreen.yml` 控制服务地址，具体配置见[全屏指南](../guides/FULLSCREEN.md)。
 
+0.2.5 的 CJK 直接复用原版客户端 Unihex，统一 ZIP 不再包含中文字图集。字号与按钮基线依赖公开 `text.vsh` 的字体入口；与 BetterHud 共用时保留其生成包，并按[原版 CJK 字体指南](../guides/NATIVE-FONT.md)合并入口。现有 shader 冲突检测和发送方式保持。
+
 ## 0.1.21 起：自动安装内置资源
 
 0.1.21 起，JAR 包含配套资源包，启动后导出为 `plugins/DialogMenu/resourcepack/DialogMenu-resourcepack.zip`。发布版 0.1.20 及更早版本仍需单独下载同版本 ZIP。

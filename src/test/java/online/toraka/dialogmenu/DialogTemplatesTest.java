@@ -53,8 +53,14 @@ class DialogTemplatesTest {
                                 it -> DialogClicks.custom(Key.key("test", it)))
                         .build();
         assertTrue(
-                component.children().stream()
-                        .anyMatch(it -> Objects.equals(it.font(), TitleFont.font(16))));
+                NativeMenuFontTest.leaves(component).stream()
+                        .anyMatch(it -> Objects.equals(it.font(), NativeMenuFont.FONT)));
+        assertTrue(
+                NativeMenuFontTest.leaves(component).stream()
+                        .anyMatch(
+                                it ->
+                                        NativeMenuFont.POSITION.equals(it.font())
+                                                && it.content().contains("\uF028")));
         for (String invalid :
                 List.of(
                         source("boss-intro").replace("FontSize: 16", "FontSize: 25"),

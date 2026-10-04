@@ -79,6 +79,13 @@ class LabelMetricsTest {
         float cursor = 0f;
 
         void visit(Component component) {
+            if (!component.children().isEmpty()
+                    && NativeMenuFontTest.visible(component).equals("界面与语言")) {
+                assertEquals(24f, cursor);
+                assertEquals(45f, NativeMenuFontTest.width(component));
+                cursor += 45;
+                return;
+            }
             if (component instanceof TextComponent part) {
                 String text = part.content();
                 if (text.equals("\n")) {

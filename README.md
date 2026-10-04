@@ -8,6 +8,8 @@ DialogMenu 在一个插件中提供 Minecraft Dialog 菜单和资源包全屏演
 
 [下载插件与资源包](https://github.com/Usasi103/DialogMenu/releases/latest) · [配置指南](docs/guides/MENU-CONFIG.md) · [更新日志](CHANGELOG.md)
 
+0.2.5 的菜单 CJK 复用原版客户端 Unihex，统一资源包保留字号和按钮基线，省去中文字图集。与 BetterHud 合包时保留公开字体着色器入口，见[字体与合包指南](docs/guides/NATIVE-FONT.md)。
+
 ## 效果展示
 
 以下为游戏内实拍，点击图片可查看原图。

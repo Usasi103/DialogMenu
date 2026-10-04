@@ -1,3 +1,41 @@
+# DialogMenu 0.2.5 本地审核候选 · 2026-10-04
+
+公开工程独立版本 `0.2.5`，非 SNAPSHOT。本轮源码已累计同步，交付本地产物见 `dist/0.2.5-review/`；尚未创建版本标签或 Release，未部署公开版到 test_server。下方保留历史发布验证。
+
+## 产物与体积
+
+| 文件 | 实际字节数 | 对比 0.2.4 | SHA-256 |
+| --- | ---: | --- | --- |
+| DialogMenu-0.2.5.jar | 1,777,401 | 旧 JAR 2,957,871 字节，减少 1,180,470 字节 | `5b7d22a983f60c31ee3158a742559ecadeb9882ab394157cb58d604e00095071` |
+| DialogMenu-resourcepack-0.2.5.zip | 282,009 | 旧内置 ZIP 2,938,669 字节，减少 2,656,660 字节（90.404%） | `9a902fec9b1d15f18acf24fe1aaf675bc360dc4f40911e004df60f1930f39ac7` |
+
+可审阅目录为 `dist/0.2.5-review/`，含同份 JAR、统一 ZIP、`SHA256SUMS.txt`、构建报告、产物审计及探针日志。同源码完整 JAR 仅作 minimize 对照，不作为发布产物。
+
+## 本次实际验证
+
+- Paper 开发包 `26.3.build.142-beta`、JDK 25.0.4.1、主源码 Java 21 字节码。`formatSources`、同源码完整 Shadow JAR、统一构建入口 `test build selfdevArtifactManifest` 通过；196 项 JUnit 测试，0 failure、0 error、0 skipped。新增字体测试覆盖混合文字、字号、基线、加粗、换行、裁切、装饰和点击继承。
+- 原版 26.3 客户端 `GlyphProviderDefinition` codec 解析最终字体内容：41 个字体、592 个 provider 全部通过。两处 Unihex 均引用 `minecraft:font/unifont.zip`；自定义字体引用完整，bitmap 来自统一包或官方客户端。大间距及 singleton range 的编码通过原版 codec。
+- RTX 3070 Ti 的实际 GPU 顶点捕获通过 308 场景：19 个字号、两种基线、斜体、半像素偏移，普通 GUI 与透视文字隔离。统一包 24 种文字、4 种背景变体（含 OIT）及 GUI shader 编译链接通过；576 个原有全屏视角场景、七种分辨率接缝和 112 帧抗锯齿回归通过。
+- `minimize_check.py` 对照同源码完整 JAR 为 0 problem(s)，裁剪 149 个未使用 Keystone 类。公共 API 直接调用核对以 0.2.4 为旧提供方、最终 0.2.5 为新提供方及候选调用方，为 0 problem(s)；未扫描第三方插件和任意反射。
+- JAR 只有一份内置 ZIP，独立 ZIP 逐字节等于该内置 ZIP；仅包含 `dialogmenu_settings`、`dialogmenu_dialogue`、`dialogmenu_fullscreen` 与 `minecraft` 的公开资源。29 张旧 CJK 生成图移除，439 个已有资源文件字节不变；改动仅为字体 JSON、公开 text.vsh 与 pack metadata。现有面板、物品图标、全屏源图没有重绘。
+- 最终 JAR 没有私有 HUD/衣帽间类、私有字体探针、未重定位 Keystone 或 Kotlin/TabooLib 运行库。新增字体实现及 shader 独立位于公开工程，未读取私有素材或整批复制私有代码。
+- 公开字体合并工具保留发送方入口，拒绝重复注入、未展开模板和缺少 main 的输入；生成独立候选，不改提供方文件。离线 Wiki 19 页、6 个完整 YAML 示例和 97 个本地链接生成通过。
+
+## 清理与保留
+
+| 区域 | 保留依据 | 删除/替换 | 验证与未决项 |
+| --- | --- | --- | --- |
+| 文字组件与宽度 | 原菜单位置、换行、裁切和点击使用现有 measured glyphs | CJK bitmap 改为客户端 Unihex 与差值间距 | 196 项单测；codec；308 GPU 场景 |
+| 字体与生成器 | Latin/符号 bitmap、Unihex 宽度和 Unifont 许可仍有用途 | 29 CJK atlas、重复中文字符表与旧 CJK 位图生成流程移除；标题度量只剩 171 条 | final ZIP 引用、覆盖范围和字体 codec |
+| shader 与资源安装 | 原版/全屏入口、BetterHud 冲突检测和 External 发送仍被使用 | 追加公开字体函数与独立候选合并工具；不引入私有 HUD 依赖 | 合并工具检查通过；实际 BetterHud 组合包尚未验收 |
+| 工具与文档 | 累计历史、构建输入、宽度生成工具保留 | 移除失效 bitmap 预览脚本，修正测试的私有构建输出路径，更新生成及合包指南 | 工作树/链接核对；现有 untracked keystone-0.3.4.jar 原样保留 |
+
+## 验证边界
+
+未启动真人图形客户端或临时 Paper 服务器；本轮没有新增 Paper 运行时协议、真人点击延迟、其他 GPU、压力或实际 BetterHud 组合包验收。codec/GPU 结果不等于真人观感验收。BetterHud 的现有冲突保护保留，服主仍需把公开字体函数合入其最终生成 shader，并保留灰度文字与全屏入口；不得直接覆盖其原 shader。
+
+---
+
 # DialogMenu 0.2.4 发布验证 · 2026-10-03
 
 正式版本：[v0.2.4](https://github.com/Usasi103/DialogMenu/releases/tag/v0.2.4)。一个生产 DialogMenu JAR，一份包含 Dialog 与全屏资源的 ZIP。修正 Dialog GUI 着色器的 26.3 DynamicTransforms 布局与显式接口位置；不包含私人素材、衣帽间或 TorakaHud。
