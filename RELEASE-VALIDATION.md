@@ -1,6 +1,6 @@
-# DialogMenu 0.2.5 本地审核候选 · 2026-10-04
+# DialogMenu 0.2.5 发布验证 · 2026-10-04
 
-公开工程独立版本 `0.2.5`，非 SNAPSHOT。本轮源码已累计同步，交付本地产物见 `dist/0.2.5-review/`；尚未创建版本标签或 Release，未部署公开版到 test_server。下方保留历史发布验证。
+正式版本 [v0.2.5](https://github.com/Usasi103/DialogMenu/releases/tag/v0.2.5)，不标记为 Pre-release。源码与对应标签、JAR、统一资源包和 SHA256SUMS.txt 同步发布，保留历史 Releases。公开版未部署到私有 test_server；下方保留历史发布验证。
 
 ## 产物与体积
 
@@ -9,7 +9,7 @@
 | DialogMenu-0.2.5.jar | 1,777,401 | 旧 JAR 2,957,871 字节，减少 1,180,470 字节 | `5b7d22a983f60c31ee3158a742559ecadeb9882ab394157cb58d604e00095071` |
 | DialogMenu-resourcepack-0.2.5.zip | 282,009 | 旧内置 ZIP 2,938,669 字节，减少 2,656,660 字节（90.404%） | `9a902fec9b1d15f18acf24fe1aaf675bc360dc4f40911e004df60f1930f39ac7` |
 
-可审阅目录为 `dist/0.2.5-review/`，含同份 JAR、统一 ZIP、`SHA256SUMS.txt`、构建报告、产物审计及探针日志。同源码完整 JAR 仅作 minimize 对照，不作为发布产物。
+交付文件在 `release/`。本次验证证据在 `dist/0.2.5-review/`，包含同份 JAR、统一 ZIP、`SHA256SUMS.txt`、构建报告、产物审计及探针日志；源码与远端发布核验在工作区 `tools/reports/dialogmenu-public-025-release-20261004/`。同源码完整 JAR 仅作 minimize 对照，不作为发布产物。
 
 ## 本次实际验证
 
