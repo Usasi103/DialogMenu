@@ -13,9 +13,15 @@ record MenuCandidate(
         Map<String, DialogTemplate> templates,
         MenuTranslations translations,
         FullscreenPackSettings fullscreen,
+        AnimationSettings animations,
         List<String> warnings) {
 
     static MenuCandidate parse(MenuFiles files) {
+        AnimationSettings animations =
+                AnimationSettings.parse(
+                        files.has("animations.yml")
+                                ? files.text("animations.yml")
+                                : MenuRepository.resource("animations.yml"));
         FullscreenPackSettings fullscreen =
                 FullscreenPackSettings.parse(
                         files.has("fullscreen.yml")
@@ -42,7 +48,13 @@ record MenuCandidate(
                     }
                 }
                 return new MenuCandidate(
-                        catalog, null, catalog.templates(), translations, fullscreen, warnings);
+                        catalog,
+                        null,
+                        catalog.templates(),
+                        translations,
+                        fullscreen,
+                        animations,
+                        warnings);
             }
         }
         Map<String, DialogTemplate> templates = new LinkedHashMap<>();
@@ -75,6 +87,7 @@ record MenuCandidate(
                 Collections.unmodifiableMap(templates),
                 translations,
                 fullscreen,
+                animations,
                 warnings);
     }
 

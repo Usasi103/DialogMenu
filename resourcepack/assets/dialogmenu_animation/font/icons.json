@@ -1,0 +1,65 @@
+{
+  "providers": [
+    {
+      "type": "space",
+      "advances": {
+        "\ue000": -3145728,
+        "\ue001": 3145728
+      }
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/diamond.png",
+      "height": 36,
+      "ascent": 7,
+      "chars": [
+        "\ue100"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/emerald.png",
+      "height": 36,
+      "ascent": 7,
+      "chars": [
+        "\ue101"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/book.png",
+      "height": 36,
+      "ascent": 7,
+      "chars": [
+        "\ue102"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/ender_pearl.png",
+      "height": 36,
+      "ascent": 7,
+      "chars": [
+        "\ue103"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/golden_apple.png",
+      "height": 36,
+      "ascent": 7,
+      "chars": [
+        "\ue104"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:item/nether_star.png",
+      "height": 36,
+      "ascent": 7,
+      "chars": [
+        "\ue105"
+      ]
+    }
+  ]
+}

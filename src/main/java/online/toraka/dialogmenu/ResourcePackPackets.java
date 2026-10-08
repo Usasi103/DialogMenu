@@ -207,6 +207,7 @@ final class ResourcePackPackets {
             throws ReflectiveOperationException {
         UUID bound = channel.attr(PLAYER_ID).get();
         if (bound != null) {
+            AnimationDialog.sent(bound, packet);
             outgoing(bound, packet);
         }
         if (!packet.getClass().getSimpleName().equals("ClientboundLoginFinishedPacket")) {

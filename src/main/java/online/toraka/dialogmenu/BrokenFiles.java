@@ -53,6 +53,8 @@ final class BrokenFiles {
      */
     static Map<String, String> candidates(File directory) {
         Map<String, String> files = new LinkedHashMap<>();
+        if (new File(directory, "animations.yml").exists())
+            files.put("animations.yml", "animations.yml");
         files.put("text.yml", shipped("text.yml"));
         if (new File(directory, "fullscreen.yml").exists()) {
             files.put("fullscreen.yml", "fullscreen.yml");

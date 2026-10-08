@@ -1,0 +1,11 @@
+name: AnimationProbe
+version: '1.0'
+main: online.toraka.animationprobe.AnimationProbe
+api-version: '26.2'
+depend: [DialogMenu]
+commands:
+  aprobe:
+    permission: animationprobe.admin
+permissions:
+  animationprobe.admin:
+    default: op

@@ -150,3 +150,8 @@ RequireLoaded: false 可以关闭这个门槛，但不会自动补齐缺失的�
 0.1.21 已将旧 toraka_settings / toraka_dialogue 命名空间改为 dialogmenu_settings / dialogmenu_dialogue；升级时同步匹配版本的资源包，并修改自定义菜单中的旧字体引用。不要直接使用旧版资源包搭配新字体 ID。仅修改菜单文字、顺序和动作通常无需重新生成资源包；新增字体立绘或替换贴图需要更新资源。
 
 本机 UI_Sprite 素材版与可分发基础皮肤的许可边界见源码仓库 `docs/guides/TEMPLATE-ASSETS.md`。发布资源包前沿用已有许可说明。
+
+动画引用已有原版／CE 贴图的方法、14 个预设和着色器要求见[动画指南](../guides/ANIMATION.md)。
+
+
+`animations.yml` 可分别自定义每种预设的 `start`、`end`、`speed`：实际结束为 `start + (end - start) / speed`。修改后 `/dmenu check` 检查、`/dmenu reload` 应用；演示错峰间隔为 `demo-stagger`。

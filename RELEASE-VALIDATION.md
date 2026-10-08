@@ -1,3 +1,32 @@
+# DialogMenu 0.2.6 发布验证 · 2026-10-08
+
+正式版本：[v0.2.6](https://github.com/Usasi103/DialogMenu/releases/tag/v0.2.6)。
+
+原生 Dialog 新增 14 个可复用图标动画预设：淡入／淡出、飞入／飞出、缩放进入／退出、回弹进入／退出、脉冲、抖动、摇摆、旋转、上浮淡入／淡出。不包含裁剪类效果。
+
+`/dmenu open demo-animation` 打开演示，`/dmenu open demo-animation spin` 可直接选择预设；原生按钮支持上一个、下一个和重播。默认每个图标 20 tick、六图标错峰共 30 tick；`animations.yml` 可为每种预设分别设置 start、end、speed 和演示错峰间隔。实际结束 = start + (end - start) / speed。等待启动或进度不变时不重复发包，播放完成停止刷新。完全隐藏时不接受点击，切换／重播使用新令牌，关闭及外来页面接管会取消任务。
+
+字体 JSON 直接引用已有纹理，14 个效果共用少量 shader 代码，不复制 PNG、不生成帧图。配套 ZIP 从 282,009 增至 283,500 字节，增加 1,491 字节；419 张既有 PNG 字节全部保持。复用现有透明边界字形保证现代客户端的显示与图标本体点击。
+
+公共 Java 接口 `AnimationPreset`、`AnimationTiming` 和 `DialogCanvas.animatedSprite(...)` 可用于已有原版／CE 单张贴图。代码调用方可读取已加载的预设时间或为单个图标覆盖，并负责调度与取消；已有 YAML 菜单没有自动绑定图标的通用 Animation 字段。这是平面图标效果，完整 ItemStack 模型、附魔等不会自动应用。
+
+验证：205 项 JUnit，31 项 Paper 协议断言（含固定启动、速率缩放和坏时间配置重载回滚），原版 26.3 字体 codec，14,336 项动画 GPU 变换与 512 项透明混合，原有中文字号和全屏 shader 回归、完整／瘦身 JAR 与本机消费者直接 API 检查，以及原版图形客户端显示、图标本体点击、切换、重播和 ESC。未测试其他客户端版本、第三方 shader 合包或多人压力。
+
+配套 JAR 和资源 ZIP 必须一起更新，并让客户端重新加载资源包。公开包基于原版 26.3；与第三方 HUD 合包时需整包所有者组合两个动画 shader 入口，旧 compose_native_cjk.py 只覆盖中文字号。详见累计 CHANGELOG、RELEASE-VALIDATION 和 docs/guides/ANIMATION.md。附件均有 SHA256SUMS.txt。
+
+- 最终 JAR 单一内置 ZIP 与附件逐字节相同，入口、版本、重定位及无误打包验证探针检查通过。
+- 本机消费者扫描范围为 test_server/plugins、Typewriter/extensions、PlaceholderAPI/expansions；0 problem(s) 不代表未知第三方反射兼容。
+- 清理旧多尺寸动画 provider，六张贴图各用一个定义；保留生命周期观察器以防外来 Dialog 被下一帧覆盖，保留边界字形以满足真实客户端的裁切和命中要求。原有未跟踪 Keystone JAR 不纳入本次提交。
+- 真实客户端修正已验证：空白行的 space advance 没有可用渲染边界，六个现有 36px 边界字形组成 80×54 的动画点击区。字体／shader 不新增图片。
+- 私有实际目标安装状态单独记于外部 deployment.json；公开版只在隔离 Paper 26.3 环境验证。报告：工作区 tools/reports/dialogmenu-presets-20261008/public/。
+
+| 文件 | SHA-256 |
+| --- | --- |
+| DialogMenu-0.2.6.jar | `6db91f04865ea20e63f690efe7519caf3c12d9a5e0d02cc0ae0f8a8379bd5ca1` |
+| DialogMenu-resourcepack-0.2.6.zip | `406da2636a3e95ad0b6bd7f2650981bd957779d7a628d6b9cef293dea6cd6ef8` |
+
+---
+
 # DialogMenu 0.2.5 发布验证 · 2026-10-04
 
 正式版本 [v0.2.5](https://github.com/Usasi103/DialogMenu/releases/tag/v0.2.5)，不标记为 Pre-release。源码与对应标签、JAR、统一资源包和 SHA256SUMS.txt 同步发布，保留历史 Releases。公开版未部署到私有 test_server；下方保留历史发布验证。

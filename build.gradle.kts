@@ -103,7 +103,7 @@ val fullscreenPack = tasks.register<Exec>("fullscreenPack") {
     val client = providers.gradleProperty("fullscreenClientJar").orElse(
         "${System.getenv("LOCALAPPDATA")}/TorakaSelfdev/fullscreen-client-26.3/client.jar"
     )
-    inputs.files("tools/build_fullscreen_pack.py", "design/fullscreen", "design/font/native_cjk.vsh",
+    inputs.files("tools/build_fullscreen_pack.py", "design/fullscreen", "design/animation", "design/font/native_cjk.vsh",
         "src/main/java/online/toraka/dialogmenu/fullscreen/DemoLayout.java", client.get())
     inputs.property("version", project.version)
     val output = layout.buildDirectory.file("generated/fullscreen/DialogMenu-fullscreen.zip")
@@ -118,6 +118,17 @@ tasks.register<Jar>("fullscreenProbeJar") {
     dependsOn(tasks.named(probe.classesTaskName))
     from(probe.output)
     archiveFileName.set("FullscreenProbe.jar")
+    destinationDirectory.set(layout.buildDirectory.dir("probe"))
+    manifest.attributes["paperweight-mappings-namespace"] = "mojang"
+}
+
+
+val animationProbe = sourceSets.create("animationProbe")
+animationProbe.compileClasspath += sourceSets.main.get().compileClasspath
+tasks.register<Jar>("animationProbeJar") {
+    dependsOn(tasks.named(animationProbe.classesTaskName))
+    from(animationProbe.output)
+    archiveFileName.set("AnimationProbe.jar")
     destinationDirectory.set(layout.buildDirectory.dir("probe"))
     manifest.attributes["paperweight-mappings-namespace"] = "mojang"
 }

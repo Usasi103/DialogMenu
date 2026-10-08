@@ -59,6 +59,7 @@ final class MenuFiles {
         MenuFiles result = new MenuFiles(directory);
         Map<String, String> names = new LinkedHashMap<>(BrokenFiles.candidates(directory));
         if (startup) names.putIfAbsent("fullscreen.yml", "fullscreen.yml");
+        if (startup) names.putIfAbsent("animations.yml", "animations.yml");
         if (startup || new File(directory, "update-check.yml").exists()) {
             names.put("update-check.yml", "update-check.yml");
         }
@@ -477,7 +478,8 @@ final class MenuFiles {
             if (!file.startsWith(folder)) continue;
             String path = folder.relativize(file).toString().replace('\\', '/');
             boolean owned =
-                    path.equals("menu.yml")
+                    path.equals("animations.yml")
+                            || path.equals("menu.yml")
                             || path.equals("config.yml")
                             || path.equals("text.yml")
                             || path.startsWith("menus/")

@@ -10,6 +10,9 @@ Begin every menu file with `MenuType: dialog` or `MenuType: fullscreen`. Dialog 
 
 Version 0.2.5 reuses the vanilla client's Unihex CJK glyphs while preserving menu sizes and button baselines. The unified pack no longer ships CJK atlases. Keep the public font shader hook when merging with BetterHud; see the [font and pack guide (Chinese)](docs/guides/NATIVE-FONT.md).
 
+
+The native Dialog gallery offers 14 icon presets: fade, fly, zoom and bounce entrances/exits, pulse, shake, swing, spin, and floating fades. Switch presets in the dialog or use `/dmenu open demo-animation <preset-id>`. The staggered gallery defaults to 30 server ticks. Configure per-preset start/end times and speed in `animations.yml`; start stays fixed and duration scales by speed. Unchanged phases do not resend frames. Existing textures are referenced without PNG copies; shared font/shader definitions animate flat icons. Presets are reusable through the Java API; arbitrary YAML menu animation fields are not provided. See the [animation guide (Chinese)](docs/guides/ANIMATION.md).
+
 ## Screenshots
 
 In-game screenshots with Chinese menu text. Click an image to view the original.
@@ -49,7 +52,7 @@ Settings demo choices last for the current preview and reset when reopened. Bala
 
 ## Installation
 
-**DialogMenu 0.2.4** targets **Paper and vanilla client 26.3**, uses Java 25 for the build and server, and emits Java 21 bytecode for its main source. Menu skins require the matching resource pack; players can use the vanilla client. The older 1.21.11 / 26.2 checks remain in the [historical compatibility record](docs/development/PAPER-1.21.11.md).
+**DialogMenu 0.2.6** targets **Paper and vanilla client 26.3**, uses Java 25 for the build and server, and emits Java 21 bytecode for its main source. Menu skins require the matching resource pack; players can use the vanilla client. The older 1.21.11 / 26.2 checks remain in the [historical compatibility record](docs/development/PAPER-1.21.11.md).
 
 The source is plain Java with bundled Keystone helpers and version-matched NMS. No separate fullscreen plugin or TorakaHud is required. Before upgrading, add `MenuType: dialog` as the first key of existing menu files; do not add it to the Version 3 global config.yml. See the [release validation record (Chinese)](RELEASE-VALIDATION.md) for tested boundaries.
 

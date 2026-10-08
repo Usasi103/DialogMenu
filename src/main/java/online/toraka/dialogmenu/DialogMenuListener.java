@@ -30,6 +30,7 @@ final class DialogMenuListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
+        AnimationDialog.forget(event.getPlayer().getUniqueId());
         MenuResources.quit(event);
         MenuDialog.quit(event);
         TemplateDialog.quit(event);
@@ -37,8 +38,20 @@ final class DialogMenuListener implements Listener {
 
     @EventHandler
     public void onCustomClick(PlayerCustomClickEvent event) {
+        AnimationDialog.clicked(event);
         MenuDialog.clicked(event);
         TemplateDialog.clicked(event);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onInventoryOpen(org.bukkit.event.inventory.InventoryOpenEvent event) {
+        if (event.getPlayer() instanceof org.bukkit.entity.Player player)
+            AnimationDialog.forget(player.getUniqueId());
+    }
+
+    @EventHandler
+    public void onDeath(org.bukkit.event.entity.PlayerDeathEvent event) {
+        AnimationDialog.forget(event.getEntity().getUniqueId());
     }
 
     @EventHandler

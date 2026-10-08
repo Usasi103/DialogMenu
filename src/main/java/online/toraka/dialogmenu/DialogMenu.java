@@ -142,6 +142,7 @@ public final class DialogMenu extends JavaPlugin {
             fullscreen.close();
             fullscreen = null;
         }
+        AnimationDialog.shutdown();
         MenuResources.shutdown();
         TemplateDialog.shutdown();
         MenuDialog.shutdown();

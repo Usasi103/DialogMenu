@@ -9,6 +9,10 @@ The local-cursor shader and view-angle mapping were independently implemented.
 The public resource pack uses vanilla Minecraft 26.3 shaders as its base.
 No private server resources or HUD code are included.
 
+The six animation demo icons reference existing vanilla Minecraft 26.3 item
+textures through bitmap font JSON. No copies of these PNG textures or
+animation frame images are included.
+
 ArcMenu: https://github.com/FENTAIIII/ArcMenu
 
 MIT License

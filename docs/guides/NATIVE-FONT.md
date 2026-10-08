@@ -38,3 +38,7 @@ py -3 -B tools/compose_native_cjk.py --input "<生成的 text.vsh>" --output "<�
 `NativeFontShaderProbe.java` 与 `FullscreenShaderProbe.java` 一起编译，使用匹配客户端的 LWJGL classpath。前者检查 GPU 输出顶点的字号、基线、斜体、半像素偏移和非目标文字隔离；后者检查全部文字/背景变体、GUI 接口和原有全屏光标。验证记录见仓库根 `RELEASE-VALIDATION.md`。
 
 最终包仍需真人原版客户端复核字体观感；实际 BetterHud 组合包的客户端显示验收单独记录。
+
+## 图标动画的合包要求
+
+原有 `compose_native_cjk.py` 仅组合中文字号；它不会加入动画。动画还需组合 `design/animation/icon.vsh` / `icon.fsh`，在顶点原入口之后调用 `dm_animation_vertex()`，在片段原入口之前由 `dm_animation_fragment()` 拦截专用图标。26.3 的动画 varying 使用 location 8，发送方若占用该位置必须统一重新分配两端。第三方整包应同时保留其原入口与 DialogMenu 全屏入口，并实际验证所有 shader 变体。当前只验证随插件发布的公开原版组合包，未验收实际 BetterHud 组合包。

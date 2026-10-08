@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Properties;
 import java.util.TreeSet;
@@ -13,6 +15,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -93,7 +96,20 @@ public final class DialogCanvas {
     /** One glyph of a sprite: code point, painted cell width and measured bitmap advance. */
     public record Slice(int glyph, int width, int advance) {}
 
-    private record Sprite(int x, int row, Skin skin, String action) {}
+    private record Sprite(
+            int x, int row, Skin skin, String action, AnimationPreset preset, double progress) {}
+
+    /** Applies fixed-start, speed-scaled timing to a bitmap sprite. Time is in seconds. */
+    public void animatedSprite(
+            int x,
+            int row,
+            Skin skin,
+            AnimationPreset preset,
+            AnimationTiming timing,
+            double elapsedSeconds,
+            String action) {
+        animatedSprite(x, row, skin, preset, timing.progress(elapsedSeconds), action);
+    }
 
     private record Label(
             float x,
@@ -124,6 +140,18 @@ public final class DialogCanvas {
     private final List<Sprite> sprites = new ArrayList<>();
     private final List<Label> labels = new ArrayList<>();
     private final List<Hit> hits = new ArrayList<>();
+    private final Map<String, Component> tooltips = new HashMap<>();
+
+    /** The click grid, glyph and label share the same tooltip. */
+    public void tooltip(String action, Component text) {
+        tooltips.put(action, text);
+    }
+
+    private Component interactive(Component component, String action) {
+        Component result = component.clickEvent(click.apply(action));
+        Component tooltip = tooltips.get(action);
+        return tooltip == null ? result : result.hoverEvent(HoverEvent.showText(tooltip));
+    }
 
     public DialogCanvas(
             MenuTheme theme,
@@ -167,10 +195,25 @@ public final class DialogCanvas {
     }
 
     public void sprite(int x, int row, Skin skin, String action) {
-        sprites.add(new Sprite(x, row, theme.skin(skin), action));
+        sprites.add(new Sprite(x, row, theme.skin(skin), action, null, 1));
         if (action != null) {
             hits.add(new Hit(x, row, skin.width(), skin.rows(), action));
         }
+    }
+
+    /**
+     * Paints one 36px square bitmap glyph using the shared GUI animation shader. The caller
+     * supplies progress and owns playback/cancellation. Click cells stay fixed during motion.
+     * The skin's font must also define E000/E001 space advances -3145728/+3145728.
+     */
+    public void animatedSprite(
+            int x, int row, Skin skin, AnimationPreset preset, double progress, String action) {
+        if (skin.width() != 36 || skin.columns() != 1 || !skin.slices().isEmpty())
+            throw new IllegalArgumentException("Animated icons require one 36px square glyph");
+        if (preset == null) throw new IllegalArgumentException("Animation preset is required");
+        if (!preset.frame(progress).visible()) return;
+        sprites.add(new Sprite(x, row, skin, action, preset, progress));
+        if (action != null) hits.add(new Hit(x - 22, row, 80, 6, action));
     }
 
     public void text(int x, int row, String text) {
@@ -405,7 +448,7 @@ public final class DialogCanvas {
                 }
                 Component region = space(end - start);
                 if (found != null) {
-                    region = region.clickEvent(click.apply(found.action()));
+                    region = interactive(region, found.action());
                 }
                 result.append(region);
             }
@@ -415,20 +458,48 @@ public final class DialogCanvas {
                     continue;
                 }
                 result.append(space(sprite.x()));
+                if (sprite.preset() != null)
+                    result.append(Component.text("\uE000").font(sprite.skin().font()));
                 for (Slice slice : slices(sprite.skin())) {
                     Component glyph =
                             Component.text(String.valueOf((char) slice.glyph()))
                                     .font(sprite.skin().font())
                                     .color(NamedTextColor.WHITE);
+                    if (sprite.preset() != null)
+                        glyph =
+                                glyph.color(
+                                        TextColor.color(sprite.preset().color(sprite.progress())));
                     if (sprite.action() != null) {
-                        glyph = glyph.clickEvent(click.apply(sprite.action()));
+                        glyph = interactive(glyph, sprite.action());
                     }
                     result.append(glyph);
                     // Bitmap advances trim transparent right edges. Restore the
                     // texture cell width using the compiled, measured advance.
                     result.append(space(slice.width() - slice.advance()));
                 }
+                if (sprite.preset() != null) {
+                    result.append(Component.text("\uE001").font(sprite.skin().font()));
+                }
                 result.append(space(-sprite.x() - sprite.skin().width()));
+            }
+            // Space-only rows lack the CPU draw bounds required by modern client hit testing.
+            // Six overlapping existing 36px bounds glyphs cover the fixed 80x54 click cell.
+            // They also keep the shader-shifted run inside the client's CPU clipping bounds.
+            for (Sprite sprite : sprites) {
+                if (sprite.preset() == null) continue;
+                int offset = row - sprite.row();
+                if (offset != 0 && (offset != 2 || sprite.action() == null)) continue;
+                int cells = sprite.action() == null ? 1 : 3;
+                for (int cell = 0; cell < cells; cell++) {
+                    int at = sprite.x() + (cells == 1 ? 0 : (cell - 1) * 22);
+                    Component bounds =
+                            Component.text("\uF124")
+                                    .font(Key.key("dialogmenu_settings:native_bounds"));
+                    if (sprite.action() != null) bounds = interactive(bounds, sprite.action());
+                    result.append(space(at));
+                    result.append(bounds);
+                    result.append(space(-at - 37));
+                }
             }
             for (Label label : labels) {
                 if (label.row() != row) {
@@ -438,7 +509,7 @@ public final class DialogCanvas {
                 Component text =
                         label.text().component().colorIfAbsent(TextColor.color(label.color()));
                 if (label.action() != null) {
-                    text = text.clickEvent(click.apply(label.action()));
+                    text = interactive(text, label.action());
                 }
                 result.append(text);
                 result.append(space(-label.x() - label.text().advance()));

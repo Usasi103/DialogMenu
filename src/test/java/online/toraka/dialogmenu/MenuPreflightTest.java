@@ -89,6 +89,31 @@ class MenuPreflightTest {
     }
 
     @Test
+    void invalidAnimationTimingCancelsReloadWithoutPublishingOrBackingUp() throws Exception {
+        Path menu = directory.resolve("animations.yml");
+        try (var ignored = providers()) {
+            CatalogRepository repository = new CatalogRepository(directory.toFile());
+            repository.install(repository.read());
+            MenuCatalog previous = repository.current();
+            String bad = "defaults: {speed: 0}\n";
+            Files.writeString(menu, bad);
+            byte[] original = Files.readAllBytes(menu);
+            try (ReloadTransaction tx = ReloadTransaction.begin()) {
+                MenuFiles files = MenuFiles.collect(directory.toFile(), false);
+                var error =
+                        assertThrows(
+                                IllegalArgumentException.class, () -> MenuCandidate.parse(files));
+                tx.problem(files.problem(error));
+                assertFalse(tx.valid());
+                assertTrue(tx.problems().stream().anyMatch(p -> p.path().equals("animations.yml")));
+            }
+            assertSame(previous, repository.current());
+            assertArrayEquals(original, Files.readAllBytes(menu));
+            assertNull(FileBackup.identical(menu.toFile(), original));
+        }
+    }
+
+    @Test
     void invalidMenuTypeCancelsReloadAndKeepsActiveCatalogAndOriginalBytes() throws Exception {
         Path menu = directory.resolve("menus/demo-settings.yml");
         try (var ignored = providers()) {

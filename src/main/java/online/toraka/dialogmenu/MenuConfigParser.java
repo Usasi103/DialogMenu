@@ -665,6 +665,18 @@ public final class MenuConfigParser {
     }
 
     static YamlConfiguration yaml(String source, String path) {
+        yamlValue(source, path);
+        try {
+            YamlConfiguration configuration = new YamlConfiguration();
+            configuration.loadFromString(source);
+            return configuration;
+        } catch (Exception error) {
+            throw new IllegalArgumentException(path + ": " + error.getMessage(), error);
+        }
+    }
+
+    /** Strict raw values for configurations where an explicit null must not become a missing key. */
+    static Object yamlValue(String source, String path) {
         Kt.require(source.length() <= 1_048_576, () -> path + ": 文件超过 1 MiB");
         try {
             // Bukkit accepts duplicate keys by default. Reject them before
@@ -675,10 +687,7 @@ public final class MenuConfigParser {
             options.setMaxAliasesForCollections(0);
             options.setNestingDepthLimit(40);
             options.setCodePointLimit(1_048_576);
-            new Yaml(new SafeConstructor(options)).load(source);
-            YamlConfiguration configuration = new YamlConfiguration();
-            configuration.loadFromString(source);
-            return configuration;
+            return new Yaml(new SafeConstructor(options)).load(source);
         } catch (Exception error) {
             throw new IllegalArgumentException(path + ": " + error.getMessage(), error);
         }

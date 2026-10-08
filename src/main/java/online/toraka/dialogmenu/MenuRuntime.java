@@ -20,6 +20,16 @@ public final class MenuRuntime {
     private static File directory;
     private static MenuTranslations translations = new MenuTranslations();
     private static FullscreenPackSettings fullscreenSettings;
+    private static AnimationSettings animations = AnimationSettings.defaults();
+
+    /** Current committed per-preset timing; an immutable snapshot for custom playback. */
+    public static AnimationTiming animationTiming(AnimationPreset preset) {
+        return animations.timing(preset);
+    }
+
+    static AnimationSettings animationSettings() {
+        return animations;
+    }
 
     public static FullscreenPackSettings fullscreenSettings() {
         return fullscreenSettings;
@@ -91,11 +101,14 @@ public final class MenuRuntime {
     public static List<String> menuIds() {
         MenuCatalog catalog = catalog();
         if (catalog != null) {
-            return new ArrayList<>(catalog.menus().keySet());
+            List<String> ids = new ArrayList<>(catalog.menus().keySet());
+            ids.add(AnimationDemo.ID);
+            return ids;
         }
         List<String> result = new ArrayList<>();
         result.add("settings");
         result.addAll(templates().keySet());
+        result.add(AnimationDemo.ID);
         return result;
     }
 
@@ -109,6 +122,7 @@ public final class MenuRuntime {
     }
 
     public static List<String> pages(String id) {
+        if (AnimationDemo.ID.equals(id)) return AnimationPreset.ids();
         MenuCatalog catalog = catalog();
         CatalogMenu menu = catalog != null ? catalog.menus().get(id) : null;
         if (menu != null) {
@@ -141,6 +155,19 @@ public final class MenuRuntime {
 
     public static void open(Player player, String id, String page) {
         if (!player.hasPermission("playersettings.use")) return;
+        if (AnimationDemo.ID.equals(id)) {
+            AnimationPreset preset;
+            try {
+                preset = AnimationPreset.parse(page);
+            } catch (IllegalArgumentException error) {
+                player.sendMessage(
+                        "DialogMenu：未知动画预设。可用：" + String.join(", ", AnimationPreset.ids()));
+                return;
+            }
+            AnimationDialog.open(player, preset);
+            return;
+        }
+        AnimationDialog.forget(player.getUniqueId());
         MenuCatalog catalog = catalog();
         String requested = id != null ? id : catalog != null ? catalog.defaultMenu() : "settings";
         CatalogMenu menu = catalog != null ? catalog.menus().get(requested) : null;
@@ -254,6 +281,7 @@ public final class MenuRuntime {
 
     private static void install(MenuCandidate next, boolean refresh) {
         fullscreenSettings = next.fullscreen();
+        animations = next.animations();
         if (next.catalog() != null) {
             CatalogRepository store = new CatalogRepository(directory);
             store.install(next.catalog());
@@ -269,6 +297,7 @@ public final class MenuRuntime {
         MenuResources.install(
                 next.catalog() != null ? next.catalog().resourcePack() : MenuResourcePack.legacy());
         if (refresh) {
+            AnimationDialog.shutdown();
             if (DialogMenu.fullscreen() != null) DialogMenu.fullscreen().reloaded();
             MenuDialog.reloaded();
             TemplateDialog.reloaded();

@@ -10,6 +10,9 @@ DialogMenu 在一个插件中提供 Minecraft Dialog 菜单和资源包全屏演
 
 0.2.5 的菜单 CJK 复用原版客户端 Unihex，统一资源包保留字号和按钮基线，省去中文字图集。与 BetterHud 合包时保留公开字体着色器入口，见[字体与合包指南](docs/guides/NATIVE-FONT.md)。
 
+
+动画预设入口支持 14 个原生 Dialog 图标效果：淡入淡出、飞入飞出、缩放、弹跳、脉冲、抖动、摇摆、旋转及上浮淡入淡出。通过界面切换或 `/dmenu open demo-animation <预设ID>` 指定，默认 30 tick 后停止刷新，可在 `animations.yml` 自定义每种预设的启动时间、基准结束时间、速率与演示错峰间隔。PNG 仍引用已有资源，字体及共用 shader 提供变换。预设可通过 Java API 复用，当前没有通用 YAML 动画字段；详见[动画指南](docs/guides/ANIMATION.md)。
+
 ## 效果展示
 
 以下为游戏内实拍，点击图片可查看原图。
@@ -49,7 +52,7 @@ Dialog 菜单使用配置中的原始画布尺寸。显示不全时，可在 Min
 
 ## 安装
 
-**DialogMenu 0.2.4** 面向 **Paper / 原版客户端 26.3**，使用 Java 25 构建并运行服务器，主源码输出 Java 21 字节码。菜单皮肤需要配套资源包，玩家使用原版客户端即可；旧的 1.21.11 / 26.2 验证记录见[历史兼容记录](docs/development/PAPER-1.21.11.md)。
+**DialogMenu 0.2.6** 面向 **Paper / 原版客户端 26.3**，使用 Java 25 构建并运行服务器，主源码输出 Java 21 字节码。菜单皮肤需要配套资源包，玩家使用原版客户端即可；旧的 1.21.11 / 26.2 验证记录见[历史兼容记录](docs/development/PAPER-1.21.11.md)。
 
 源码为 Java，共享库 Keystone 已打包在插件内。全屏通过匹配 26.3 的 NMS 和资源包实现，不需要额外全屏插件或 TorakaHud。现有菜单升级前必须在第一个配置项补上 `MenuType: dialog`；Version 3 全局 config.yml 不加该字段。具体测试边界见[发布验证](RELEASE-VALIDATION.md)。
 

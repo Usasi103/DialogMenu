@@ -1,0 +1,28 @@
+# 所有时间使用秒，按服务器 tick（20 tick = 1 秒）播放。
+# 实际结束 = start + (end - start) / speed；start 不随速率改变。
+# start >= 0，end > start，speed > 0；演示总长最多 3600 秒。
+defaults:
+  start: 0.0
+  end: 1.0
+  speed: 1.0
+
+# 演示六个图标之间的启动间隔；不随 speed 缩放，0 表示同时开始。
+demo-stagger: 0.1
+
+# 每个效果都可独立覆盖 start、end、speed，省略的字段继承 defaults。
+# 例如 spin: {start: 1.0, end: 3.0, speed: 2.0} 在第 1 秒开始，第 2 秒结束。
+presets:
+  fade_in: {}
+  fade_out: {}
+  fly_in: {}
+  fly_out: {}
+  zoom_in: {}
+  zoom_out: {}
+  bounce_in: {}
+  bounce_out: {}
+  pulse: {}
+  shake: {}
+  swing: {}
+  spin: {}
+  float_in: {}
+  float_out: {}
