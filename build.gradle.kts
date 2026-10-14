@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     // Exact Paper 26.3 API/NMS boundary for fullscreen packets and the existing Dialog renderer.
-    paperweight.paperDevBundle("26.3.build.142-beta")
+    add("paperweightDevelopmentBundle", "io.papermc.paper:dev-bundle:26.3.build.142-beta@zip")
     // Read-only resource-pack observer on the player's Netty channel (the server provides Netty).
     compileOnly("io.netty:netty-transport:4.2.15.Final")
     // Other plugins' API jars (PlaceholderAPI), never shipped.

@@ -1,5 +1,7 @@
 # DialogMenu · Minecraft 对话与全屏菜单
 
+当前自定义物品源包含 ItemLoom；`source:IL:<ID>` 按查看者生成展示副本，旧 NI 前缀映射到 ItemLoom。
+
 **简体中文** · [English](README.en.md)
 
 DialogMenu 在一个插件中提供 Minecraft Dialog 菜单和资源包全屏演示。你可以用 YAML 制作玩家设置、NPC 对话、首领介绍和确认界面，把文字、图标与交互按钮放进同一套菜单中。
@@ -104,7 +106,7 @@ Pages:
 | PlaceholderAPI | 在文字中显示变量，或读取自定义开关和选项状态 |
 | Ambience | 连接默认菜单中的环境音效、粒子及其整合的掉落、拾取设置；旧独立 LootBeam / PickupNotifier 也保留兼容 |
 | CraftEngine | 提供自定义物品，并可负责资源包的构建与发送 |
-| ItemBridge 物品源 | 支持内置 ItemBridge 版本的全部 39 种插件适配器，包括 Oraxen、ItemsAdder、SX-Item、NeigeItems、CraftEngine、MMOItems、Nexo 等；无需另装 ItemBridge |
+| ItemBridge 物品源 | 支持内置 ItemBridge 版本的全部 39 种插件适配器，包括 Oraxen、ItemsAdder、SX-Item、ItemLoom、CraftEngine、MMOItems、Nexo 等；无需另装 ItemBridge |
 
 物品源通过 `Display.Material: "source:插件ID:物品ID"` 配置。真实物品使用原生 Dialog 物品页面，物品模型需要对应插件的资源包。自由画布中的图标使用字体贴图，两者的配置方式见物品源指南。
 

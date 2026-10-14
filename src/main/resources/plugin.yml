@@ -42,12 +42,12 @@ softdepend:
   - 'HMCCosmetics'
   - 'HeadDatabase'
   - 'ItemEdit'
+  - 'ItemLoom'
   - 'ItemsAdder'
   - 'ItemsXL'
   - 'MMOItems'
   - 'MagicGem'
   - 'MythicMobs'
-  - 'NeigeItems'
   - 'Nexo'
   - 'Nova'
   - 'Oraxen'
@@ -61,5 +61,5 @@ softdepend:
   - 'Talismans'
   - 'Zaphkiel'
 # No permissions section, as in the TabooLib build: playersettings.use (default true) is added
-# with the command and playersettings.admin (default op) in onEnable, each only when the server
 # does not know the node yet, so a leftover PlayerSettings jar never causes a duplicate error.
+# with the command and playersettings.admin (default op) in onEnable, each only when the server

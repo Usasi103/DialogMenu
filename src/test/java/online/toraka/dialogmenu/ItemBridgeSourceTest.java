@@ -67,6 +67,9 @@ class ItemBridgeSourceTest {
             assertTrue(bridge.providers().isEmpty());
             assertTrue(failures.isEmpty(), failures.toString());
         }
+        // ItemLoom is an explicit published service; the replaced NI library hook is excluded.
+        requested.remove("NeigeItems");
+        requested.add("ItemLoom");
         assertEquals(requested, new LinkedHashSet<>(ItemBridgeSources.plugins().values()));
     }
 
@@ -112,8 +115,10 @@ class ItemBridgeSourceTest {
         cases.put("SX-Item:测试武器", new ItemReference("sxitem", "测试武器"));
         cases.put("SXITEM:MySword", new ItemReference("sxitem", "MySword"));
         cases.put("SI:MySword", new ItemReference("sxitem", "MySword"));
-        cases.put("NeigeItems:MySword", new ItemReference("neigeitems", "MySword"));
-        cases.put("NI:group:MySword", new ItemReference("neigeitems", "group:MySword"));
+        cases.put("NeigeItems:MySword", new ItemReference("itemloom", "MySword"));
+        cases.put("NI:group:MySword", new ItemReference("itemloom", "group:MySword"));
+        cases.put("IL:MySword", new ItemReference("itemloom", "MySword"));
+        cases.put("ItemLoom:MySword", new ItemReference("itemloom", "MySword"));
         cases.put("CE:fish:rainbow_fish", new ItemReference("craftengine", "fish:rainbow_fish"));
         cases.put("NEXO:MySword", new ItemReference("nexo", "MySword"));
         cases.put("MM:MySword", new ItemReference("mythicmobs", "MySword"));

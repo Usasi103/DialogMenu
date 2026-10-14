@@ -38,7 +38,7 @@ Icons:
 | ItemsAdder | `source:IA:my_pack:sword` 或 `source:ItemsAdder:my_pack:sword` |
 | Nexo | `source:Nexo:my_sword` |
 | Oraxen | `source:Oraxen:my_sword` |
-| NeigeItems | `source:NI:物品ID` |
+| ItemLoom | `source:IL:物品ID` |
 
 自定义物品 ID 是示例，须在对应插件中存在；IA / CE 使用完整的小写 `namespace:id`。只安装实际使用的来源插件，ItemBridge 已内置，无需另外安装。自定义模型仍需来源插件的资源包。
 
@@ -122,3 +122,6 @@ settings 的 `Pages.<页>.Icon` 只接受内置名称，不接受 Material 或 F
 完整可复制的 ResourcePack 配置见 [资源包](resource-pack.md)。Provider 只决定检查 / 发送哪个包，不会自动合并文件、生成字体或改写字体 ID；`RequireLoaded: false` 只关闭加载门槛，不会补齐缺失图片。
 
 菜单改完先 `/dmenu check`，通过后 `/dmenu reload`。只有菜单文字或已有图标名称变化时不需要重新打包；新增或替换 PNG、字体、模型时需要更新资源包并让玩家重新加载。
+
+
+ItemLoom 使用公开服务校验 ID 并按查看者生成展示副本。`source:IL:` 与 `source:ItemLoom:` 等价，旧 `NI` / `NeigeItems` 前缀映射到 ItemLoom；该来源不再调用 NeigeItems API。校验只读取 ID 目录，不消耗随机词条。

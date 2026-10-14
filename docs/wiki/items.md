@@ -73,7 +73,7 @@ source:ItemsAdder:my_pack:sword
 source:IA:my_pack:sword
 source:Nexo:my_sword
 source:Oraxen:my_sword
-source:NI:物品ID
+source:IL:物品ID
 source:MythicMobs:SkeletonKingSword
 source:MMOItems:SWORD:my_sword
 source:HeadDatabase:123
@@ -85,7 +85,7 @@ Material 不展开 PAPI，不支持 TrMenu 的 JSON、动画、JS 或头颅表�
 
 ## 支持的来源
 
-内置 ItemBridge 1.0.32 的 39 个插件适配器；无需另装 ItemBridge，只安装实际使用的来源插件。“支持 39 种”不表示服务器安装了全部 39 种。
+内置 ItemBridge 1.0.32 的 38 个插件适配器与 ItemLoom 服务；无需另装 ItemBridge，只安装实际使用的来源插件。“支持 39 种”不表示服务器安装了全部 39 种。
 
 | 插件 | 插件 ID |
 | --- | --- |
@@ -115,7 +115,7 @@ Material 不展开 PAPI，不支持 TrMenu 的 JSON、动画、JS 或头颅表�
 | MagicGem | magicgem |
 | MMOItems | mmoitems |
 | MythicMobs | mythicmobs |
-| NeigeItems | neigeitems |
+| ItemLoom | itemloom |
 | Nexo | nexo |
 | Nova | nova |
 | Oraxen | oraxen |
@@ -129,7 +129,7 @@ Material 不展开 PAPI，不支持 TrMenu 的 JSON、动画、JS 或头颅表�
 | Talismans | talismans |
 | Zaphkiel | zaphkiel |
 
-常用别名：CE → CraftEngine，IA → ItemsAdder，NI → NeigeItems，SI / SX-Item → SX-Item，MM → MythicMobs，MI → MMOItems，HDB → HeadDatabase，CF → CustomFishing，EI → ExecutableItems，EB → ExecutableBlocks。
+常用别名：CE → CraftEngine，IA → ItemsAdder，IL / ItemLoom / NI → ItemLoom，SI / SX-Item → SX-Item，MM → MythicMobs，MI → MMOItems，HDB → HeadDatabase，CF → CustomFishing，EI → ExecutableItems，EB → ExecutableBlocks。
 
 ## 来源失效时
 
@@ -145,3 +145,6 @@ Fallback 只解决显示，不把失效物品当成成功商品。点击时也�
 CraftEngine 重载后会刷新菜单；其他来源修改后可执行 /dmenu reload。每次展示和点击会重新查找物品，构建时传入查看菜单的玩家。
 
 自定义模型仍需对应物品插件的资源包。DialogMenu 资源包只提供菜单资产，不包含服务器所有自定义物品。
+
+
+ItemLoom 使用公开服务校验 ID 并按查看者生成展示副本。`source:IL:` 与 `source:ItemLoom:` 等价，旧 `NI` / `NeigeItems` 前缀映射到 ItemLoom；该来源不再调用 NeigeItems API。校验只读取 ID 目录，不消耗随机词条。

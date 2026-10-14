@@ -1,6 +1,6 @@
-# 物品源配置（0.1.16）
+# 物品源配置
 
-支持内置 [ItemBridge 1.0.32](https://github.com/jhqwqmc/ItemBridge) 的全部 **39 种插件适配器**，以及原版物品。
+支持内置 [ItemBridge 1.0.32](https://github.com/jhqwqmc/ItemBridge) 中的 **38 种插件适配器**与 ItemLoom 服务，以及原版物品。
 这些插件均为软依赖，无需另外安装 ItemBridge；只安装实际使用的物品插件。
 未来 ItemBridge 增加的适配器需要随 DialogMenu 更新库版本和清单，不会从网上自动下载未知适配器。
 
@@ -38,7 +38,7 @@ CE、IA、NI、SI/SX-Item 旧写法继续可用；另有 MM=MythicMobs、MI=MMOI
 | MagicGem | `magicgem` |
 | MMOItems | `mmoitems` |
 | MythicMobs | `mythicmobs` |
-| NeigeItems | `neigeitems` |
+| ItemLoom | `itemloom` |
 | Nexo | `nexo` |
 | Nova | `nova` |
 | Oraxen | `oraxen` |
@@ -90,3 +90,6 @@ CE / ItemsAdder ID 要求小写命名空间；其他来源保留大小写、中�
 未安装对应插件、ID 不存在或物品暂未加载时，无 `Fallback` 的配置检查/重载失败，继续使用旧菜单；有 `Fallback` 时报告警告，展示回退物品并禁用动作。运行过程中物品插件失效或物品构建失败也停用动作，点击时再次检查。CE 重载后自动刷新打开的菜单；其他物品插件重载后可执行 /dialogmenu reload 刷新已打开页面。每次展示和点击都会重新查找物品，不缓存物品定义；构建时传入当前查看菜单的玩家。插件启用/停用后重新检测接入状态，check/reload 也会重新检测。API 不兼容会报告错误并停用对应动作。启动期间先读配置，下一 tick 和 CE 重载完成后核验物品，避免提前访问尚未加载的 CE 注册表。
 
 物品模型仍由对应物品插件的资源包提供。本插件附带的资源包只包含 DialogMenu 界面资产，不包含整个服务器的自定义物品资源。
+
+
+ItemLoom 使用公开服务校验 ID 并按查看者生成展示副本。`source:IL:` 与 `source:ItemLoom:` 等价，旧 `NI` / `NeigeItems` 前缀映射到 ItemLoom；该来源不再调用 NeigeItems API。校验只读取 ID 目录，不消耗随机词条。

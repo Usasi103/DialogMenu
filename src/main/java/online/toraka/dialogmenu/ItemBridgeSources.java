@@ -23,7 +23,9 @@ public final class ItemBridgeSources {
                     "ia", "itemsadder",
                     "si", "sxitem",
                     "sx-item", "sxitem",
-                    "ni", "neigeitems",
+                    "ni", "itemloom",
+                    "neigeitems", "itemloom",
+                    "il", "itemloom",
                     "mm", "mythicmobs",
                     "mi", "mmoitems",
                     "hdb", "headdatabase",
@@ -136,6 +138,10 @@ public final class ItemBridgeSources {
         for (Map.Entry<String, String> entry : plugins.entrySet()) {
             String id = entry.getKey();
             String plugin = entry.getValue();
+            if (id.equals("itemloom")) {
+                result.put(id, new ItemLoomSource());
+                continue;
+            }
             result.put(
                     id,
                     new ItemBridgeSource(

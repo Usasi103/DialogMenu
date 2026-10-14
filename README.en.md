@@ -1,5 +1,7 @@
 # DialogMenu · Minecraft Dialog and Fullscreen Menus
 
+Custom item sources include ItemLoom: `source:IL:<ID>` creates viewer-aware display copies; legacy NI prefixes resolve to ItemLoom.
+
 [Simplified Chinese](README.md) · **English**
 
 DialogMenu combines Minecraft Dialog menus and a resource-pack fullscreen diagnostic interface in one plugin. Create player settings, NPC conversations, boss introductions, and confirmation screens with text, icons, and interactive controls.
@@ -104,7 +106,7 @@ Install only the integrations your menus use.
 | PlaceholderAPI | Display placeholders in text or read custom toggle and option states |
 | Ambience | Connect the bundled sound, particle, loot, and pickup settings; the legacy standalone LootBeam and PickupNotifier plugins remain supported |
 | CraftEngine | Supply custom items and optionally build and deliver the resource pack |
-| ItemBridge item sources | All 39 plugin adapters in the bundled ItemBridge version, including Oraxen, ItemsAdder, SX-Item, NeigeItems, CraftEngine, MMOItems, and Nexo; no separate ItemBridge installation is needed |
+| ItemBridge item sources | All 39 plugin adapters in the bundled ItemBridge version, including Oraxen, ItemsAdder, SX-Item, ItemLoom, CraftEngine, MMOItems, and Nexo; no separate ItemBridge installation is needed |
 
 Configure item sources with `Display.Material: "source:PluginID:ItemID"`. Real item previews use native Dialog item pages, and custom models need their provider's resource pack. Icons on custom canvases use font sprites. The item-source guide explains both page types and their limits.
 
