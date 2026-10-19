@@ -104,7 +104,8 @@ Pages:
 | 联动 | 用途 |
 | --- | --- |
 | PlaceholderAPI | 在文字中显示变量，或读取自定义开关和选项状态 |
-| Ambience | 连接默认菜单中的环境音效、粒子及其整合的掉落、拾取设置；旧独立 LootBeam / PickupNotifier 也保留兼容 |
+| ItemLoom | 连接掉落光柱与光柱音效设置；优先读取其 LootBeam 模块，兼容旧独立 LootBeam 和旧 Ambience 提供方 |
+| Ambience | 连接环境音效、粒子与拾取设置；保留旧独立 PickupNotifier 兼容 |
 | CraftEngine | 提供自定义物品，并可负责资源包的构建与发送 |
 | ItemBridge 物品源 | 支持内置 ItemBridge 版本的全部 39 种插件适配器，包括 Oraxen、ItemsAdder、SX-Item、ItemLoom、CraftEngine、MMOItems、Nexo 等；无需另装 ItemBridge |
 

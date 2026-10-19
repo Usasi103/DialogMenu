@@ -678,7 +678,7 @@ public final class MenuDialog {
         return result.toString();
     }
 
-    /** Reads Ambience's LootBeam module preferences by reflection (class name frozen). */
+    /** Reads the selected LootBeam provider preferences by reflection (class name frozen). */
     private static Boolean lootState(Player player, String getter) {
         try {
             Plugin plugin = EffectPlugins.provider("LootBeam");

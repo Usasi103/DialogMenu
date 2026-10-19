@@ -104,7 +104,8 @@ Install only the integrations your menus use.
 | Integration | Purpose |
 | --- | --- |
 | PlaceholderAPI | Display placeholders in text or read custom toggle and option states |
-| Ambience | Connect the bundled sound, particle, loot, and pickup settings; the legacy standalone LootBeam and PickupNotifier plugins remain supported |
+| ItemLoom | Connect loot beam and beam sound settings through its LootBeam module; legacy standalone LootBeam and Ambience providers remain supported |
+| Ambience | Connect sound, particle, and pickup settings; the legacy standalone PickupNotifier remains supported |
 | CraftEngine | Supply custom items and optionally build and deliver the resource pack |
 | ItemBridge item sources | All 39 plugin adapters in the bundled ItemBridge version, including Oraxen, ItemsAdder, SX-Item, ItemLoom, CraftEngine, MMOItems, and Nexo; no separate ItemBridge installation is needed |
 

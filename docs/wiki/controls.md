@@ -124,8 +124,8 @@ toggle 识别的真值：开、开启、on、enabled、true、1；假值：关�
 | firefly | toggle | 萤火虫 | Ambience，状态通过 PlaceholderAPI |
 | biome | toggle | 群系粒子 | Ambience，状态通过 PlaceholderAPI |
 | pickup | toggle | 拾取提示 | PickupNotifier |
-| loot-beams | toggle | 掉落光柱 | LootBeam |
-| loot-sounds | toggle | 光柱音效 | LootBeam |
+| loot-beams | toggle | 掉落光柱 | ItemLoom；兼容独立 LootBeam / 旧 Ambience |
+| loot-sounds | toggle | 光柱音效 | ItemLoom；兼容独立 LootBeam / 旧 Ambience |
 
 Bind 同时提供状态来源和动作；用了 Bind 就不要再写 State 或控件层 Actions。其必要插件依赖不能被 RequiresPlugin 替换成另一个插件。
 
